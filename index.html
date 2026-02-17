@@ -1509,19 +1509,17 @@ function renderWalletOptions() {
   let html = '';
   sorted.forEach(w => {
     const detected = w.detect();
-    if (detected && w.chain !== lastChain && lastChain !== '') {
-      // no divider for detected group
-    }
     const chainCls = w.chain.toLowerCase();
     const chainLabel = w.chain === 'MULTI' ? 'BTC · ETH · SOL' : w.chain;
-    html += `<div class="wallet-option ${detected ? 'detected' : ''}" onclick="${detected ? `doConnect('${w.id}')` : `window.open('${w.url}','_blank')`}">
-      <div class="w-icon">${w.icon}</div>
-      <div class="w-info">
-        <div class="w-name">${w.name} <span class="wallet-chain-label ${chainCls}">${chainLabel}</span></div>
-        <div class="w-chain">${detected ? '🟢 Ready to connect' : 'Click to install'}</div>
-      </div>
-      <div class="w-status ${detected ? 'ready' : 'install'}">${detected ? 'Connect' : 'Install'}</div>
-    </div>`;
+    const clickAction = detected ? "doConnect('" + w.id + "')" : "window.open('" + w.url + "','_blank')";
+    html += '<div class="wallet-option ' + (detected ? 'detected' : '') + '" onclick="' + clickAction + '">' +
+      '<div class="w-icon">' + w.icon + '</div>' +
+      '<div class="w-info">' +
+        '<div class="w-name">' + w.name + ' <span class="wallet-chain-label ' + chainCls + '">' + chainLabel + '</span></div>' +
+        '<div class="w-chain">' + (detected ? '🟢 Ready to connect' : 'Click to install') + '</div>' +
+      '</div>' +
+      '<div class="w-status ' + (detected ? 'ready' : 'install') + '">' + (detected ? 'Connect' : 'Install') + '</div>' +
+    '</div>';
   });
   container.innerHTML = html;
 }
@@ -2333,7 +2331,7 @@ function loadAffiliateStats() {
 
 function shareAffiliateOnX() {
   const url = document.getElementById('referral-url').value || getSiteUrl();
-  const text = 'I\\'m earning credits on every bet my friends make on ' + document.title.split(' ')[0] + '\\n\\nFree to play. Real crypto prizes.\\n\\nJoin through my link 👇\\n\\n' + url;
+  const text = "I'm earning credits on every bet my friends make on " + document.title.split(' ')[0] + "\n\nFree to play. Real crypto prizes.\n\nJoin through my link 👇\n\n" + url;
   window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(text), '_blank');
   trackRewardEvent('affiliate_share', 1000);
 }
