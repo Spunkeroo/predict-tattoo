@@ -446,8 +446,8 @@
 
 <!-- Mode Toggle -->
 <div class="mode-toggle" id="mode-toggle">
-  <button class="mode-btn free" onclick="switchMode('free')">🆓 Free Play</button>
   <button class="mode-btn real active" onclick="switchMode('real')">💰 Real Crypto</button>
+  <button class="mode-btn free" onclick="switchMode('free')">🆓 Free Play</button>
 </div>
 
 <!-- Promo Banner -->
@@ -2479,7 +2479,8 @@ setInterval(() => { if (firebaseReady) autoResolveMarkets(); }, 300000);
 // ============================================================
 // FREE / REAL MODE
 // ============================================================
-let playMode = localStorage.getItem('playMode_' + SITE_ID) || 'real';
+// Real Crypto is ALWAYS the default — free is opt-in only
+let playMode = 'real';
 
 function switchMode(mode) {
   playMode = mode;
@@ -2998,16 +2999,7 @@ buildCrossPromo();
 showFirstVisitSplash();
 resetInactivity();
 
-// Force Real Crypto as default on first visit — only respect saved choice if explicitly set to free
-if (playMode === 'free') {
-  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector('.mode-btn.free').classList.add('active');
-} else {
-  // Ensure real mode is always the default
-  playMode = 'real';
-  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector('.mode-btn.real').classList.add('active');
-}
+// Real Crypto is always the default — toggle already shows it active
 
 // Hide sticky CTA if wallet already connected
 if (localStorage.getItem('wallet_' + SITE_ID)) {
