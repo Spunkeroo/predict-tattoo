@@ -40,7 +40,7 @@
 
   /* Nav */
   nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,15,0.95);backdrop-filter:blur(10px);z-index:100;}
-  .logo{font-size:1.4rem;font-weight:800;letter-spacing:-0.5px;}
+  .logo{font-size:1.4rem;font-weight:800;letter-spacing:-0.5px;cursor:pointer;}
   .logo span{color:var(--accent);}
   .nav-right{display:flex;gap:0.8rem;align-items:center;font-size:0.9rem;}
   .nav-right a{color:var(--muted);transition:color 0.2s;}
@@ -523,7 +523,7 @@
 <body>
 
 <nav>
-  <div class="logo">predict<span>.tattoo</span> 🖋️</div>
+  <a href="/" class="logo" style="text-decoration:none;color:var(--text);">predict<span>.tattoo</span> 🖋️</a>
   <div class="nav-right">
     <a href="#markets">Markets</a>
     <a href="#rewards">Rewards</a>
