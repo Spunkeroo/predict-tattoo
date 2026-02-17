@@ -647,22 +647,22 @@
   <div class="community-title">Join the Community</div>
   <div class="community-sub">Alerts, alpha, and bonus credit drops.</div>
   <div class="community-grid">
-    <a class="community-card telegram" href="https://t.me/predictnetwork" target="_blank">
-      <div class="cc-icon">✈️</div>
-      <div class="cc-name">Telegram</div>
-      <div class="cc-desc">Live alerts. Free credits.</div>
-      <div class="cc-btn">Join Telegram</div>
-    </a>
     <a class="community-card x-card" href="https://x.com/SpunkArt13" target="_blank">
       <div class="cc-icon">𝕏</div>
       <div class="cc-name">X / Twitter</div>
       <div class="cc-desc">Predictions + announcements.</div>
       <div class="cc-btn">Follow @SpunkArt13</div>
     </a>
+    <a class="community-card" href="https://reddit.com/r/predictnetwork" target="_blank" style="border-color:rgba(255,69,0,0.3);">
+      <div class="cc-icon">🔴</div>
+      <div class="cc-name">Reddit</div>
+      <div class="cc-desc">Discussion + predictions.</div>
+      <div class="cc-btn" style="background:#ff4500;color:#fff;">Join Reddit</div>
+    </a>
     <a class="community-card discord" href="https://discord.gg/predictnetwork" target="_blank">
       <div class="cc-icon">💬</div>
       <div class="cc-name">Discord</div>
-      <div class="cc-desc">Chat, strategy, roles.</div>
+      <div class="cc-desc">Chat + strategy.</div>
       <div class="cc-btn">Join Discord</div>
     </a>
   </div>
@@ -719,8 +719,8 @@
     <div class="share-preview" id="share-preview-text"></div>
     <div class="share-grid">
       <div class="share-option" onclick="doShareX()"><span class="s-icon">𝕏</span> X / Twitter</div>
-      <div class="share-option" onclick="doShareTelegram()"><span class="s-icon">✈️</span> Telegram</div>
-      <div class="share-option" onclick="doShareWhatsApp()"><span class="s-icon">💬</span> WhatsApp</div>
+      <div class="share-option" onclick="doShareReddit()"><span class="s-icon">🔴</span> Reddit</div>
+      <div class="share-option" onclick="doShareFacebook()"><span class="s-icon">📘</span> Facebook</div>
       <div class="share-option" onclick="doShareCopy()"><span class="s-icon">🔗</span> Copy Link</div>
     </div>
   </div>
@@ -1141,11 +1141,15 @@ function renderMarkets(filter) {
     ? markets.filter(m => m.category === currentFilter)
     : markets;
 
-  // Sort: most popular (bets + volume) first, new markets last
+  // Sort: new user-created markets boosted for 24hrs, then by popularity
+  const now = Date.now();
   const open = filtered.filter(m => m.status === 'open' || !m.status);
   open.sort((a, b) => {
-    const aScore = (a.totalBets || 0) * 1000 + ((a.yesPool || 0) + (a.noPool || 0));
-    const bScore = (b.totalBets || 0) * 1000 + ((b.yesPool || 0) + (b.noPool || 0));
+    // Boost recently created markets (under 24hrs old) to the top
+    const aNew = (a.createdAt && now - a.createdAt < 86400000) ? 1000000 : 0;
+    const bNew = (b.createdAt && now - b.createdAt < 86400000) ? 1000000 : 0;
+    const aScore = aNew + (a.totalBets || 0) * 1000 + ((a.yesPool || 0) + (a.noPool || 0));
+    const bScore = bNew + (b.totalBets || 0) * 1000 + ((b.yesPool || 0) + (b.noPool || 0));
     return bScore - aScore;
   });
 
@@ -2049,10 +2053,10 @@ function openShareModal(question, yesPct) {
 }
 function closeShareModal() { document.getElementById('share-modal').classList.remove('show'); }
 
-function doShareX() { analytics.trackShare('x'); window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText + '\n\nBet now 👇\n' + shareUrl)}`, '_blank'); closeShareModal(); awardShareBonus(); }
-function doShareTelegram() { analytics.trackShare('telegram'); window.open(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`, '_blank'); closeShareModal(); awardShareBonus(); }
-function doShareWhatsApp() { analytics.trackShare('whatsapp'); window.open(`https://wa.me/?text=${encodeURIComponent(shareText + '\n' + shareUrl)}`, '_blank'); closeShareModal(); awardShareBonus(); }
-function doShareCopy() { analytics.trackShare('copy_link'); navigator.clipboard.writeText(shareText + '\n' + shareUrl).then(() => { showToast('Copied to clipboard!'); closeShareModal(); }); }
+function doShareX() { analytics.trackShare('x'); window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText + '\n\n' + shareUrl)}`, '_blank'); closeShareModal(); awardShareBonus(); }
+function doShareReddit() { analytics.trackShare('reddit'); window.open(`https://reddit.com/submit?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(shareText.split('\n')[0])}`, '_blank'); closeShareModal(); awardShareBonus(); }
+function doShareFacebook() { analytics.trackShare('facebook'); window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank'); closeShareModal(); awardShareBonus(); }
+function doShareCopy() { analytics.trackShare('copy_link'); navigator.clipboard.writeText(shareText + '\n' + shareUrl).then(() => { showToast('Copied!'); closeShareModal(); }); }
 
 function awardShareBonus() {
   if (!wallet) return;
