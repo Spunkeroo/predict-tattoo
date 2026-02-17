@@ -1169,7 +1169,15 @@ function renderMarkets(filter) {
     ? markets.filter(m => m.category === currentFilter)
     : markets;
 
-  container.innerHTML = filtered.filter(m => m.status === 'open' || !m.status).map(m => {
+  // Sort: most popular (bets + volume) first, new markets last
+  const open = filtered.filter(m => m.status === 'open' || !m.status);
+  open.sort((a, b) => {
+    const aScore = (a.totalBets || 0) * 1000 + ((a.yesPool || 0) + (a.noPool || 0));
+    const bScore = (b.totalBets || 0) * 1000 + ((b.yesPool || 0) + (b.noPool || 0));
+    return bScore - aScore;
+  });
+
+  container.innerHTML = open.map(m => {
     const total = (m.yesPool || 0) + (m.noPool || 0);
     const yesPct = total > 0 ? Math.round(((m.yesPool || 0) / total) * 100) : 50;
     const noPct = 100 - yesPct;
@@ -1739,6 +1747,23 @@ async function submitProposal() {
   const ends = document.getElementById('propose-ends').value;
   if (!question) { showToast('Enter a prediction question'); return; }
   if (!ends) { showToast('Pick an end date'); return; }
+
+  // Content filter — block hate speech, slurs, and harmful content
+  const blocked = [
+    'kill','murder','rape','assault','bomb','terror','shoot','stab','suicide',
+    'n[i1]gg','f[a4]gg','r[e3]t[a4]rd','ch[i1]nk','sp[i1]c','k[i1]ke','tr[a4]nny',
+    'wh[o0]re','sl[u0]t','c[u0]nt',
+    'nazi','white.?power','white.?suprem','ethnic.?cleans','genocide','holocaust.?deny',
+    'child.?abuse','pedo','molest','traffick',
+    'mass.?shoot','school.?shoot','swat'
+  ];
+  const lower = question.toLowerCase();
+  const hasBlocked = blocked.some(term => new RegExp(term, 'i').test(lower));
+  if (hasBlocked) {
+    showToast('This content violates our community guidelines. Please rephrase.');
+    analytics.track('content_blocked', { question });
+    return;
+  }
 
   if (firebaseReady) {
     // Auto-approve — create market directly
