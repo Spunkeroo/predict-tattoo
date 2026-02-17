@@ -1712,14 +1712,31 @@ function connectDemo() {
   showToast('Demo mode — 100k test credits added!');
 }
 
+function disconnectWallet() {
+  wallet = null; walletChain = null; userId = null; userBalance = 0;
+  localStorage.removeItem('wallet_' + SITE_ID);
+  const btn = document.getElementById('connect-btn');
+  btn.textContent = 'Connect Wallet';
+  btn.style.background = 'var(--accent)';
+  btn.style.color = '#000';
+  btn.style.border = 'none';
+  btn.onclick = connectWallet;
+  document.getElementById('propose-btn').style.display = 'none';
+  document.getElementById('panel-btn').style.display = 'none';
+  updateBalanceUI();
+  showToast('Wallet disconnected');
+}
+
 function onWalletConnected(addr) {
   const short = addr.length > 12 ? addr.slice(0,6) + '...' + addr.slice(-4) : addr;
   const btn = document.getElementById('connect-btn');
-  btn.textContent = short;
+  btn.innerHTML = '🟢 ' + short + ' <span style="font-size:0.65rem;opacity:0.6;margin-left:0.3rem;">(disconnect)</span>';
   btn.style.background = '#1a1a25';
   btn.style.color = 'var(--accent)';
   btn.style.border = '1px solid var(--accent)';
-  btn.onclick = null;
+  btn.onclick = function() {
+    if (confirm('Disconnect wallet?')) disconnectWallet();
+  };
 
   document.getElementById('propose-btn').style.display = 'inline-block';
   document.getElementById('panel-btn').style.display = 'inline-block';
@@ -2210,13 +2227,13 @@ function getSiteUrl() { return window.location.origin; }
 function shareOnX(question, yesPct) {
   const url = getSiteUrl();
   const templates = [
-    `${question}\n\n${yesPct}% say YES. You in? 👇\n\n${url}`,
-    `${yesPct}% YES on "${question}"\n\nProve them wrong 👇\n\n${url}`,
-    `Hot take: "${question}"\n\nBet free. Win crypto.\n\n${url}`,
-    `"${question}" — ${yesPct}% YES\n\nWhat's your call?\n\n${url}`,
+    `${question}\n\n${yesPct}% say YES. You in? 👇`,
+    `${yesPct}% YES on "${question}"\n\nProve them wrong 👇`,
+    `Hot take: "${question}"\n\nBet free. Win crypto.`,
+    `"${question}" — ${yesPct}% YES\n\nWhat's your call?`,
   ];
   const text = templates[Math.floor(Math.random() * templates.length)];
-  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
   awardShareBonus();
 }
 
@@ -2246,7 +2263,7 @@ function openShareModal(question, yesPct) {
 }
 function closeShareModal() { document.getElementById('share-modal').classList.remove('show'); }
 
-function doShareX() { analytics.trackShare('x'); window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText + '\n\n' + shareUrl)}`, '_blank'); closeShareModal(); awardShareBonus(); }
+function doShareX() { analytics.trackShare('x'); window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`, '_blank'); closeShareModal(); awardShareBonus(); }
 function doShareReddit() { analytics.trackShare('reddit'); window.open(`https://reddit.com/submit?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(shareText.split('\n')[0])}`, '_blank'); closeShareModal(); awardShareBonus(); }
 function doShareFacebook() { analytics.trackShare('facebook'); window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank'); closeShareModal(); awardShareBonus(); }
 function doShareCopy() { analytics.trackShare('copy_link'); navigator.clipboard.writeText(shareText + '\n' + shareUrl).then(() => { showToast('Copied!'); closeShareModal(); }); }
@@ -2364,8 +2381,8 @@ function loadAffiliateStats() {
 
 function shareAffiliateOnX() {
   const url = document.getElementById('referral-url').value || getSiteUrl();
-  const text = "I'm earning credits on every bet my friends make on " + document.title.split(' ')[0] + "\n\nFree to play. Real crypto prizes.\n\nJoin through my link 👇\n\n" + url;
-  window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(text), '_blank');
+  const text = "I'm earning credits on every bet my friends make on " + document.title.split(' ')[0] + "\n\nFree to play. Real crypto prizes.\n\nJoin through my link 👇";
+  window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url), '_blank');
   trackRewardEvent('affiliate_share', 1000);
 }
 
@@ -2611,8 +2628,9 @@ function dismissEngagePopup() {
 
 function engageShare() {
   const siteTitle = document.title.split(' —')[0];
-  const text = `${betCount} predictions deep on ${siteTitle}\n\nBet free. Win crypto.\n\n${getSiteUrl()}`;
-  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+  const url = getSiteUrl();
+  const text = `${betCount} predictions deep on ${siteTitle}\n\nBet free. Win crypto.`;
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
   dismissEngagePopup();
   awardShareBonus();
 }
@@ -2775,8 +2793,9 @@ function updateWinStreak(won) {
 }
 
 function shareWinStreak() {
-  const text = winStreak + '-win streak. Come beat me.\n\n' + getSiteUrl();
-  window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text), '_blank');
+  const url = getSiteUrl();
+  const text = winStreak + '-win streak. Come beat me.';
+  window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text) + '&url=' + encodeURIComponent(url), '_blank');
   awardShareBonus();
 }
 
