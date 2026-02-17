@@ -43,6 +43,10 @@
   .filters{display:flex;gap:0.5rem;justify-content:center;padding:1rem;flex-wrap:wrap;}
   .filter-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:0.4rem 1rem;border-radius:20px;font-size:0.8rem;cursor:pointer;transition:all 0.2s;}
   .filter-btn.active,.filter-btn:hover{color:var(--text);border-color:var(--accent);background:rgba(245,158,11,0.1);}
+  .filter-hot{border-color:rgba(239,68,68,0.3);color:#ef4444;}
+  .filter-hot.active,.filter-hot:hover{border-color:#ef4444;background:rgba(239,68,68,0.1);color:#ef4444;}
+  .filter-new{border-color:rgba(59,130,246,0.3);color:#3b82f6;}
+  .filter-new.active,.filter-new:hover{border-color:#3b82f6;background:rgba(59,130,246,0.1);color:#3b82f6;}
 
   /* Markets Grid */
   .markets{max-width:900px;margin:0 auto;padding:1rem;}
@@ -463,12 +467,12 @@
 
 <div class="filters" id="filters">
   <button class="filter-btn active" onclick="filterMarkets('all')">All</button>
+  <button class="filter-btn filter-hot" onclick="filterMarkets('hot')">Hot</button>
+  <button class="filter-btn filter-new" onclick="filterMarkets('new')">New</button>
   <button class="filter-btn" onclick="filterMarkets('styles')">Styles</button>
   <button class="filter-btn" onclick="filterMarkets('artists')">Artists</button>
   <button class="filter-btn" onclick="filterMarkets('culture')">Culture</button>
   <button class="filter-btn" onclick="filterMarkets('wild')">Wild</button>
-  <button class="filter-btn" onclick="filterMarkets('new')" style="border-color:rgba(59,130,246,0.3);color:var(--blue);">🆕 New</button>
-  <button class="filter-btn" onclick="filterMarkets('hot')" style="border-color:rgba(239,68,68,0.3);color:var(--red);">🔥 Hot</button>
 </div>
 
 <!-- User Panel -->
@@ -492,6 +496,7 @@
   </div>
 </div>
 
+<div id="daily-challenge" class="daily-challenge" style="display:none;background:var(--card);border:1px solid var(--accent);border-radius:12px;padding:1rem 1.2rem;margin-bottom:1rem;"></div>
 <div class="markets" id="markets"></div>
 
 <div id="how" class="how-it-works">
@@ -2086,39 +2091,48 @@ function awardShareBonus() {
 // REFERRAL SYSTEM
 // ============================================================
 function generateReferralLink() {
-  const ref = wallet ? wallet.slice(0, 10) : 'guest';
-  document.getElementById('referral-url').value = getSiteUrl() + '?ref=' + ref;
+  // Short clean code from wallet or random
+  let code = localStorage.getItem('myRefCode_' + SITE_ID);
+  if (!code) {
+    code = (wallet || Math.random().toString(36)).replace(/[^a-z0-9]/gi,'').slice(-5);
+    localStorage.setItem('myRefCode_' + SITE_ID, code);
+    // Save mapping in Firebase
+    if (firebaseReady && userId) {
+      db.ref('refCodes/' + SITE_ID + '/' + code).set(userId);
+    }
+  }
+  document.getElementById('referral-url').value = getSiteUrl() + '?r=' + code;
 }
 
 function copyReferral() {
   const input = document.getElementById('referral-url');
-  navigator.clipboard.writeText(input.value).then(() => showToast('Referral link copied! Share it to earn credits.'));
+  navigator.clipboard.writeText(input.value).then(() => showToast('Link copied!'));
 }
 
 function checkReferral() {
   const params = new URLSearchParams(window.location.search);
-  const ref = params.get('ref');
-  if (ref && !localStorage.getItem('referred_' + SITE_ID)) {
-    localStorage.setItem('referred_' + SITE_ID, ref);
-    localStorage.setItem('referrer_' + SITE_ID, ref);
+  const code = params.get('r');
+  if (code && !localStorage.getItem('referred_' + SITE_ID)) {
+    localStorage.setItem('referred_' + SITE_ID, code);
+    localStorage.setItem('referrer_code_' + SITE_ID, code);
+    window.history.replaceState({}, '', window.location.pathname);
   }
 }
 
 function processReferralReward() {
-  const referrer = localStorage.getItem('referrer_' + SITE_ID);
-  if (!referrer || !firebaseReady || localStorage.getItem('ref_rewarded_' + SITE_ID)) return;
+  const code = localStorage.getItem('referrer_code_' + SITE_ID);
+  if (!code || !firebaseReady || localStorage.getItem('ref_rewarded_' + SITE_ID)) return;
   localStorage.setItem('ref_rewarded_' + SITE_ID, '1');
-  // Find referrer user and credit them
-  db.ref('users').orderByChild('wallet').startAt(referrer).endAt(referrer + '\uf8ff').limitToFirst(1).once('value', snap => {
-    snap.forEach(child => {
-      db.ref('users/' + child.key + '/balance').set(firebase.database.ServerValue.increment(5000));
-      db.ref('rewards/' + SITE_ID + '/' + child.key + '/referrals').set(firebase.database.ServerValue.increment(1));
-    });
+  db.ref('refCodes/' + SITE_ID + '/' + code).once('value', snap => {
+    const referrerId = snap.val();
+    if (referrerId) {
+      db.ref('users/' + referrerId + '/balance').set(firebase.database.ServerValue.increment(5000));
+      db.ref('rewards/' + SITE_ID + '/' + referrerId + '/referrals').set(firebase.database.ServerValue.increment(1));
+    }
   });
-  // Credit the referred user too
   if (userId) {
     db.ref('users/' + userId + '/balance').set(firebase.database.ServerValue.increment(5000));
-    showToast('🎉 +5,000 credits — thanks for joining via referral!');
+    showToast('+5,000 credits for joining via referral!');
     trackRewardEvent('referral_joined', 5000);
   }
 }
@@ -2299,9 +2313,9 @@ const ENGAGE_MESSAGES = [
   {title:'You\'re on fire!', text:'You\'ve placed {n} bets — share your streak and earn 1,000 bonus credits!'},
   {title:'Streak alert!', text:'{n} predictions and counting! Share on X and earn credits.'},
   {title:'Invite & earn!', text:'Share your link — you BOTH get 5,000 credits when they bet.'},
-  {title:'Join the chat!', text:'Get live predictions and alpha in our Telegram. Free to join.'},
   {title:'Climbing the ranks!', text:'You\'re making moves on the leaderboard. Share to flex your rank!'},
   {title:'Hot streak!', text:'{n} bets placed! Copy your post template and share for bonus credits.'},
+  {title:'Double rewards!', text:'Share any market on X right now and get 2x bonus credits!'},
 ];
 
 function showEngagePopup() {
@@ -2331,10 +2345,10 @@ function engageRefer() {
   dismissEngagePopup();
 }
 
-function engageTelegram() {
-  window.open('https://t.me/predictnetwork', '_blank');
+function engageCommunity() {
+  window.open('https://discord.gg/predictnetwork', '_blank');
   dismissEngagePopup();
-  analytics.track('telegram_join_click');
+  analytics.track('community_join_click');
 }
 
 // ============================================================
@@ -2389,13 +2403,13 @@ function showFirstVisitSplash() {
       showToast('Welcome! Connect a wallet for 50,000 FREE credits — or try Demo Mode');
     }
   }, 3000);
-  // After 15 seconds, nudge telegram
+  // After 15 seconds, nudge share
   setTimeout(() => {
-    if (!localStorage.getItem('tg_nudged_' + SITE_ID)) {
-      localStorage.setItem('tg_nudged_' + SITE_ID, '1');
+    if (!localStorage.getItem('share_nudged_' + SITE_ID)) {
+      localStorage.setItem('share_nudged_' + SITE_ID, '1');
       const popup = document.getElementById('engage-popup');
-      document.getElementById('ep-title').textContent = 'Get predictions first';
-      document.getElementById('ep-text').textContent = 'Join our Telegram for live alpha, market alerts, and bonus credit drops. Free forever.';
+      document.getElementById('ep-title').textContent = 'Share & earn';
+      document.getElementById('ep-text').textContent = 'Share any prediction on X and earn 1,000 bonus credits. Invite friends for 5,000 each!';
       popup.classList.add('show');
       setTimeout(() => popup.classList.remove('show'), 12000);
     }
@@ -2419,6 +2433,76 @@ function resetInactivity() {
 }
 document.addEventListener('click', resetInactivity);
 document.addEventListener('scroll', resetInactivity);
+
+// ============================================================
+// DAILY CHALLENGE — Featured market with bonus credits for betting + sharing
+// ============================================================
+function getDailyChallenge() {
+  const openMarkets = markets.filter(m => m.status === 'open' || !m.status);
+  if (openMarkets.length === 0) return null;
+  const dayHash = Math.floor(Date.now() / 86400000);
+  return openMarkets[dayHash % openMarkets.length];
+}
+
+function renderDailyChallenge() {
+  const dc = document.getElementById('daily-challenge');
+  if (!dc) return;
+  const market = getDailyChallenge();
+  if (!market) { dc.style.display = 'none'; return; }
+  const total = (market.yesPool || 0) + (market.noPool || 0);
+  const yesPct = total > 0 ? Math.round(((market.yesPool || 0) / total) * 100) : 50;
+  const claimed = localStorage.getItem('dc_' + SITE_ID + '_' + Math.floor(Date.now() / 86400000));
+  dc.innerHTML = `
+    <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">
+      <span style="font-size:1.2rem;">&#x1F3AF;</span>
+      <span style="font-weight:600;color:var(--accent);">Daily Challenge</span>
+      <span style="font-size:0.75rem;color:var(--muted);margin-left:auto;">2x credits</span>
+    </div>
+    <div style="font-size:0.95rem;margin-bottom:0.75rem;">${market.question}</div>
+    <div style="display:flex;gap:0.5rem;">
+      <button onclick="placeBetFromChallenge('${market.fbKey || market.id}','yes')" style="flex:1;padding:0.5rem;border-radius:8px;background:rgba(16,185,129,0.15);color:var(--green);border:1px solid rgba(16,185,129,0.3);cursor:pointer;font-weight:600;">YES ${yesPct}%</button>
+      <button onclick="placeBetFromChallenge('${market.fbKey || market.id}','no')" style="flex:1;padding:0.5rem;border-radius:8px;background:rgba(239,68,68,0.15);color:var(--red);border:1px solid rgba(239,68,68,0.3);cursor:pointer;font-weight:600;">NO ${100-yesPct}%</button>
+    </div>
+    ${claimed ? '<div style="text-align:center;margin-top:0.5rem;font-size:0.75rem;color:var(--green);">Completed today!</div>' : '<div style="text-align:center;margin-top:0.5rem;font-size:0.75rem;color:var(--muted);">Bet + share = 2,000 bonus credits</div>'}
+  `;
+  dc.style.display = 'block';
+}
+
+function placeBetFromChallenge(marketId, side) {
+  const dayKey = 'dc_' + SITE_ID + '_' + Math.floor(Date.now() / 86400000);
+  if (!localStorage.getItem(dayKey)) {
+    localStorage.setItem(dayKey, '1');
+    if (firebaseReady && userId) {
+      db.ref('users/' + userId + '/balance').set(firebase.database.ServerValue.increment(2000));
+      showToast('+2,000 bonus credits for daily challenge!');
+    }
+  }
+  openBetModal(marketId, side);
+}
+
+// ============================================================
+// WIN STREAK — Track consecutive correct predictions
+// ============================================================
+let winStreak = parseInt(localStorage.getItem('winStreak_' + SITE_ID) || '0');
+
+function updateWinStreak(won) {
+  if (won) {
+    winStreak++;
+    localStorage.setItem('winStreak_' + SITE_ID, winStreak.toString());
+    if (winStreak >= 3) {
+      showToast(winStreak + '-win streak! Share your streak on X for bonus credits!');
+    }
+  } else {
+    winStreak = 0;
+    localStorage.setItem('winStreak_' + SITE_ID, '0');
+  }
+}
+
+function shareWinStreak() {
+  const text = 'I\'m on a ' + winStreak + '-win prediction streak!\\n\\nThink you can beat me?\\n\\n' + getSiteUrl() + '\\n\\n#predictions #crypto #winstreak';
+  window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(text), '_blank');
+  awardShareBonus();
+}
 
 // ============================================================
 // AUTO-RESOLUTION — Markets resolve automatically when they end
@@ -3014,6 +3098,7 @@ if (localStorage.getItem('promoDismissed_' + SITE_ID)) {
 buildCrossPromo();
 showFirstVisitSplash();
 resetInactivity();
+renderDailyChallenge();
 
 // Real Crypto is always the default — toggle already shows it active
 
