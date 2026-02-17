@@ -188,9 +188,55 @@
   .wallet-divider::before{left:0;}
   .wallet-divider::after{right:0;}
 
+  /* Promo Banner */
+  .promo-banner{background:linear-gradient(135deg,rgba(245,158,11,0.15),rgba(34,197,94,0.1));border:1px solid rgba(245,158,11,0.3);border-radius:16px;padding:1.2rem 1.5rem;max-width:900px;margin:0 auto 1rem;display:flex;align-items:center;gap:1rem;animation:glow 3s infinite;}
+  @keyframes glow{0%,100%{box-shadow:0 0 5px rgba(245,158,11,0.1)}50%{box-shadow:0 0 20px rgba(245,158,11,0.2)}}
+  .promo-banner .promo-icon{font-size:2rem;flex-shrink:0;}
+  .promo-banner .promo-text{flex:1;}
+  .promo-banner .promo-title{font-weight:800;font-size:1rem;color:var(--accent);}
+  .promo-banner .promo-sub{font-size:0.8rem;color:var(--muted);margin-top:0.1rem;}
+  .promo-banner .promo-cta{background:var(--accent);color:#000;border:none;padding:0.5rem 1.2rem;border-radius:8px;font-weight:800;font-size:0.85rem;cursor:pointer;white-space:nowrap;transition:all 0.2s;flex-shrink:0;}
+  .promo-banner .promo-cta:hover{transform:scale(1.05);}
+  .promo-banner .promo-close{background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;padding:0.2rem;flex-shrink:0;}
+
+  /* Share Bar */
+  .share-bar{display:flex;gap:0.3rem;margin-top:0.5rem;}
+  .share-btn{padding:0.3rem 0.6rem;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;border:none;transition:all 0.15s;display:flex;align-items:center;gap:0.2rem;}
+  .share-btn:hover{transform:scale(1.05);}
+  .share-btn.x{background:rgba(255,255,255,0.1);color:#fff;}
+  .share-btn.tg{background:rgba(0,136,204,0.15);color:#0088cc;}
+  .share-btn.wa{background:rgba(37,211,102,0.15);color:#25d366;}
+  .share-btn.link{background:rgba(245,158,11,0.15);color:var(--accent);}
+
+  /* Referral Banner */
+  .referral-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;max-width:900px;margin:1rem auto;text-align:center;}
+  .referral-box h3{font-size:1rem;font-weight:800;color:var(--accent);margin-bottom:0.3rem;}
+  .referral-box p{font-size:0.8rem;color:var(--muted);margin-bottom:0.8rem;}
+  .referral-link{display:flex;gap:0.5rem;max-width:400px;margin:0 auto;}
+  .referral-link input{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.4rem 0.8rem;color:var(--accent);font-size:0.8rem;font-weight:700;font-family:monospace;outline:none;}
+  .referral-link button{background:var(--accent);color:#000;border:none;padding:0.4rem 0.8rem;border-radius:8px;font-weight:700;font-size:0.8rem;cursor:pointer;}
+
+  /* Sticky Mobile CTA */
+  .sticky-cta{display:none;position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,15,0.95);backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:0.8rem 1rem;z-index:99;text-align:center;}
+  .sticky-cta button{background:var(--accent);color:#000;border:none;padding:0.7rem 2rem;border-radius:10px;font-weight:800;font-size:1rem;cursor:pointer;width:100%;max-width:400px;}
+  @media(max-width:600px){.sticky-cta{display:block;}body{padding-bottom:70px;}}
+
+  /* Share Modal */
+  .share-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-bottom:1rem;}
+  .share-option{display:flex;align-items:center;gap:0.6rem;padding:0.7rem;background:var(--bg);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all 0.2s;font-weight:600;font-size:0.9rem;}
+  .share-option:hover{border-color:var(--accent);transform:scale(1.02);}
+  .share-option .s-icon{font-size:1.3rem;}
+  .share-preview{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:0.8rem;margin-bottom:1rem;font-size:0.8rem;color:var(--muted);line-height:1.5;white-space:pre-wrap;}
+
+  /* Trending tag */
+  .trending-tag{display:inline-block;background:rgba(239,68,68,0.15);color:var(--red);font-size:0.65rem;font-weight:800;padding:0.1rem 0.4rem;border-radius:4px;margin-left:0.3rem;text-transform:uppercase;letter-spacing:0.5px;}
+  .hot-tag{display:inline-block;background:rgba(245,158,11,0.2);color:var(--accent);font-size:0.65rem;font-weight:800;padding:0.1rem 0.4rem;border-radius:4px;margin-left:0.3rem;text-transform:uppercase;}
+  .new-tag{display:inline-block;background:rgba(59,130,246,0.15);color:var(--blue);font-size:0.65rem;font-weight:800;padding:0.1rem 0.4rem;border-radius:4px;margin-left:0.3rem;text-transform:uppercase;}
+
   /* Toast */
   .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--card);border:1px solid var(--border);padding:0.8rem 1.5rem;border-radius:12px;font-size:0.9rem;z-index:300;transition:transform 0.3s;font-weight:600;}
   .toast.show{transform:translateX(-50%) translateY(0);}
+  @media(max-width:600px){.toast{bottom:5rem;}}
 
   /* How It Works */
   .how-it-works{max-width:700px;margin:2rem auto;padding:0 1rem;}
@@ -241,6 +287,17 @@
     <div class="hero-stat"><div class="val" id="active-markets">0</div><div class="label">Active Markets</div></div>
     <div class="hero-stat"><div class="val" id="total-bets">0</div><div class="label">Bets Placed</div></div>
   </div>
+</div>
+
+<!-- Promo Banner -->
+<div class="promo-banner" id="promo-banner">
+  <div class="promo-icon">🎁</div>
+  <div class="promo-text">
+    <div class="promo-title">Welcome Bonus — 50,000 FREE Credits!</div>
+    <div class="promo-sub">Connect any wallet and get 50k credits to start betting instantly. No deposit needed.</div>
+  </div>
+  <button class="promo-cta" onclick="claimWelcomeBonus()">Claim Now</button>
+  <button class="promo-close" onclick="dismissPromo()">&times;</button>
 </div>
 
 <div class="filters" id="filters">
@@ -334,6 +391,36 @@
   <div class="admin-section">
     <h4>Withdrawal Requests</h4>
     <div id="admin-withdrawals-list"><div style="color:var(--muted);font-size:0.85rem;">No pending withdrawals</div></div>
+  </div>
+</div>
+
+<!-- Referral Box -->
+<div class="referral-box" id="referral-box">
+  <h3>🔥 Invite Friends, Earn Credits</h3>
+  <p>Share your referral link — earn 5,000 credits for every friend who joins and places a bet!</p>
+  <div class="referral-link">
+    <input type="text" id="referral-url" value="" readonly onclick="this.select()">
+    <button onclick="copyReferral()">Copy</button>
+  </div>
+</div>
+
+<!-- Sticky Mobile CTA -->
+<div class="sticky-cta" id="sticky-cta">
+  <button onclick="connectWallet()">🔥 Connect Wallet — Get 50k FREE Credits</button>
+</div>
+
+<!-- Share Modal -->
+<div class="modal-overlay" id="share-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeShareModal()">&times;</button>
+    <h3>Share Your Prediction</h3>
+    <div class="share-preview" id="share-preview-text"></div>
+    <div class="share-grid">
+      <div class="share-option" onclick="doShareX()"><span class="s-icon">𝕏</span> X / Twitter</div>
+      <div class="share-option" onclick="doShareTelegram()"><span class="s-icon">✈️</span> Telegram</div>
+      <div class="share-option" onclick="doShareWhatsApp()"><span class="s-icon">💬</span> WhatsApp</div>
+      <div class="share-option" onclick="doShareCopy()"><span class="s-icon">🔗</span> Copy Link</div>
+    </div>
   </div>
 </div>
 
@@ -696,11 +783,14 @@ function renderMarkets(filter) {
     const noPct = 100 - yesPct;
     const daysLeft = Math.max(0, Math.ceil((new Date(m.ends) - new Date()) / 86400000));
     const key = m.fbKey || m.id;
+    const tag = (m.totalBets||0) > 300 ? '<span class="trending-tag">🔥 TRENDING</span>' :
+                (m.totalBets||0) > 200 ? '<span class="hot-tag">HOT</span>' :
+                (m.autoGenerated || (m.totalBets||0) < 50) ? '<span class="new-tag">NEW</span>' : '';
     return `
       <div class="market-card" data-category="${m.category}">
         <div class="market-header">
           <div>
-            <div class="market-category">${m.emoji} ${m.category}</div>
+            <div class="market-category">${m.emoji} ${m.category} ${tag}</div>
             <div class="market-question">${m.question}</div>
           </div>
           <div class="market-meta">
@@ -720,6 +810,12 @@ function renderMarkets(filter) {
         <div class="market-actions">
           <button class="bet-btn yes" onclick="openBetModal('${key}','yes')">YES ${yesPct}¢</button>
           <button class="bet-btn no" onclick="openBetModal('${key}','no')">NO ${noPct}¢</button>
+        </div>
+        <div class="share-bar">
+          <button class="share-btn x" onclick="shareOnX('${m.question.replace(/'/g,"\\'")}',${yesPct})">𝕏 Share</button>
+          <button class="share-btn tg" onclick="shareOnTelegram('${m.question.replace(/'/g,"\\'")}',${yesPct})">TG</button>
+          <button class="share-btn wa" onclick="shareOnWhatsApp('${m.question.replace(/'/g,"\\'")}',${yesPct})">WA</button>
+          <button class="share-btn link" onclick="copyMarketLink('${key}')">🔗 Copy</button>
         </div>
       </div>`;
   }).join('');
@@ -832,6 +928,8 @@ async function placeBet() {
       await db.ref().update(updates);
       closeBetModal();
       showToast('Bet placed! ' + amount.toLocaleString() + ' on ' + selectedSide.toUpperCase());
+      showSharePrompt(selectedMarket.question, selectedSide, amount);
+      processReferralReward();
     } catch(e) {
       showToast('Error placing bet: ' + e.message);
     }
@@ -977,6 +1075,21 @@ function onWalletConnected(addr) {
   document.getElementById('propose-btn').style.display = 'inline-block';
   document.getElementById('panel-btn').style.display = 'inline-block';
   document.getElementById('balance-pill').style.display = 'inline-block';
+
+  // Update sticky CTA
+  const stickyBtn = document.querySelector('.sticky-cta button');
+  if (stickyBtn) { stickyBtn.textContent = '🔥 Place a Bet — Markets Are Live!'; stickyBtn.onclick = () => document.getElementById('markets').scrollIntoView({behavior:'smooth'}); }
+
+  // Save wallet state
+  localStorage.setItem('wallet_' + SITE_ID, addr);
+
+  // Update referral link
+  generateReferralLink();
+
+  // Auto-claim welcome bonus if first time
+  if (!localStorage.getItem('welcomeBonus_' + SITE_ID)) {
+    claimWelcomeBonus();
+  }
 
   if (firebaseReady) {
     // Register user if new
@@ -1369,6 +1482,181 @@ async function approveWithdrawal(userId, wdKey) {
 }
 
 // ============================================================
+// SHARING
+// ============================================================
+let shareText = '';
+let shareUrl = '';
+
+function shareOnX(question, yesPct) {
+  const url = window.location.href;
+  const text = `🔮 ${question}\n\n📊 Currently ${yesPct}% YES\n\nPlace your bet now 👇\n${url}`;
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+  awardShareBonus();
+}
+
+function shareOnTelegram(question, yesPct) {
+  const url = window.location.href;
+  const text = `🔮 ${question}\n📊 ${yesPct}% YES — Place your bet!`;
+  window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank');
+  awardShareBonus();
+}
+
+function shareOnWhatsApp(question, yesPct) {
+  const url = window.location.href;
+  const text = `🔮 ${question}\n📊 ${yesPct}% YES\nBet now: ${url}`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+  awardShareBonus();
+}
+
+function copyMarketLink(key) {
+  const url = window.location.origin + window.location.pathname + '?m=' + key;
+  navigator.clipboard.writeText(url).then(() => showToast('Link copied!'));
+}
+
+function openShareModal(question, yesPct) {
+  shareText = `🔮 ${question}\n📊 ${yesPct}% YES`;
+  shareUrl = window.location.href;
+  document.getElementById('share-preview-text').textContent = shareText + '\n\n' + shareUrl;
+  document.getElementById('share-modal').classList.add('show');
+}
+function closeShareModal() { document.getElementById('share-modal').classList.remove('show'); }
+
+function doShareX() { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText + '\n\nBet now 👇\n' + shareUrl)}`, '_blank'); closeShareModal(); awardShareBonus(); }
+function doShareTelegram() { window.open(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`, '_blank'); closeShareModal(); awardShareBonus(); }
+function doShareWhatsApp() { window.open(`https://wa.me/?text=${encodeURIComponent(shareText + '\n' + shareUrl)}`, '_blank'); closeShareModal(); awardShareBonus(); }
+function doShareCopy() { navigator.clipboard.writeText(shareText + '\n' + shareUrl).then(() => { showToast('Copied to clipboard!'); closeShareModal(); }); }
+
+function awardShareBonus() {
+  if (!wallet) return;
+  const lastShare = localStorage.getItem('lastShareBonus_' + SITE_ID);
+  const now = Date.now();
+  if (lastShare && now - parseInt(lastShare) < 3600000) return; // 1 share bonus per hour
+  localStorage.setItem('lastShareBonus_' + SITE_ID, now.toString());
+  if (firebaseReady && userId) {
+    db.ref('users/' + userId + '/balance').set(firebase.database.ServerValue.increment(1000));
+    showToast('🎉 +1,000 credits for sharing!');
+  }
+}
+
+// ============================================================
+// REFERRAL SYSTEM
+// ============================================================
+function generateReferralLink() {
+  const ref = wallet ? wallet.slice(0, 10) : 'guest';
+  const url = window.location.origin + window.location.pathname + '?ref=' + ref;
+  document.getElementById('referral-url').value = url;
+}
+
+function copyReferral() {
+  const input = document.getElementById('referral-url');
+  navigator.clipboard.writeText(input.value).then(() => showToast('Referral link copied! Share it to earn credits.'));
+}
+
+function checkReferral() {
+  const params = new URLSearchParams(window.location.search);
+  const ref = params.get('ref');
+  if (ref && !localStorage.getItem('referred_' + SITE_ID)) {
+    localStorage.setItem('referred_' + SITE_ID, ref);
+    localStorage.setItem('referrer_' + SITE_ID, ref);
+  }
+}
+
+function processReferralReward() {
+  const referrer = localStorage.getItem('referrer_' + SITE_ID);
+  if (!referrer || !firebaseReady || localStorage.getItem('ref_rewarded_' + SITE_ID)) return;
+  localStorage.setItem('ref_rewarded_' + SITE_ID, '1');
+  // Find referrer user and credit them
+  db.ref('users').orderByChild('wallet').startAt(referrer).endAt(referrer + '\uf8ff').limitToFirst(1).once('value', snap => {
+    snap.forEach(child => {
+      db.ref('users/' + child.key + '/balance').set(firebase.database.ServerValue.increment(5000));
+    });
+  });
+}
+
+// ============================================================
+// WELCOME BONUS
+// ============================================================
+function claimWelcomeBonus() {
+  if (!wallet) { connectWallet(); return; }
+  if (localStorage.getItem('welcomeBonus_' + SITE_ID)) {
+    showToast('Welcome bonus already claimed!');
+    return;
+  }
+  localStorage.setItem('welcomeBonus_' + SITE_ID, '1');
+  if (firebaseReady && userId) {
+    db.ref('users/' + userId + '/balance').set(firebase.database.ServerValue.increment(50000));
+    showToast('🎉 50,000 credits added! Start betting now!');
+  } else {
+    userBalance += 50000;
+    updateBalanceUI();
+    showToast('🎉 50,000 credits added! Start betting now!');
+  }
+  dismissPromo();
+}
+
+function dismissPromo() {
+  document.getElementById('promo-banner').style.display = 'none';
+  localStorage.setItem('promoDismissed_' + SITE_ID, '1');
+}
+
+// ============================================================
+// AUTO-GENERATE MARKETS
+// ============================================================
+const AUTO_MARKET_TEMPLATES = [
+  {emoji:'📈',q:'Will predict.tattoo see 1,000+ total bets this month?',cat:'meta'},
+  {emoji:'🔥',q:'Will the most popular market on predict.tattoo hit 1M credits in volume?',cat:'meta'},
+  {emoji:'🌐',q:'Will predict.tattoo get featured on a major news outlet?',cat:'viral'},
+  {emoji:'📱',q:'Will predict.tattoo reach 10,000 unique visitors this month?',cat:'growth'},
+  {emoji:'🏆',q:'Will a single user win 500k+ credits in one bet on predict.tattoo?',cat:'wild'},
+  {emoji:'⚡',q:'Will 50+ markets be active on predict.tattoo simultaneously?',cat:'meta'},
+  {emoji:'🎯',q:'Will the YES side win more markets than NO this month?',cat:'meta'},
+  {emoji:'💎',q:'Will total deposits on predict.tattoo exceed $10,000 this month?',cat:'growth'},
+];
+
+function autoGenerateMarkets() {
+  if (!firebaseReady) return;
+  const lastGen = localStorage.getItem('autoGen_' + SITE_ID);
+  const now = Date.now();
+  if (lastGen && now - parseInt(lastGen) < 86400000) return; // Once per day
+  localStorage.setItem('autoGen_' + SITE_ID, now.toString());
+
+  const siteTitle = document.title.split(' —')[0];
+  const template = AUTO_MARKET_TEMPLATES[Math.floor(Math.random() * AUTO_MARKET_TEMPLATES.length)];
+  const question = template.q.replace('predict.tattoo', siteTitle);
+
+  // Check if similar market already exists
+  const exists = markets.some(m => m.question === question);
+  if (exists) return;
+
+  const endDate = new Date();
+  endDate.setMonth(endDate.getMonth() + 1);
+
+  db.ref('markets/' + SITE_ID).push({
+    id: markets.length + 1,
+    category: template.cat,
+    emoji: template.emoji,
+    question: question,
+    yesPool: Math.floor(Math.random() * 50000) + 10000,
+    noPool: Math.floor(Math.random() * 50000) + 10000,
+    totalBets: Math.floor(Math.random() * 20) + 5,
+    ends: endDate.toISOString().split('T')[0],
+    status: 'open',
+    autoGenerated: true
+  });
+}
+
+// ============================================================
+// AFTER-BET SHARE PROMPT
+// ============================================================
+function showSharePrompt(question, side, amount) {
+  const yesPct = side === 'yes' ? '📈' : '📉';
+  shareText = `I just bet ${amount.toLocaleString()} credits on "${question}" — ${side.toUpperCase()} ${yesPct}\n\nThink you know better?`;
+  shareUrl = window.location.href;
+  document.getElementById('share-preview-text').textContent = shareText + '\n\n' + shareUrl;
+  setTimeout(() => document.getElementById('share-modal').classList.add('show'), 500);
+}
+
+// ============================================================
 // TOAST
 // ============================================================
 function showToast(msg) {
@@ -1385,6 +1673,23 @@ function showToast(msg) {
 markets = JSON.parse(JSON.stringify(SEED_MARKETS));
 renderMarkets();
 
+// Check referral param
+checkReferral();
+
+// Generate referral link
+generateReferralLink();
+
+// Hide promo if already dismissed
+if (localStorage.getItem('promoDismissed_' + SITE_ID)) {
+  document.getElementById('promo-banner').style.display = 'none';
+}
+
+// Hide sticky CTA if wallet already connected
+if (localStorage.getItem('wallet_' + SITE_ID)) {
+  const stickyBtn = document.querySelector('.sticky-cta button');
+  if (stickyBtn) { stickyBtn.textContent = '🔥 Place a Bet — Markets Are Live!'; stickyBtn.onclick = () => document.getElementById('markets').scrollIntoView({behavior:'smooth'}); }
+}
+
 // Check for admin URL param
 if (location.hash === '#admin' || location.search.includes('admin')) {
   document.getElementById('admin-toggle').style.display = 'inline-block';
@@ -1395,6 +1700,7 @@ loadFirebaseSDK().then(async (ok) => {
   if (ok) {
     await initAuth();
     loadMarkets(); // This will replace seed data with live Firebase data
+    autoGenerateMarkets(); // Auto-create fresh markets daily
   }
 });
 </script>
