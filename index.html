@@ -330,6 +330,53 @@
   .rewards-progress .rp-text{font-size:0.75rem;color:var(--muted);}
   @media(max-width:600px){.rewards-grid{grid-template-columns:1fr;}}
 
+  /* Community Section */
+  .community-section{max-width:900px;margin:2rem auto;padding:0 1rem;}
+  .community-title{text-align:center;font-size:1.3rem;font-weight:900;margin-bottom:0.3rem;}
+  .community-sub{text-align:center;font-size:0.85rem;color:var(--muted);margin-bottom:1.2rem;}
+  .community-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.8rem;}
+  .community-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;text-align:center;transition:all 0.2s;cursor:pointer;text-decoration:none;display:block;color:var(--text);}
+  .community-card:hover{border-color:var(--accent);transform:translateY(-3px);text-decoration:none;box-shadow:0 8px 25px rgba(245,158,11,0.15);}
+  .community-card .cc-icon{font-size:2.2rem;margin-bottom:0.5rem;}
+  .community-card .cc-name{font-weight:800;font-size:1rem;margin-bottom:0.2rem;}
+  .community-card .cc-desc{font-size:0.75rem;color:var(--muted);line-height:1.4;margin-bottom:0.5rem;}
+  .community-card .cc-btn{display:inline-block;background:var(--accent);color:#000;padding:0.35rem 1rem;border-radius:8px;font-weight:800;font-size:0.8rem;transition:all 0.2s;}
+  .community-card:hover .cc-btn{transform:scale(1.05);}
+  .community-card.telegram .cc-btn{background:#0088cc;color:#fff;}
+  .community-card.x-card .cc-btn{background:#fff;color:#000;}
+  .community-card.discord .cc-btn{background:#5865F2;color:#fff;}
+  @media(max-width:600px){.community-grid{grid-template-columns:1fr;}}
+
+  /* Engagement Popup */
+  .engage-popup{display:none;position:fixed;bottom:1.5rem;right:1.5rem;background:var(--card);border:1px solid var(--accent);border-radius:16px;padding:1.2rem 1.5rem;z-index:250;max-width:340px;animation:slideUp 0.3s;box-shadow:0 8px 30px rgba(245,158,11,0.25);}
+  .engage-popup.show{display:block;}
+  @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  .engage-popup .ep-close{position:absolute;top:0.5rem;right:0.7rem;background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;}
+  .engage-popup .ep-title{font-weight:800;font-size:1rem;margin-bottom:0.3rem;color:var(--accent);}
+  .engage-popup .ep-text{font-size:0.82rem;color:var(--muted);line-height:1.5;margin-bottom:0.8rem;}
+  .engage-popup .ep-actions{display:flex;gap:0.4rem;flex-wrap:wrap;}
+  .engage-popup .ep-btn{padding:0.4rem 0.8rem;border-radius:8px;font-weight:700;font-size:0.8rem;cursor:pointer;border:none;transition:all 0.15s;}
+  .engage-popup .ep-btn:hover{transform:scale(1.05);}
+  .engage-popup .ep-btn.share{background:var(--accent);color:#000;}
+  .engage-popup .ep-btn.refer{background:rgba(34,197,94,0.15);color:var(--green);border:1px solid rgba(34,197,94,0.3);}
+  .engage-popup .ep-btn.tg{background:rgba(0,136,204,0.15);color:#0088cc;border:1px solid rgba(0,136,204,0.3);}
+
+  /* Cross-Promo Banner */
+  .cross-promo{max-width:900px;margin:1.5rem auto;padding:0 1rem;}
+  .cross-promo-inner{background:linear-gradient(135deg,rgba(245,158,11,0.1),rgba(153,69,255,0.1));border:1px solid rgba(245,158,11,0.2);border-radius:14px;padding:1.2rem 1.5rem;display:flex;align-items:center;gap:1rem;overflow:hidden;position:relative;}
+  .cross-promo .cp-text{flex:1;}
+  .cross-promo .cp-title{font-weight:800;font-size:0.95rem;color:var(--accent);margin-bottom:0.2rem;}
+  .cross-promo .cp-sub{font-size:0.8rem;color:var(--muted);}
+  .cross-promo .cp-links{display:flex;gap:0.4rem;flex-wrap:wrap;}
+  .cross-promo .cp-link{background:var(--card);border:1px solid var(--border);padding:0.3rem 0.7rem;border-radius:8px;font-size:0.75rem;font-weight:700;color:var(--accent);text-decoration:none;transition:all 0.15s;white-space:nowrap;}
+  .cross-promo .cp-link:hover{border-color:var(--accent);background:rgba(245,158,11,0.1);text-decoration:none;}
+
+  /* Viral Share Templates */
+  .share-template-bar{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:0.6rem 0.8rem;margin-top:0.5rem;display:flex;align-items:center;gap:0.5rem;}
+  .share-template-bar .st-label{font-size:0.7rem;color:var(--muted);font-weight:700;white-space:nowrap;}
+  .share-template-bar .st-text{font-size:0.75rem;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .share-template-bar .st-copy{background:var(--accent);color:#000;border:none;padding:0.25rem 0.6rem;border-radius:6px;font-size:0.7rem;font-weight:700;cursor:pointer;white-space:nowrap;}
+
   /* Audit Status Bar */
   .audit-bar{background:var(--card);border-top:1px solid var(--border);padding:0.4rem 1rem;display:flex;align-items:center;justify-content:center;gap:1rem;font-size:0.7rem;color:var(--muted);flex-wrap:wrap;}
   .audit-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 2s infinite;}
@@ -374,6 +421,7 @@
     <a href="#markets">Markets</a>
     <a href="#rewards">Rewards</a>
     <a href="#leaderboard">Ranks</a>
+    <a href="#community">Community</a>
     <span class="balance-pill" id="balance-pill">0 credits</span>
     <button class="nav-btn" id="propose-btn" style="display:none" onclick="openPropose()">+ Propose Market</button>
     <button class="nav-btn" id="panel-btn" style="display:none" onclick="toggleUserPanel()">My Bets</button>
@@ -601,6 +649,43 @@
   <div class="referral-link">
     <input type="text" id="referral-url" value="" readonly onclick="this.select()">
     <button onclick="copyReferral()">Copy</button>
+  </div>
+</div>
+
+<!-- Community Section -->
+<div class="community-section" id="community">
+  <div class="community-title">Join the Community</div>
+  <div class="community-sub">Get predictions first. Share alpha. Earn bonus credits just for being active.</div>
+  <div class="community-grid">
+    <a class="community-card telegram" href="https://t.me/predictnetwork" target="_blank">
+      <div class="cc-icon">✈️</div>
+      <div class="cc-name">Telegram</div>
+      <div class="cc-desc">Live predictions, alpha calls, instant market alerts. 24/7 chat.</div>
+      <div class="cc-btn">Join Telegram</div>
+    </a>
+    <a class="community-card x-card" href="https://x.com/SpunkArt13" target="_blank">
+      <div class="cc-icon">𝕏</div>
+      <div class="cc-name">X / Twitter</div>
+      <div class="cc-desc">Daily predictions, trending markets, win announcements. Follow for alpha.</div>
+      <div class="cc-btn">Follow @SpunkArt13</div>
+    </a>
+    <a class="community-card discord" href="https://discord.gg/predictnetwork" target="_blank">
+      <div class="cc-icon">💬</div>
+      <div class="cc-name">Discord</div>
+      <div class="cc-desc">Strategy channels, leaderboard chat, propose new markets, earn roles.</div>
+      <div class="cc-btn">Join Discord</div>
+    </a>
+  </div>
+</div>
+
+<!-- Cross-Promo — Other Predict Sites -->
+<div class="cross-promo" id="cross-promo">
+  <div class="cross-promo-inner">
+    <div class="cp-text">
+      <div class="cp-title">Predict Everything — 16 Markets, One Network</div>
+      <div class="cp-sub">Every site = different markets. Same wallet, same credits, same leaderboard rewards.</div>
+    </div>
+    <div class="cp-links" id="cp-links"></div>
   </div>
 </div>
 
@@ -884,6 +969,18 @@
   </div>
 </div>
 
+<!-- Engagement Popup -->
+<div class="engage-popup" id="engage-popup">
+  <button class="ep-close" onclick="dismissEngagePopup()">&times;</button>
+  <div class="ep-title" id="ep-title">You're on fire!</div>
+  <div class="ep-text" id="ep-text">You've placed 3 bets — share your streak and earn 1,000 bonus credits!</div>
+  <div class="ep-actions">
+    <button class="ep-btn share" onclick="engageShare()">Share on 𝕏</button>
+    <button class="ep-btn refer" onclick="engageRefer()">Invite Friend +5k</button>
+    <button class="ep-btn tg" onclick="engageTelegram()">Join Telegram</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1108,7 +1205,8 @@ function renderMarkets(filter) {
           <button class="share-btn x" onclick="shareOnX('${m.question.replace(/'/g,"\\'")}',${yesPct})">𝕏 Share</button>
           <button class="share-btn tg" onclick="shareOnTelegram('${m.question.replace(/'/g,"\\'")}',${yesPct})">TG</button>
           <button class="share-btn wa" onclick="shareOnWhatsApp('${m.question.replace(/'/g,"\\'")}',${yesPct})">WA</button>
-          <button class="share-btn link" onclick="copyMarketLink('${key}')">🔗 Copy</button>
+          <button class="share-btn link" onclick="copyMarketLink('${key}')">🔗</button>
+          <button class="share-btn x" onclick="copyViralTemplate('${m.question.replace(/'/g,"\\'")}',${yesPct})" style="background:rgba(245,158,11,0.15);color:var(--accent);">📋 Copy Post</button>
         </div>
       </div>`;
   }).join('');
@@ -1223,6 +1321,8 @@ async function placeBet() {
       showToast('Bet placed! ' + amount.toLocaleString() + ' on ' + selectedSide.toUpperCase());
       analytics.trackBet(key, selectedSide, amount);
       updateLeaderboardOnBet(amount);
+      trackBetEngagement();
+      updateRewardsUI();
       showSharePrompt(selectedMarket.question, selectedSide, amount);
       processReferralReward();
     } catch(e) {
@@ -1907,21 +2007,26 @@ let shareUrl = '';
 
 function shareOnX(question, yesPct) {
   const url = window.location.href;
-  const text = `🔮 ${question}\n\n📊 Currently ${yesPct}% YES\n\nPlace your bet now 👇\n${url}`;
+  const templates = [
+    `🔮 ${question}\n\n📊 ${yesPct}% say YES\n\nWhat's your prediction? Bet free or with crypto 👇\n${url}\n\n@SpunkArt13 #predict`,
+    `🤔 Hot take needed:\n\n"${question}"\n\n${yesPct}% YES | ${100-yesPct}% NO\n\nMake your call: ${url}\n\n@SpunkArt13`,
+    `📈 Prediction market alert:\n\n${question}\n\n${yesPct}% say YES — are they right?\n\n${url}\n\nFree to play @SpunkArt13`,
+  ];
+  const text = templates[Math.floor(Math.random() * templates.length)];
   window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
   awardShareBonus();
 }
 
 function shareOnTelegram(question, yesPct) {
   const url = window.location.href;
-  const text = `🔮 ${question}\n📊 ${yesPct}% YES — Place your bet!`;
+  const text = `🔮 ${question}\n📊 ${yesPct}% YES — What do you think?\n\nFree prediction market — bet and win!\nJoin: @predictnetwork`;
   window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank');
   awardShareBonus();
 }
 
 function shareOnWhatsApp(question, yesPct) {
   const url = window.location.href;
-  const text = `🔮 ${question}\n📊 ${yesPct}% YES\nBet now: ${url}`;
+  const text = `🔮 ${question}\n📊 ${yesPct}% say YES\n\nFree prediction market — place your bet and win credits or crypto!\n\n${url}`;
   window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
   awardShareBonus();
 }
@@ -2141,12 +2246,161 @@ function autoGenerateMarkets() {
 // AFTER-BET SHARE PROMPT
 // ============================================================
 function showSharePrompt(question, side, amount) {
-  const yesPct = side === 'yes' ? '📈' : '📉';
-  shareText = `I just bet ${amount.toLocaleString()} credits on "${question}" — ${side.toUpperCase()} ${yesPct}\n\nThink you know better?`;
+  const sideEmoji = side === 'yes' ? '📈' : '📉';
+  const templates = [
+    `I just bet ${amount.toLocaleString()} credits on "${question}" — ${side.toUpperCase()} ${sideEmoji}\n\nThink you know better? Prove it 👇\n\nFree to play @SpunkArt13`,
+    `${sideEmoji} My prediction: ${side.toUpperCase()} on "${question}"\n\n${amount.toLocaleString()} credits on the line.\n\nWhat's YOUR call? @SpunkArt13`,
+    `🔮 Just placed my bet:\n\n"${question}"\n\n${side.toUpperCase()} — ${amount.toLocaleString()} credits\n\nBet against me: @SpunkArt13`,
+  ];
+  shareText = templates[Math.floor(Math.random() * templates.length)];
   shareUrl = window.location.href;
   document.getElementById('share-preview-text').textContent = shareText + '\n\n' + shareUrl;
   setTimeout(() => document.getElementById('share-modal').classList.add('show'), 500);
 }
+
+// ============================================================
+// ENGAGEMENT SYSTEM — Popups, viral templates, cross-promo
+// ============================================================
+let betCount = parseInt(localStorage.getItem('betCount_' + SITE_ID) || '0');
+
+function trackBetEngagement() {
+  betCount++;
+  localStorage.setItem('betCount_' + SITE_ID, betCount.toString());
+  // Show engagement popup every 3 bets
+  if (betCount % 3 === 0) {
+    showEngagePopup();
+  }
+  // Milestone toasts
+  if (betCount === 1) setTimeout(() => showToast('First bet placed! Share it to earn 1,000 bonus credits'), 2000);
+  if (betCount === 5) setTimeout(() => showToast('5 bets! You\'re a rising predictor — invite friends for 5k each'), 3000);
+  if (betCount === 10) setTimeout(() => showToast('10 bets! You\'re climbing the leaderboard — keep going!'), 3000);
+  if (betCount === 25) setTimeout(() => showToast('25 bets! You\'re a prediction shark now!'), 3000);
+}
+
+const ENGAGE_MESSAGES = [
+  {title:'You\'re on fire!', text:'You\'ve placed {n} bets — share your streak and earn 1,000 bonus credits!'},
+  {title:'Streak alert!', text:'{n} predictions and counting! Share on X and earn credits.'},
+  {title:'Invite & earn!', text:'Share your link — you BOTH get 5,000 credits when they bet.'},
+  {title:'Join the chat!', text:'Get live predictions and alpha in our Telegram. Free to join.'},
+  {title:'Climbing the ranks!', text:'You\'re making moves on the leaderboard. Share to flex your rank!'},
+  {title:'Hot streak!', text:'{n} bets placed! Copy your post template and share for bonus credits.'},
+];
+
+function showEngagePopup() {
+  const msg = ENGAGE_MESSAGES[Math.floor(Math.random() * ENGAGE_MESSAGES.length)];
+  document.getElementById('ep-title').textContent = msg.title;
+  document.getElementById('ep-text').textContent = msg.text.replace('{n}', betCount);
+  document.getElementById('engage-popup').classList.add('show');
+  analytics.track('engage_popup_shown', { betCount });
+  // Auto dismiss after 10 seconds
+  setTimeout(dismissEngagePopup, 10000);
+}
+
+function dismissEngagePopup() {
+  document.getElementById('engage-popup').classList.remove('show');
+}
+
+function engageShare() {
+  const siteTitle = document.title.split(' —')[0];
+  const text = `I've placed ${betCount} predictions on ${siteTitle}! Currently climbing the leaderboard.\n\nFree to play. Real crypto prizes.\n\n${window.location.href}\n\n@SpunkArt13`;
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+  dismissEngagePopup();
+  awardShareBonus();
+}
+
+function engageRefer() {
+  copyReferral();
+  dismissEngagePopup();
+}
+
+function engageTelegram() {
+  window.open('https://t.me/predictnetwork', '_blank');
+  dismissEngagePopup();
+  analytics.track('telegram_join_click');
+}
+
+// ============================================================
+// VIRAL SHARE TEMPLATES — Pre-written posts for max engagement
+// ============================================================
+const VIRAL_TEMPLATES = [
+  '🔮 {q}\n\n📊 Currently {pct}% YES\n\nI placed my bet — what\'s yours? 👇\n{url}\n\n@SpunkArt13 #predict #crypto',
+  '📈 Hot prediction market:\n\n"{q}"\n\n{pct}% say YES. I say {side}.\n\nBet free or with crypto: {url}\n\n@SpunkArt13',
+  '🤔 What do you think?\n\n{q}\n\nThe crowd says {pct}% YES.\n\nPlace your prediction: {url}\n\n@SpunkArt13 #PredictionMarket',
+  '🔥 {pct}% of predictors say YES to:\n\n"{q}"\n\nAre they right? Make your call:\n{url}\n\nFree to play, real prizes @SpunkArt13',
+  '⚡ Quick prediction:\n\n{q}\n\n{pct}% YES | {noPct}% NO\n\nI\'m betting {side} — prove me wrong 👇\n{url}\n\n@SpunkArt13',
+];
+
+function copyViralTemplate(question, yesPct) {
+  const template = VIRAL_TEMPLATES[Math.floor(Math.random() * VIRAL_TEMPLATES.length)];
+  const side = yesPct > 50 ? 'YES' : 'NO';
+  const text = template
+    .replace(/{q}/g, question)
+    .replace(/{pct}/g, yesPct)
+    .replace(/{noPct}/g, 100 - yesPct)
+    .replace(/{side}/g, side)
+    .replace(/{url}/g, window.location.href);
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('Viral post copied! Paste on X, TG, or anywhere. +1,000 credits when shared!');
+  });
+  analytics.track('viral_template_copied');
+}
+
+// Auto-populate cross-promo links (exclude current site)
+function buildCrossPromo() {
+  const sites = [
+    {s:'autos',e:'🏎️'},{s:'beauty',e:'💄'},{s:'christmas',e:'🎄'},{s:'codes',e:'💻'},
+    {s:'courses',e:'📚'},{s:'garden',e:'🌱'},{s:'gay',e:'🏳️‍🌈'},{s:'hair',e:'💇'},
+    {s:'horse',e:'🐴'},{s:'makeup',e:'💅'},{s:'mom',e:'👩'},{s:'pics',e:'📸'},
+    {s:'singles',e:'💘'},{s:'skin',e:'🧴'},{s:'surf',e:'🏄'},{s:'tattoo',e:'🎨'}
+  ];
+  const container = document.getElementById('cp-links');
+  if (!container) return;
+  const others = sites.filter(s => s.s !== SITE_ID).sort(() => Math.random() - 0.5).slice(0, 5);
+  container.innerHTML = others.map(s =>
+    `<a class="cp-link" href="https://predict.${s.s}" target="_blank">${s.e} predict.${s.s}</a>`
+  ).join('');
+}
+
+// Show first-visit splash for new visitors
+function showFirstVisitSplash() {
+  if (localStorage.getItem('visited_' + SITE_ID)) return;
+  localStorage.setItem('visited_' + SITE_ID, '1');
+  // After 3 seconds, show a gentle nudge
+  setTimeout(() => {
+    if (!wallet) {
+      showToast('Welcome! Connect a wallet for 50,000 FREE credits — or try Demo Mode');
+    }
+  }, 3000);
+  // After 15 seconds, nudge telegram
+  setTimeout(() => {
+    if (!localStorage.getItem('tg_nudged_' + SITE_ID)) {
+      localStorage.setItem('tg_nudged_' + SITE_ID, '1');
+      const popup = document.getElementById('engage-popup');
+      document.getElementById('ep-title').textContent = 'Get predictions first';
+      document.getElementById('ep-text').textContent = 'Join our Telegram for live alpha, market alerts, and bonus credit drops. Free forever.';
+      popup.classList.add('show');
+      setTimeout(() => popup.classList.remove('show'), 12000);
+    }
+  }, 15000);
+}
+
+// Inactivity re-engagement — if user idles for 60s, suggest an action
+let inactivityTimer = null;
+function resetInactivity() {
+  if (inactivityTimer) clearTimeout(inactivityTimer);
+  inactivityTimer = setTimeout(() => {
+    if (document.hidden) return;
+    const suggestions = [
+      'Scroll down to see trending markets',
+      'Share a prediction and earn 1,000 credits',
+      'Check the leaderboard — are you ranked?',
+      'Invite a friend and you both earn 5,000 credits',
+    ];
+    showToast(suggestions[Math.floor(Math.random() * suggestions.length)]);
+  }, 60000);
+}
+document.addEventListener('click', resetInactivity);
+document.addEventListener('scroll', resetInactivity);
 
 // ============================================================
 // AUTO-RESOLUTION — Markets resolve automatically when they end
@@ -2736,6 +2990,11 @@ generateReferralLink();
 if (localStorage.getItem('promoDismissed_' + SITE_ID)) {
   document.getElementById('promo-banner').style.display = 'none';
 }
+
+// Build cross-promo links + first visit splash
+buildCrossPromo();
+showFirstVisitSplash();
+resetInactivity();
 
 // Force Real Crypto as default on first visit — only respect saved choice if explicitly set to free
 if (playMode === 'free') {
