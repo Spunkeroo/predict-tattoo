@@ -173,7 +173,7 @@
   .chains-badge .sol{background:rgba(153,69,255,0.15);color:#9945ff;}
 
   /* Tip Button — Exact Spunk.bet style */
-  .tip-btn{background:linear-gradient(135deg,#a855f7,#7c3aed,#c026d3);color:#fff;border:none;padding:0.5rem 1.2rem;border-radius:999px;font-weight:800;font-size:0.85rem;cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;display:inline-flex;align-items:center;gap:0.4rem;text-decoration:none;box-shadow:0 0 16px rgba(168,85,247,0.6),0 0 32px rgba(168,85,247,0.3);animation:tipGlow 2s infinite;}
+  .tip-btn{background:linear-gradient(135deg,#a855f7,#7c3aed,#c026d3);color:#ffffff;border:none;padding:0.5rem 1.2rem;border-radius:999px;font-weight:800;font-size:0.85rem;cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;display:inline-flex;align-items:center;gap:0.4rem;text-decoration:none;box-shadow:0 0 16px rgba(168,85,247,0.6),0 0 32px rgba(168,85,247,0.3);animation:tipGlow 2s infinite;}
   @keyframes tipGlow{0%,100%{box-shadow:0 0 16px rgba(168,85,247,0.6),0 0 32px rgba(168,85,247,0.3)}50%{box-shadow:0 0 20px rgba(192,38,211,0.7),0 0 40px rgba(168,85,247,0.4)}}
   .tip-btn:hover{transform:scale(1.1);box-shadow:0 0 24px rgba(168,85,247,0.8),0 0 48px rgba(192,38,211,0.5);text-decoration:none;}
   .tip-btn .tip-icon{animation:tipPulse 1.5s infinite;}
@@ -309,6 +309,27 @@
   .prize-card .prize-desc{font-size:0.7rem;color:var(--muted);}
   @media(max-width:600px){.prize-grid{grid-template-columns:1fr;}}
 
+  /* Rewards Hub */
+  .rewards-hub{max-width:900px;margin:2rem auto;padding:0 1rem;}
+  .rewards-title{text-align:center;font-size:1.3rem;font-weight:900;margin-bottom:0.3rem;}
+  .rewards-sub{text-align:center;font-size:0.85rem;color:var(--muted);margin-bottom:1.2rem;}
+  .rewards-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.8rem;}
+  .reward-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;transition:all 0.2s;position:relative;overflow:hidden;}
+  .reward-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+  .reward-card .r-icon{font-size:1.8rem;margin-bottom:0.4rem;}
+  .reward-card .r-title{font-weight:800;font-size:0.95rem;margin-bottom:0.2rem;}
+  .reward-card .r-amount{font-size:1.3rem;font-weight:900;color:var(--accent);margin-bottom:0.2rem;}
+  .reward-card .r-desc{font-size:0.75rem;color:var(--muted);line-height:1.4;}
+  .reward-card .r-action{display:inline-block;background:var(--accent);color:#000;border:none;padding:0.35rem 0.8rem;border-radius:8px;font-weight:700;font-size:0.75rem;cursor:pointer;margin-top:0.5rem;transition:all 0.2s;}
+  .reward-card .r-action:hover{transform:scale(1.05);}
+  .reward-card .r-earned{position:absolute;top:0.6rem;right:0.6rem;background:rgba(34,197,94,0.15);color:var(--green);font-size:0.65rem;font-weight:800;padding:0.15rem 0.5rem;border-radius:4px;}
+  .rewards-progress{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;margin-top:0.8rem;text-align:center;}
+  .rewards-progress .rp-title{font-weight:700;font-size:0.85rem;margin-bottom:0.5rem;}
+  .rewards-progress .rp-bar{height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin-bottom:0.3rem;}
+  .rewards-progress .rp-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--green));border-radius:4px;transition:width 0.5s;width:0%;}
+  .rewards-progress .rp-text{font-size:0.75rem;color:var(--muted);}
+  @media(max-width:600px){.rewards-grid{grid-template-columns:1fr;}}
+
   /* Audit Status Bar */
   .audit-bar{background:var(--card);border-top:1px solid var(--border);padding:0.4rem 1rem;display:flex;align-items:center;justify-content:center;gap:1rem;font-size:0.7rem;color:var(--muted);flex-wrap:wrap;}
   .audit-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 2s infinite;}
@@ -351,8 +372,8 @@
   <div class="logo">predict<span>.tattoo</span> 🖋️</div>
   <div class="nav-right">
     <a href="#markets">Markets</a>
+    <a href="#rewards">Rewards</a>
     <a href="#leaderboard">Ranks</a>
-    <a href="#how">How It Works</a>
     <span class="balance-pill" id="balance-pill">0 credits</span>
     <button class="nav-btn" id="propose-btn" style="display:none" onclick="openPropose()">+ Propose Market</button>
     <button class="nav-btn" id="panel-btn" style="display:none" onclick="toggleUserPanel()">My Bets</button>
@@ -580,6 +601,49 @@
   <div class="referral-link">
     <input type="text" id="referral-url" value="" readonly onclick="this.select()">
     <button onclick="copyReferral()">Copy</button>
+  </div>
+</div>
+
+<!-- Rewards Hub -->
+<div class="rewards-hub" id="rewards">
+  <div class="rewards-title">Earn Rewards</div>
+  <div class="rewards-sub">Every action earns you credits. Share, bet, refer, win — get rewarded for everything.</div>
+  <div class="rewards-grid">
+    <div class="reward-card">
+      <div class="r-icon">🎁</div>
+      <div class="r-title">Welcome Bonus</div>
+      <div class="r-amount">50,000 Credits</div>
+      <div class="r-desc">Connect any wallet. Get 50k credits instantly. No deposit needed.</div>
+      <button class="r-action" onclick="claimWelcomeBonus()">Claim Now</button>
+      <span class="r-earned" id="r-welcome-check" style="display:none">Claimed</span>
+    </div>
+    <div class="reward-card">
+      <div class="r-icon">🔗</div>
+      <div class="r-title">Refer a Friend</div>
+      <div class="r-amount">5,000 Credits Each</div>
+      <div class="r-desc">Share your link. You both earn 5k credits when they place their first bet.</div>
+      <button class="r-action" onclick="copyReferral()">Copy Link</button>
+      <span class="r-earned" id="r-referral-count">0 referred</span>
+    </div>
+    <div class="reward-card">
+      <div class="r-icon">📢</div>
+      <div class="r-title">Share to Earn</div>
+      <div class="r-amount">1,000 Credits</div>
+      <div class="r-desc">Share any market on X, Telegram, or WhatsApp. Earn 1k per share (1x/hour).</div>
+      <button class="r-action" onclick="document.getElementById('markets').scrollIntoView({behavior:'smooth'})">Share a Market</button>
+    </div>
+    <div class="reward-card">
+      <div class="r-icon">🏆</div>
+      <div class="r-title">Leaderboard Prizes</div>
+      <div class="r-amount">Daily + Weekly + Monthly</div>
+      <div class="r-desc">Top predictors win 50k daily, 250k weekly, and crypto prizes monthly.</div>
+      <button class="r-action" onclick="document.getElementById('leaderboard').scrollIntoView({behavior:'smooth'})">View Rankings</button>
+    </div>
+  </div>
+  <div class="rewards-progress" id="rewards-progress">
+    <div class="rp-title">Your Rewards Progress</div>
+    <div class="rp-bar"><div class="rp-fill" id="rp-fill"></div></div>
+    <div class="rp-text" id="rp-text">Connect wallet to start earning</div>
   </div>
 </div>
 
@@ -1873,6 +1937,8 @@ function awardShareBonus() {
   if (firebaseReady && userId) {
     db.ref('users/' + userId + '/balance').set(firebase.database.ServerValue.increment(1000));
     showToast('🎉 +1,000 credits for sharing!');
+    trackRewardEvent('share', 1000);
+    updateRewardsUI();
   }
 }
 
@@ -1907,8 +1973,15 @@ function processReferralReward() {
   db.ref('users').orderByChild('wallet').startAt(referrer).endAt(referrer + '\uf8ff').limitToFirst(1).once('value', snap => {
     snap.forEach(child => {
       db.ref('users/' + child.key + '/balance').set(firebase.database.ServerValue.increment(5000));
+      db.ref('rewards/' + SITE_ID + '/' + child.key + '/referrals').set(firebase.database.ServerValue.increment(1));
     });
   });
+  // Credit the referred user too
+  if (userId) {
+    db.ref('users/' + userId + '/balance').set(firebase.database.ServerValue.increment(5000));
+    showToast('🎉 +5,000 credits — thanks for joining via referral!');
+    trackRewardEvent('referral_joined', 5000);
+  }
 }
 
 // ============================================================
@@ -1924,11 +1997,13 @@ function claimWelcomeBonus() {
   if (firebaseReady && userId) {
     db.ref('users/' + userId + '/balance').set(firebase.database.ServerValue.increment(50000));
     showToast('🎉 50,000 credits added! Start betting now!');
+    trackRewardEvent('welcome_bonus', 50000);
   } else {
     userBalance += 50000;
     updateBalanceUI();
     showToast('🎉 50,000 credits added! Start betting now!');
   }
+  updateRewardsUI();
   dismissPromo();
 }
 
@@ -2364,6 +2439,53 @@ async function awardDailyPrizes() {
 }
 
 // ============================================================
+// REWARDS TRACKER — Update progress + data collection
+// ============================================================
+function updateRewardsUI() {
+  // Welcome bonus check
+  const welcomeCheck = document.getElementById('r-welcome-check');
+  if (welcomeCheck && localStorage.getItem('welcomeBonus_' + SITE_ID)) {
+    welcomeCheck.style.display = 'inline-block';
+  }
+  // Progress bar
+  let steps = 0, total = 4;
+  if (wallet) steps++;
+  if (localStorage.getItem('welcomeBonus_' + SITE_ID)) steps++;
+  if (userBets.length > 0) steps++;
+  if (localStorage.getItem('lastShareBonus_' + SITE_ID)) steps++;
+  const pct = Math.round((steps / total) * 100);
+  const fill = document.getElementById('rp-fill');
+  const text = document.getElementById('rp-text');
+  if (fill) fill.style.width = pct + '%';
+  if (text) {
+    if (steps === 0) text.textContent = 'Connect wallet to start earning';
+    else if (steps === 1) text.textContent = 'Claim your welcome bonus — 50k free credits!';
+    else if (steps === 2) text.textContent = 'Place your first bet to keep earning!';
+    else if (steps === 3) text.textContent = 'Share a market to complete all rewards!';
+    else text.textContent = 'All rewards unlocked! Keep betting & sharing to earn more.';
+  }
+  // Track referral count
+  if (firebaseReady && userId) {
+    db.ref('rewards/' + SITE_ID + '/' + userId).once('value', snap => {
+      const d = snap.val() || {};
+      const refEl = document.getElementById('r-referral-count');
+      if (refEl) refEl.textContent = (d.referrals || 0) + ' referred';
+    });
+  }
+}
+
+// Track reward events for data collection
+function trackRewardEvent(type, amount) {
+  if (!firebaseReady) return;
+  db.ref('rewards/' + SITE_ID + '/' + (userId || 'anon')).update({
+    lastAction: type,
+    lastAmount: amount,
+    lastTime: firebase.database.ServerValue.TIMESTAMP
+  });
+  analytics.track('reward_earned', { type, amount });
+}
+
+// ============================================================
 // BACKGROUND AUDIT SYSTEM — Runs every 30 min
 // ============================================================
 let auditChecks = 0;
@@ -2622,6 +2744,7 @@ loadFirebaseSDK().then(async (ok) => {
     await initAuth();
     loadMarkets(); // This will replace seed data with live Firebase data
     loadLeaderboard(); // Load per-site leaderboard
+    updateRewardsUI(); // Update rewards progress
     autoGenerateMarkets(); // Auto-create fresh markets daily
     autoResolveMarkets(); // Auto-resolve expired markets
     analytics.trackPageview(); // Track visit
