@@ -979,9 +979,9 @@ const DEPOSIT_ADDRS = {
   sol: 'Cds2aUuhyJa4NaZo7JER7LakW4VmmfnqVixHusrKKZsm'
 };
 const DEPOSIT_NOTES = {
-  btc: 'Send any amount of BTC to this address. Credits will be added after admin confirmation.',
-  eth: 'Send any amount of ETH to this address. Credits will be added after admin confirmation.',
-  sol: 'Send any amount of SOL to this address. Credits will be added after admin confirmation.'
+  btc: 'Send BTC to this address. 1 confirmation needed. Credits added within minutes.',
+  eth: 'Send ETH to this address. Credits added after network confirmation.',
+  sol: 'Send SOL to this address. Credits added almost instantly.'
 };
 
 // ============================================================
@@ -1290,7 +1290,7 @@ async function placeBet() {
   if (amount < 1000) { showToast('Minimum bet: 1,000 credits'); return; }
 
   if (firebaseReady) {
-    if (amount > userBalance) { showToast('Insufficient balance — deposit first'); return; }
+    if (amount > userBalance) { showToast('Not enough credits — tap Deposit or switch to Free Play'); return; }
     const key = selectedMarket.fbKey;
     if (!key) { showToast('Error: market key missing'); return; }
 
@@ -1583,18 +1583,23 @@ function onWalletConnected(addr) {
   }
 
   if (firebaseReady) {
-    // Register user if new
+    // Register user if new — start with 50k welcome bonus
     db.ref('users/' + userId).once('value').then(snap => {
       if (!snap.exists()) {
+        const startBalance = localStorage.getItem('welcomeBonus_' + SITE_ID) ? 0 : 50000;
         db.ref('users/' + userId).set({
           wallet: wallet,
           chain: walletChain,
-          balance: 0,
+          balance: startBalance,
           joined: firebase.database.ServerValue.TIMESTAMP
         });
+        if (startBalance > 0) {
+          localStorage.setItem('welcomeBonus_' + SITE_ID, '1');
+          showToast('+50,000 free credits! Start betting now!');
+        }
       }
+      loadUserData();
     });
-    loadUserData();
   }
   updateBalanceUI();
 }
