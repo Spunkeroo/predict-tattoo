@@ -2023,8 +2023,10 @@ async function approveWithdrawal(userId, wdKey) {
 let shareText = '';
 let shareUrl = '';
 
+function getSiteUrl() { return window.location.origin; }
+
 function shareOnX(question, yesPct) {
-  const url = window.location.href;
+  const url = getSiteUrl();
   const templates = [
     `🔮 ${question}\n\n📊 ${yesPct}% say YES\n\nWhat's your prediction? 👇\n${url}\n\n#prediction #crypto #betting`,
     `🤔 Hot take needed:\n\n"${question}"\n\n${yesPct}% YES | ${100-yesPct}% NO\n\nMake your call:\n${url}\n\n#predictmarket`,
@@ -2036,27 +2038,26 @@ function shareOnX(question, yesPct) {
 }
 
 function shareOnTelegram(question, yesPct) {
-  const url = window.location.href;
+  const url = getSiteUrl();
   const text = `🔮 ${question}\n📊 ${yesPct}% YES — What do you think?\n\nFree prediction market — bet and win!\nJoin: @predictnetwork`;
   window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank');
   awardShareBonus();
 }
 
 function shareOnWhatsApp(question, yesPct) {
-  const url = window.location.href;
+  const url = getSiteUrl();
   const text = `🔮 ${question}\n📊 ${yesPct}% say YES\n\nFree prediction market — place your bet and win credits or crypto!\n\n${url}`;
   window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
   awardShareBonus();
 }
 
 function copyMarketLink(key) {
-  const url = window.location.origin + window.location.pathname + '?m=' + key;
-  navigator.clipboard.writeText(url).then(() => showToast('Link copied!'));
+  navigator.clipboard.writeText(getSiteUrl()).then(() => showToast('Link copied!'));
 }
 
 function openShareModal(question, yesPct) {
   shareText = `🔮 ${question}\n📊 ${yesPct}% YES`;
-  shareUrl = window.location.href;
+  shareUrl = getSiteUrl();
   document.getElementById('share-preview-text').textContent = shareText + '\n\n' + shareUrl;
   document.getElementById('share-modal').classList.add('show');
 }
@@ -2086,8 +2087,7 @@ function awardShareBonus() {
 // ============================================================
 function generateReferralLink() {
   const ref = wallet ? wallet.slice(0, 10) : 'guest';
-  const url = window.location.origin + window.location.pathname + '?ref=' + ref;
-  document.getElementById('referral-url').value = url;
+  document.getElementById('referral-url').value = getSiteUrl() + '?ref=' + ref;
 }
 
 function copyReferral() {
@@ -2271,7 +2271,7 @@ function showSharePrompt(question, side, amount) {
     `🔮 Just placed my bet:\n\n"${question}"\n\n${side.toUpperCase()} — ${amount.toLocaleString()} credits\n\nBet against me 👇\n\n#crypto #betting`,
   ];
   shareText = templates[Math.floor(Math.random() * templates.length)];
-  shareUrl = window.location.href;
+  shareUrl = getSiteUrl();
   document.getElementById('share-preview-text').textContent = shareText + '\n\n' + shareUrl;
   setTimeout(() => document.getElementById('share-modal').classList.add('show'), 500);
 }
@@ -2320,7 +2320,7 @@ function dismissEngagePopup() {
 
 function engageShare() {
   const siteTitle = document.title.split(' —')[0];
-  const text = `I've placed ${betCount} predictions on ${siteTitle}! Currently climbing the leaderboard.\n\nFree to play. Real crypto prizes.\n\n${window.location.href}\n\n#prediction #crypto #betting`;
+  const text = `I've placed ${betCount} predictions on ${siteTitle}!\n\nFree to play. Real crypto prizes.\n\n${getSiteUrl()}\n\n#prediction #crypto`;
   window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
   dismissEngagePopup();
   awardShareBonus();
@@ -2356,7 +2356,7 @@ function copyViralTemplate(question, yesPct) {
     .replace(/{pct}/g, yesPct)
     .replace(/{noPct}/g, 100 - yesPct)
     .replace(/{side}/g, side)
-    .replace(/{url}/g, window.location.href);
+    .replace(/{url}/g, getSiteUrl());
   navigator.clipboard.writeText(text).then(() => {
     showToast('Viral post copied! Paste on X, TG, or anywhere. +1,000 credits when shared!');
   });
