@@ -172,9 +172,12 @@
   .chains-badge .eth{background:rgba(98,126,234,0.15);color:#627eea;}
   .chains-badge .sol{background:rgba(153,69,255,0.15);color:#9945ff;}
 
-  /* Tip Button — Spunk.bet style */
-  .tip-btn{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;border:none;padding:0.4rem 1rem;border-radius:8px;font-weight:800;font-size:0.8rem;cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;text-transform:uppercase;display:inline-flex;align-items:center;gap:0.3rem;text-decoration:none;}
-  .tip-btn:hover{transform:scale(1.05);box-shadow:0 0 15px rgba(245,158,11,0.4);text-decoration:none;}
+  /* Tip Button — Exact Spunk.bet style */
+  .tip-btn{background:linear-gradient(135deg,#a855f7,#7c3aed,#c026d3);color:#fff;border:none;padding:0.5rem 1.2rem;border-radius:999px;font-weight:800;font-size:0.85rem;cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;display:inline-flex;align-items:center;gap:0.4rem;text-decoration:none;box-shadow:0 0 16px rgba(168,85,247,0.6),0 0 32px rgba(168,85,247,0.3);animation:tipGlow 2s infinite;}
+  @keyframes tipGlow{0%,100%{box-shadow:0 0 16px rgba(168,85,247,0.6),0 0 32px rgba(168,85,247,0.3)}50%{box-shadow:0 0 20px rgba(192,38,211,0.7),0 0 40px rgba(168,85,247,0.4)}}
+  .tip-btn:hover{transform:scale(1.1);box-shadow:0 0 24px rgba(168,85,247,0.8),0 0 48px rgba(192,38,211,0.5);text-decoration:none;}
+  .tip-btn .tip-icon{animation:tipPulse 1.5s infinite;}
+  @keyframes tipPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
   .tip-footer{margin-top:0.8rem;}
 
   /* Wallet Modal */
@@ -355,7 +358,7 @@
     <button class="nav-btn" id="panel-btn" style="display:none" onclick="toggleUserPanel()">My Bets</button>
     <button class="nav-btn" id="admin-toggle" style="display:none" onclick="toggleAdmin()">Admin</button>
     <button class="connect-btn" id="connect-btn" onclick="connectWallet()">Connect Wallet</button>
-    <a href="https://spunk.bet" target="_blank" class="tip-btn" onclick="openTipModal(event)">🎰 Tip</a>
+    <a href="#" class="tip-btn" onclick="openTipModal(event)"><span class="tip-icon">🧡</span> Tip</a>
   </div>
 </nav>
 
@@ -628,7 +631,7 @@
     <span class="sol">SOL</span>
   </div>
   <div class="tip-footer">
-    <a href="#" class="tip-btn" onclick="openTipModal(event)">🎰 Tip the House — Powered by Spunk.bet</a>
+    <a href="#" class="tip-btn" onclick="openTipModal(event)"><span class="tip-icon">🧡</span> Tip the House — Powered by Spunk.bet</a>
   </div>
   <div style="margin-top:0.5rem;font-size:0.7rem;color:var(--muted);">
     Part of the <a href="https://spunk.bet" target="_blank" style="color:var(--accent);font-weight:700;">Spunk.bet</a> Network · <a href="https://x.com/SpunkArt13" target="_blank" style="color:var(--accent);">@SpunkArt13</a>
