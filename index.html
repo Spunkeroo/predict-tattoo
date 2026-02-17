@@ -438,11 +438,6 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-
 <script>
 // ============================================================
 // CONFIG
@@ -480,13 +475,34 @@ let db = null;
 let fbUser = null;
 let firebaseReady = false;
 
-// Try to init Firebase
-try {
-  firebase.initializeApp(firebaseConfig);
-  db = firebase.database();
-  firebaseReady = firebaseConfig.apiKey !== 'YOUR_API_KEY';
-} catch(e) {
-  console.warn('Firebase not configured — running in local demo mode');
+// Load Firebase SDK dynamically only when config is real
+function loadFirebaseSDK() {
+  return new Promise((resolve) => {
+    if (firebaseConfig.apiKey === 'YOUR_API_KEY') { resolve(false); return; }
+    const scripts = [
+      'https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js',
+      'https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js',
+      'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js'
+    ];
+    let loaded = 0;
+    function next() {
+      if (loaded >= scripts.length) {
+        try {
+          firebase.initializeApp(firebaseConfig);
+          db = firebase.database();
+          firebaseReady = true;
+          resolve(true);
+        } catch(e) { console.warn('Firebase init failed:', e); resolve(false); }
+        return;
+      }
+      const s = document.createElement('script');
+      s.src = scripts[loaded];
+      s.onload = () => { loaded++; next(); };
+      s.onerror = () => { console.warn('Firebase SDK failed to load'); resolve(false); };
+      document.head.appendChild(s);
+    }
+    next();
+  });
 }
 
 // ============================================================
@@ -1168,16 +1184,24 @@ function showToast(msg) {
 }
 
 // ============================================================
-// INIT
+// INIT — render immediately, then try Firebase in background
 // ============================================================
-(async function() {
-  // Check for admin URL param
-  if (location.hash === '#admin' || location.search.includes('admin')) {
-    document.getElementById('admin-toggle').style.display = 'inline-block';
+// Show markets right away from seed data (no waiting)
+markets = JSON.parse(JSON.stringify(SEED_MARKETS));
+renderMarkets();
+
+// Check for admin URL param
+if (location.hash === '#admin' || location.search.includes('admin')) {
+  document.getElementById('admin-toggle').style.display = 'inline-block';
+}
+
+// Try to upgrade to Firebase in background (non-blocking)
+loadFirebaseSDK().then(async (ok) => {
+  if (ok) {
+    await initAuth();
+    loadMarkets(); // This will replace seed data with live Firebase data
   }
-  await initAuth();
-  loadMarkets();
-})();
+});
 </script>
 </body>
 </html>
