@@ -172,6 +172,22 @@
   .chains-badge .eth{background:rgba(98,126,234,0.15);color:#627eea;}
   .chains-badge .sol{background:rgba(153,69,255,0.15);color:#9945ff;}
 
+  /* Wallet Modal */
+  .wallet-option{display:flex;align-items:center;gap:1rem;padding:0.9rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:12px;margin-bottom:0.5rem;cursor:pointer;transition:all 0.2s;}
+  .wallet-option:hover{border-color:var(--accent);transform:translateX(4px);}
+  .wallet-option.detected{border-color:var(--green);}
+  .wallet-option .w-icon{font-size:1.8rem;width:40px;text-align:center;flex-shrink:0;}
+  .wallet-option .w-info{flex:1;}
+  .wallet-option .w-name{font-weight:700;font-size:0.95rem;}
+  .wallet-option .w-chain{font-size:0.75rem;color:var(--muted);}
+  .wallet-option .w-status{font-size:0.7rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:6px;flex-shrink:0;}
+  .wallet-option .w-status.ready{background:rgba(34,197,94,0.15);color:var(--green);}
+  .wallet-option .w-status.install{background:rgba(102,102,102,0.15);color:var(--muted);}
+  .wallet-divider{text-align:center;color:var(--muted);font-size:0.75rem;margin:0.8rem 0;position:relative;}
+  .wallet-divider::before,.wallet-divider::after{content:'';position:absolute;top:50%;width:35%;height:1px;background:var(--border);}
+  .wallet-divider::before{left:0;}
+  .wallet-divider::after{right:0;}
+
   /* Toast */
   .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--card);border:1px solid var(--border);padding:0.8rem 1.5rem;border-radius:12px;font-size:0.9rem;z-index:300;transition:transform 0.3s;font-weight:600;}
   .toast.show{transform:translateX(-50%) translateY(0);}
@@ -349,6 +365,25 @@
     <span class="sol">SOL</span>
   </div>
 </footer>
+
+<!-- Wallet Connect Modal -->
+<div class="modal-overlay" id="wallet-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeWalletModal()">&times;</button>
+    <h3>Connect Wallet</h3>
+    <div class="modal-question">Choose your wallet to start betting. One click — no signup needed.</div>
+    <div id="wallet-options"></div>
+    <div class="wallet-divider">or try it first</div>
+    <div class="wallet-option" onclick="connectDemo()" style="border-style:dashed;">
+      <div class="w-icon">🎮</div>
+      <div class="w-info">
+        <div class="w-name">Demo Mode</div>
+        <div class="w-chain">Play with test credits — no wallet needed</div>
+      </div>
+      <div class="w-status ready">Free</div>
+    </div>
+  </div>
+</div>
 
 <!-- Bet Modal -->
 <div class="modal-overlay" id="bet-modal">
@@ -812,79 +847,122 @@ async function placeBet() {
 }
 
 // ============================================================
-// WALLET CONNECT (BTC + ETH + SOL)
+// WALLET CONNECT (BTC + ETH + SOL) — Modal with all options
 // ============================================================
-async function connectWallet() {
-  // Try Phantom (SOL) first, then MetaMask (ETH), then Xverse/Unisat (BTC)
-  if (window.solana && window.solana.isPhantom) {
-    await connectPhantom();
-  } else if (window.ethereum) {
-    await connectMetaMask();
-  } else if (window.XverseProviders?.BitcoinProvider || window.BitcoinProvider || window.unisat) {
-    await connectBTC();
-  } else {
-    // Demo mode
-    wallet = 'demo_' + Math.random().toString(36).slice(2, 10);
-    walletChain = 'demo';
-    userId = wallet;
-    onWalletConnected('demo');
-    showToast('Demo wallet connected — install Phantom, MetaMask, Xverse, or Unisat for real wallets');
+const WALLETS = [
+  {id:'phantom',  name:'Phantom',       chain:'SOL', icon:'👻', color:'#9945ff', detect:()=>window.solana?.isPhantom, url:'https://phantom.app/'},
+  {id:'solflare', name:'Solflare',      chain:'SOL', icon:'🔥', color:'#9945ff', detect:()=>window.solflare?.isSolflare, url:'https://solflare.com/'},
+  {id:'metamask', name:'MetaMask',      chain:'ETH', icon:'🦊', color:'#627eea', detect:()=>window.ethereum?.isMetaMask, url:'https://metamask.io/'},
+  {id:'coinbase', name:'Coinbase Wallet',chain:'ETH',icon:'🔵', color:'#627eea', detect:()=>window.ethereum?.isCoinbaseWallet, url:'https://www.coinbase.com/wallet'},
+  {id:'xverse',   name:'Xverse',        chain:'BTC', icon:'✖️', color:'#f7931a', detect:()=>!!window.XverseProviders?.BitcoinProvider, url:'https://www.xverse.app/'},
+  {id:'unisat',   name:'Unisat',        chain:'BTC', icon:'🟡', color:'#f7931a', detect:()=>!!window.unisat, url:'https://unisat.io/'},
+  {id:'leather',  name:'Leather',       chain:'BTC', icon:'🟤', color:'#f7931a', detect:()=>!!window.LeatherProvider, url:'https://leather.io/'},
+];
+
+function connectWallet() {
+  renderWalletOptions();
+  document.getElementById('wallet-modal').classList.add('show');
+}
+function closeWalletModal() { document.getElementById('wallet-modal').classList.remove('show'); }
+
+function renderWalletOptions() {
+  const container = document.getElementById('wallet-options');
+  // Sort: detected wallets first
+  const sorted = [...WALLETS].sort((a,b) => {
+    const aD = a.detect() ? 1 : 0;
+    const bD = b.detect() ? 1 : 0;
+    return bD - aD;
+  });
+  container.innerHTML = sorted.map(w => {
+    const detected = w.detect();
+    return `<div class="wallet-option ${detected ? 'detected' : ''}" onclick="${detected ? `doConnect('${w.id}')` : `window.open('${w.url}','_blank')`}">
+      <div class="w-icon">${w.icon}</div>
+      <div class="w-info">
+        <div class="w-name">${w.name}</div>
+        <div class="w-chain">${w.chain} · ${detected ? 'Ready to connect' : 'Click to install'}</div>
+      </div>
+      <div class="w-status ${detected ? 'ready' : 'install'}">${detected ? 'Connect' : 'Install'}</div>
+    </div>`;
+  }).join('');
+}
+
+async function doConnect(id) {
+  closeWalletModal();
+  try {
+    switch(id) {
+      case 'phantom': {
+        const resp = await window.solana.connect();
+        wallet = resp.publicKey.toString();
+        walletChain = 'sol'; userId = 'sol_' + wallet;
+        onWalletConnected(wallet);
+        showToast('Phantom connected (SOL)');
+        break;
+      }
+      case 'solflare': {
+        await window.solflare.connect();
+        wallet = window.solflare.publicKey.toString();
+        walletChain = 'sol'; userId = 'sol_' + wallet;
+        onWalletConnected(wallet);
+        showToast('Solflare connected (SOL)');
+        break;
+      }
+      case 'metamask':
+      case 'coinbase': {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        if (accounts.length > 0) {
+          wallet = accounts[0];
+          walletChain = 'eth'; userId = 'eth_' + wallet.toLowerCase();
+          onWalletConnected(wallet);
+          showToast((id === 'metamask' ? 'MetaMask' : 'Coinbase') + ' connected (ETH)');
+        }
+        break;
+      }
+      case 'xverse': {
+        const provider = window.XverseProviders?.BitcoinProvider || window.BitcoinProvider;
+        const resp = await provider.request('getAccounts', { purposes: ['payment'] });
+        if (resp.result?.length > 0) {
+          wallet = resp.result[0].address;
+          walletChain = 'btc'; userId = 'btc_' + wallet;
+          onWalletConnected(wallet);
+          showToast('Xverse connected (BTC)');
+        }
+        break;
+      }
+      case 'unisat': {
+        const accounts = await window.unisat.requestAccounts();
+        if (accounts.length > 0) {
+          wallet = accounts[0];
+          walletChain = 'btc'; userId = 'btc_' + wallet;
+          onWalletConnected(wallet);
+          showToast('Unisat connected (BTC)');
+        }
+        break;
+      }
+      case 'leather': {
+        const resp = await window.LeatherProvider.request('getAddresses');
+        const addr = resp.result?.addresses?.find(a => a.type === 'p2wpkh')?.address;
+        if (addr) {
+          wallet = addr;
+          walletChain = 'btc'; userId = 'btc_' + wallet;
+          onWalletConnected(wallet);
+          showToast('Leather connected (BTC)');
+        }
+        break;
+      }
+    }
+  } catch(e) {
+    showToast('Connection failed — try again');
   }
 }
 
-async function connectPhantom() {
-  try {
-    const resp = await window.solana.connect();
-    wallet = resp.publicKey.toString();
-    walletChain = 'sol';
-    userId = 'sol_' + wallet;
-    onWalletConnected(wallet);
-    showToast('Phantom wallet connected (SOL)');
-  } catch(e) {
-    showToast('Phantom connection failed');
-  }
-}
-
-async function connectMetaMask() {
-  try {
-    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-    if (accounts.length > 0) {
-      wallet = accounts[0];
-      walletChain = 'eth';
-      userId = 'eth_' + wallet.toLowerCase();
-      onWalletConnected(wallet);
-      showToast('MetaMask connected (ETH)');
-    }
-  } catch(e) {
-    showToast('MetaMask connection failed');
-  }
-}
-
-async function connectBTC() {
-  try {
-    let addr = null;
-    if (window.XverseProviders?.BitcoinProvider) {
-      const resp = await window.XverseProviders.BitcoinProvider.request('getAccounts', { purposes: ['payment'] });
-      if (resp.result?.length > 0) addr = resp.result[0].address;
-    } else if (window.BitcoinProvider) {
-      const resp = await window.BitcoinProvider.request('getAccounts', { purposes: ['payment'] });
-      if (resp.result?.length > 0) addr = resp.result[0].address;
-    } else if (window.unisat) {
-      const accounts = await window.unisat.requestAccounts();
-      if (accounts.length > 0) addr = accounts[0];
-    }
-    if (addr) {
-      wallet = addr;
-      walletChain = 'btc';
-      userId = 'btc_' + wallet;
-      onWalletConnected(wallet);
-      showToast('BTC wallet connected');
-    } else {
-      showToast('No BTC wallet found');
-    }
-  } catch(e) {
-    showToast('BTC wallet connection failed');
-  }
+function connectDemo() {
+  closeWalletModal();
+  wallet = 'demo_' + Math.random().toString(36).slice(2, 10);
+  walletChain = 'demo'; userId = wallet;
+  onWalletConnected(wallet);
+  // Auto-give demo credits
+  if (!firebaseReady) { userBalance = 100000; updateBalanceUI(); }
+  showToast('Demo mode — 100k test credits added!');
 }
 
 function onWalletConnected(addr) {
