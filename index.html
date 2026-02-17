@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>predict.tattoo — Crypto Prediction Markets</title>
-<meta name="description" content="Tattoo prediction markets. Styles, artists, culture, and wild bets. 3% fee. No signup. No BS.">
+<meta name="description" content="Tattoo prediction markets. Styles, artists, culture, and wild bets. Free to play. Win crypto.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖋️</text></svg>">
 <style>
   *{margin:0;padding:0;box-sizing:border-box;}
@@ -436,7 +436,7 @@
 <div class="hero">
   <div class="hero-emoji">💉</div>
   <h1>Predict. Bet. <span>Win.</span></h1>
-  <p>Tattoo prediction markets. Styles, artists, culture, and wild bets. 3% fee. No signup. No BS.</p>
+  <p>Tattoo prediction markets. Styles, artists, culture, and wild bets.</p>
   <div class="hero-stats">
     <div class="hero-stat"><div class="val" id="total-volume">0</div><div class="label">Total Volume</div></div>
     <div class="hero-stat"><div class="val" id="active-markets">0</div><div class="label">Active Markets</div></div>
@@ -454,8 +454,8 @@
 <div class="promo-banner" id="promo-banner">
   <div class="promo-icon">🎁</div>
   <div class="promo-text">
-    <div class="promo-title">Welcome Bonus — 50,000 FREE Credits!</div>
-    <div class="promo-sub">Connect any wallet and get 50k credits to start betting instantly. No deposit needed.</div>
+    <div class="promo-title">Get 50,000 FREE Credits</div>
+    <div class="promo-sub">Connect wallet. Get credits. Start predicting.</div>
   </div>
   <button class="promo-cta" onclick="claimWelcomeBonus()">Claim Now</button>
   <button class="promo-close" onclick="dismissPromo()">&times;</button>
@@ -498,22 +498,17 @@
     <div class="step">
       <div class="step-num">1</div>
       <div class="step-title">Connect Wallet</div>
-      <div class="step-desc">MetaMask, Phantom, Xverse, or Unisat. Your wallet = your account.</div>
+      <div class="step-desc">Any wallet. One click.</div>
     </div>
     <div class="step">
       <div class="step-num">2</div>
-      <div class="step-title">Deposit</div>
-      <div class="step-desc">Send BTC, ETH, or SOL. Get credits instantly.</div>
+      <div class="step-title">Pick a Side</div>
+      <div class="step-desc">YES or NO. Place your bet.</div>
     </div>
     <div class="step">
       <div class="step-num">3</div>
-      <div class="step-title">Pick a Side</div>
-      <div class="step-desc">Bet YES or NO on any market. Real pools, real odds.</div>
-    </div>
-    <div class="step">
-      <div class="step-num">4</div>
-      <div class="step-title">Win & Withdraw</div>
-      <div class="step-desc">Market resolves — winners split the pot. 3% fee, rest is yours.</div>
+      <div class="step-title">Win</div>
+      <div class="step-desc">Market ends. Winners get paid.</div>
     </div>
   </div>
 </div>
@@ -525,34 +520,27 @@
     <div class="trust-card">
       <div class="trust-icon">🔒</div>
       <div class="trust-label">Non-Custodial</div>
-      <div class="trust-desc">Your wallet, your keys. We never hold your private keys or seed phrases. You stay in control.</div>
+      <div class="trust-desc">Your keys, your wallet. Always.</div>
     </div>
     <div class="trust-card">
       <div class="trust-icon">🛡️</div>
-      <div class="trust-label">Secure & Encrypted</div>
-      <div class="trust-desc">HTTPS everywhere. Firebase security rules. All data encrypted in transit and at rest.</div>
+      <div class="trust-label">Secure</div>
+      <div class="trust-desc">HTTPS + encrypted data.</div>
     </div>
     <div class="trust-card">
       <div class="trust-icon">⚡</div>
-      <div class="trust-label">Instant Settlement</div>
-      <div class="trust-desc">Markets resolve in real-time. Winners credited instantly. Withdraw anytime — no lockups.</div>
+      <div class="trust-label">Instant</div>
+      <div class="trust-desc">Win → get paid. No waiting.</div>
     </div>
     <div class="trust-card">
       <div class="trust-icon">📊</div>
-      <div class="trust-label">Provably Fair</div>
-      <div class="trust-desc">All bets and pools visible on-chain. 3% fee — transparent, fixed, no hidden costs.</div>
+      <div class="trust-label">Fair</div>
+      <div class="trust-desc">3% fee. No hidden costs.</div>
     </div>
   </div>
 </div>
 
-<div class="security-banner">
-  <div class="sec-icon">🔐</div>
-  <div class="sec-text">
-    <strong>Your funds are safe.</strong> We use industry-standard wallet connections (Phantom, MetaMask, Xverse, and more).
-    We never ask for your seed phrase or private keys. All connections are read-only until you approve a transaction.
-    Deposits go to verified, dedicated wallets — one for BTC, ETH, and SOL each.
-  </div>
-</div>
+<!-- Security banner removed for cleaner layout -->
 
 <!-- Admin Panel -->
 <div class="admin-panel" id="admin-panel">
@@ -599,8 +587,8 @@
 
 <!-- Prize Banner -->
 <div class="prize-banner" id="prize-banner">
-  <h3>🏆 Leaderboard Prizes — Win Real Rewards!</h3>
-  <p>Top predictors win prizes every day, week, and month. Play free or with crypto — leaderboard ranks count either way!</p>
+  <h3>🏆 Win Prizes</h3>
+  <p>Top predictors earn daily, weekly, and monthly rewards.</p>
   <div class="prize-grid">
     <div class="prize-card">
       <div class="prize-period">Daily</div>
@@ -623,7 +611,7 @@
 <!-- Leaderboard -->
 <div class="leaderboard" id="leaderboard">
   <div class="leaderboard-title">🏆 Leaderboard</div>
-  <div class="leaderboard-sub">Top predictors on predict.tattoo — climb the ranks!</div>
+  <div class="leaderboard-sub">Top predictors on predict.tattoo</div>
   <div class="lb-tabs" id="lb-period-tabs" style="margin-bottom:0.5rem;">
     <button class="lb-tab active" onclick="switchLbPeriod('all',this)">All Time</button>
     <button class="lb-tab" onclick="switchLbPeriod('monthly',this)">Monthly</button>
@@ -646,8 +634,8 @@
 
 <!-- Referral Box -->
 <div class="referral-box" id="referral-box">
-  <h3>🔥 Invite Friends, Earn Credits</h3>
-  <p>Share your referral link — earn 5,000 credits for every friend who joins and places a bet!</p>
+  <h3>🔥 Invite Friends = 5,000 Credits Each</h3>
+  <p>Share your link. You both earn.</p>
   <div class="referral-link">
     <input type="text" id="referral-url" value="" readonly onclick="this.select()">
     <button onclick="copyReferral()">Copy</button>
@@ -657,50 +645,39 @@
 <!-- Community Section -->
 <div class="community-section" id="community">
   <div class="community-title">Join the Community</div>
-  <div class="community-sub">Get predictions first. Share alpha. Earn bonus credits just for being active.</div>
+  <div class="community-sub">Alerts, alpha, and bonus credit drops.</div>
   <div class="community-grid">
     <a class="community-card telegram" href="https://t.me/predictnetwork" target="_blank">
       <div class="cc-icon">✈️</div>
       <div class="cc-name">Telegram</div>
-      <div class="cc-desc">Live predictions, alpha calls, instant market alerts. 24/7 chat.</div>
+      <div class="cc-desc">Live alerts. Free credits.</div>
       <div class="cc-btn">Join Telegram</div>
     </a>
     <a class="community-card x-card" href="https://x.com/SpunkArt13" target="_blank">
       <div class="cc-icon">𝕏</div>
       <div class="cc-name">X / Twitter</div>
-      <div class="cc-desc">Daily predictions, trending markets, win announcements. Follow for alpha.</div>
+      <div class="cc-desc">Predictions + announcements.</div>
       <div class="cc-btn">Follow @SpunkArt13</div>
     </a>
     <a class="community-card discord" href="https://discord.gg/predictnetwork" target="_blank">
       <div class="cc-icon">💬</div>
       <div class="cc-name">Discord</div>
-      <div class="cc-desc">Strategy channels, leaderboard chat, propose new markets, earn roles.</div>
+      <div class="cc-desc">Chat, strategy, roles.</div>
       <div class="cc-btn">Join Discord</div>
     </a>
-  </div>
-</div>
-
-<!-- Cross-Promo — Other Predict Sites -->
-<div class="cross-promo" id="cross-promo">
-  <div class="cross-promo-inner">
-    <div class="cp-text">
-      <div class="cp-title">Predict Everything — 16 Markets, One Network</div>
-      <div class="cp-sub">Every site = different markets. Same wallet, same credits, same leaderboard rewards.</div>
-    </div>
-    <div class="cp-links" id="cp-links"></div>
   </div>
 </div>
 
 <!-- Rewards Hub -->
 <div class="rewards-hub" id="rewards">
   <div class="rewards-title">Earn Rewards</div>
-  <div class="rewards-sub">Every action earns you credits. Share, bet, refer, win — get rewarded for everything.</div>
+  <div class="rewards-sub">Bet, share, invite friends — earn credits for everything.</div>
   <div class="rewards-grid">
     <div class="reward-card">
       <div class="r-icon">🎁</div>
       <div class="r-title">Welcome Bonus</div>
       <div class="r-amount">50,000 Credits</div>
-      <div class="r-desc">Connect any wallet. Get 50k credits instantly. No deposit needed.</div>
+      <div class="r-desc">Connect wallet → get 50k free.</div>
       <button class="r-action" onclick="claimWelcomeBonus()">Claim Now</button>
       <span class="r-earned" id="r-welcome-check" style="display:none">Claimed</span>
     </div>
@@ -708,7 +685,7 @@
       <div class="r-icon">🔗</div>
       <div class="r-title">Refer a Friend</div>
       <div class="r-amount">5,000 Credits Each</div>
-      <div class="r-desc">Share your link. You both earn 5k credits when they place their first bet.</div>
+      <div class="r-desc">You both earn 5k when they bet.</div>
       <button class="r-action" onclick="copyReferral()">Copy Link</button>
       <span class="r-earned" id="r-referral-count">0 referred</span>
     </div>
@@ -716,27 +693,22 @@
       <div class="r-icon">📢</div>
       <div class="r-title">Share to Earn</div>
       <div class="r-amount">1,000 Credits</div>
-      <div class="r-desc">Share any market on X, Telegram, or WhatsApp. Earn 1k per share (1x/hour).</div>
+      <div class="r-desc">Share a market → earn 1k credits.</div>
       <button class="r-action" onclick="document.getElementById('markets').scrollIntoView({behavior:'smooth'})">Share a Market</button>
     </div>
     <div class="reward-card">
       <div class="r-icon">🏆</div>
       <div class="r-title">Leaderboard Prizes</div>
       <div class="r-amount">Daily + Weekly + Monthly</div>
-      <div class="r-desc">Top predictors win 50k daily, 250k weekly, and crypto prizes monthly.</div>
+      <div class="r-desc">Daily, weekly, monthly prizes.</div>
       <button class="r-action" onclick="document.getElementById('leaderboard').scrollIntoView({behavior:'smooth'})">View Rankings</button>
     </div>
-  </div>
-  <div class="rewards-progress" id="rewards-progress">
-    <div class="rp-title">Your Rewards Progress</div>
-    <div class="rp-bar"><div class="rp-fill" id="rp-fill"></div></div>
-    <div class="rp-text" id="rp-text">Connect wallet to start earning</div>
   </div>
 </div>
 
 <!-- Sticky Mobile CTA -->
 <div class="sticky-cta" id="sticky-cta">
-  <button onclick="connectWallet()">🔥 Connect Wallet — Get 50k FREE Credits</button>
+  <button onclick="connectWallet()">Get 50k Free Credits</button>
 </div>
 
 <!-- Share Modal -->
@@ -774,7 +746,7 @@
     <a href="https://predict.skin">predict.skin 🧴</a>
     <a href="https://predict.surf">predict.surf 🏄</a>
   </div>
-  <div class="footer-sub">Crypto-native prediction markets. No signup. No custody.</div>
+  <div class="footer-sub">Predict. Bet. Win.</div>
   <div class="fee-badge">3% Platform Fee</div>
   <div class="chains-badge">
     <span class="btc">BTC</span>
@@ -794,9 +766,9 @@
   <div class="modal">
     <button class="modal-close" onclick="closeWalletModal()">&times;</button>
     <h3>🔒 Connect Wallet</h3>
-    <div class="modal-question">Secure, non-custodial connection. We never see your private keys or seed phrase. Read-only until you approve.</div>
+    <div class="modal-question">One click. No seed phrase needed.</div>
     <div id="wallet-options"></div>
-    <div style="text-align:center;font-size:0.7rem;color:var(--muted);margin:0.5rem 0;">🔐 HTTPS encrypted · 🛡️ No seed phrase required · ⚡ One-click connect</div>
+    <div style="text-align:center;font-size:0.7rem;color:var(--muted);margin:0.5rem 0;">🔐 Secure · ⚡ Instant</div>
     <div class="wallet-divider">or try it first</div>
     <div class="wallet-option" onclick="connectDemo()" style="border-style:dashed;">
       <div class="w-icon">🎮</div>
@@ -844,7 +816,7 @@
   <div class="modal">
     <button class="modal-close" onclick="closeDeposit()">&times;</button>
     <h3>Deposit Crypto</h3>
-    <div class="modal-question">Send crypto to get credits. 1 credit ≈ 1 sat equivalent.</div>
+    <div class="modal-question">Send crypto → get credits instantly.</div>
     <div class="chain-tabs">
       <button class="chain-tab btc active" onclick="switchChain('btc')">₿ BTC</button>
       <button class="chain-tab eth" onclick="switchChain('eth')">Ξ ETH</button>
@@ -894,7 +866,7 @@
   <div class="modal">
     <button class="modal-close" onclick="closePropose()">&times;</button>
     <h3>Create a Market</h3>
-    <div class="modal-question">Create a prediction market instantly. It goes live immediately — anyone can bet on it.</div>
+    <div class="modal-question">Goes live instantly. Anyone can bet.</div>
     <div class="bet-input-group">
       <label>Your prediction question</label>
       <input class="deposit-input" id="propose-question" placeholder="Will [something] happen by [date]?">
@@ -1212,20 +1184,17 @@ function renderMarkets(filter) {
           <button class="bet-btn no" onclick="openBetModal('${key}','no')">NO ${noPct}¢</button>
         </div>
         <div class="share-bar">
-          <button class="share-btn x" onclick="shareOnX('${m.question.replace(/'/g,"\\'")}',${yesPct})">𝕏 Share</button>
-          <button class="share-btn tg" onclick="shareOnTelegram('${m.question.replace(/'/g,"\\'")}',${yesPct})">TG</button>
-          <button class="share-btn wa" onclick="shareOnWhatsApp('${m.question.replace(/'/g,"\\'")}',${yesPct})">WA</button>
-          <button class="share-btn link" onclick="copyMarketLink('${key}')">🔗</button>
-          <button class="share-btn x" onclick="copyViralTemplate('${m.question.replace(/'/g,"\\'")}',${yesPct})" style="background:rgba(245,158,11,0.15);color:var(--accent);">📋 Copy Post</button>
+          <button class="share-btn x" onclick="shareOnX('${m.question.replace(/'/g,"\\'")}',${yesPct})">𝕏</button>
+          <button class="share-btn link" onclick="copyMarketLink('${key}')">🔗 Share</button>
         </div>
       </div>`;
   }).join('');
 
   // Update hero stats
-  const open = markets.filter(m => m.status === 'open' || !m.status);
+  const allOpen = markets.filter(m => m.status === 'open' || !m.status);
   const totalVol = markets.reduce((s, m) => s + (m.yesPool || 0) + (m.noPool || 0), 0);
   const totalBets = markets.reduce((s, m) => s + (m.totalBets || 0), 0);
-  document.getElementById('active-markets').textContent = open.length;
+  document.getElementById('active-markets').textContent = allOpen.length;
   document.getElementById('total-volume').textContent = totalVol.toLocaleString();
   document.getElementById('total-bets').textContent = totalBets.toLocaleString();
 }
