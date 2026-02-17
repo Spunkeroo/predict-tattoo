@@ -5,7 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>predict.tattoo — Crypto Prediction Markets</title>
 <meta name="description" content="Tattoo prediction markets. Styles, artists, culture, and wild bets. Free to play. Win crypto.">
+<meta name="keywords" content="prediction market, crypto betting, Tattoo styles, artist moves, culture shifts, wild bets., free predictions, win crypto">
+<meta name="author" content="Predict Network">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#0a0a0f">
+<link rel="canonical" href="https://predict.tattoo/">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖋️</text></svg>">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="predict.tattoo — Crypto Prediction Markets">
+<meta property="og:description" content="Tattoo prediction markets. Styles, artists, culture, and wild bets. Free to play. Win crypto.">
+<meta property="og:url" content="https://predict.tattoo/">
+<meta property="og:site_name" content="Predict Network">
+<meta property="og:image" content="https://predict.tattoo/og-image.png">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="predict.tattoo — Crypto Prediction Markets">
+<meta name="twitter:description" content="Tattoo prediction markets. Styles, artists, culture, and wild bets. Free to play. Win crypto.">
+<meta name="twitter:image" content="https://predict.tattoo/og-image.png">
+<meta name="twitter:site" content="@SpunkArt13">
+<!-- Preconnect -->
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://predict-network-ec767-default-rtdb.firebaseio.com" crossorigin>
+<!-- Schema.org JSON-LD -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","name":"predict.tattoo","url":"https://predict.tattoo/","description":"Tattoo prediction markets. Styles, artists, culture, and wild bets. Free to play. Win crypto.","publisher":{"@type":"Organization","name":"Predict Network"},"potentialAction":{"@type":"SearchAction","target":"https://predict.tattoo/?q={search_term}","query-input":"required name=search_term"}}
+</script>
 <style>
   *{margin:0;padding:0;box-sizing:border-box;}
   :root{--bg:#0a0a0f;--card:#111118;--border:#1a1a25;--text:#e5e5e5;--muted:#666;--green:#22c55e;--red:#ef4444;--accent:#f59e0b;--yes:#22c55e;--no:#ef4444;--blue:#3b82f6;--sol:#9945ff;}
@@ -47,6 +72,8 @@
   .filter-hot.active,.filter-hot:hover{border-color:#ef4444;background:rgba(239,68,68,0.1);color:#ef4444;}
   .filter-new{border-color:rgba(59,130,246,0.3);color:#3b82f6;}
   .filter-new.active,.filter-new:hover{border-color:#3b82f6;background:rgba(59,130,246,0.1);color:#3b82f6;}
+  .daily-challenge{display:none;background:var(--card);border:1px solid var(--accent);border-radius:12px;padding:1rem 1.2rem;margin:0 auto 1rem;max-width:900px;}
+  .pinned-badge{display:inline-block;background:var(--accent);color:#000;font-size:0.65rem;font-weight:700;padding:0.15rem 0.4rem;border-radius:4px;margin-left:0.4rem;vertical-align:middle;}
 
   /* Markets Grid */
   .markets{max-width:900px;margin:0 auto;padding:1rem;}
@@ -417,6 +444,9 @@
     .panel-grid{grid-template-columns:1fr;}
     .admin-stats-grid{grid-template-columns:repeat(2,1fr);}
   }
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;}
+  }
 </style>
 </head>
 <body>
@@ -496,7 +526,7 @@
   </div>
 </div>
 
-<div id="daily-challenge" class="daily-challenge" style="display:none;background:var(--card);border:1px solid var(--accent);border-radius:12px;padding:1rem 1.2rem;margin-bottom:1rem;max-width:900px;margin-left:auto;margin-right:auto;"></div>
+<div id="daily-challenge" class="daily-challenge"></div>
 <div class="markets" id="markets"></div>
 
 <div id="how" class="how-it-works">
@@ -654,19 +684,19 @@
   <div class="community-title">Join the Community</div>
   <div class="community-sub">Alerts, alpha, and bonus credit drops.</div>
   <div class="community-grid">
-    <a class="community-card x-card" href="https://x.com/SpunkArt13" target="_blank">
+    <a class="community-card x-card" href="https://x.com/SpunkArt13" target="_blank" rel="noopener noreferrer">
       <div class="cc-icon">𝕏</div>
       <div class="cc-name">X / Twitter</div>
       <div class="cc-desc">Predictions + announcements.</div>
       <div class="cc-btn">Follow @SpunkArt13</div>
     </a>
-    <a class="community-card" href="https://reddit.com/r/predictnetwork" target="_blank" style="border-color:rgba(255,69,0,0.3);">
+    <a class="community-card" href="https://reddit.com/r/predictnetwork" target="_blank" rel="noopener noreferrer" style="border-color:rgba(255,69,0,0.3);">
       <div class="cc-icon">🔴</div>
       <div class="cc-name">Reddit</div>
       <div class="cc-desc">Discussion + predictions.</div>
       <div class="cc-btn" style="background:#ff4500;color:#fff;">Join Reddit</div>
     </a>
-    <a class="community-card discord" href="https://discord.gg/predictnetwork" target="_blank">
+    <a class="community-card discord" href="https://discord.gg/predictnetwork" target="_blank" rel="noopener noreferrer">
       <div class="cc-icon">💬</div>
       <div class="cc-name">Discord</div>
       <div class="cc-desc">Chat + strategy.</div>
@@ -764,7 +794,7 @@
     <a href="#" class="tip-btn" onclick="openTipModal(event)"><span class="tip-icon">🧡</span> Tip the House — Powered by Spunk.bet</a>
   </div>
   <div style="margin-top:0.5rem;font-size:0.7rem;color:var(--muted);">
-    Part of the <a href="https://spunk.bet" target="_blank" style="color:var(--accent);font-weight:700;">Spunk.bet</a> Network · <a href="https://x.com/SpunkArt13" target="_blank" style="color:var(--accent);">@SpunkArt13</a>
+    Part of the <a href="https://spunk.bet" target="_blank" rel="noopener noreferrer" style="color:var(--accent);font-weight:700;">Spunk.bet</a> Network · <a href="https://x.com/SpunkArt13" target="_blank" rel="noopener noreferrer" style="color:var(--accent);">@SpunkArt13</a>
   </div>
 </footer>
 
@@ -922,7 +952,7 @@
   <div class="modal">
     <button class="modal-close" onclick="closeTipModal()">&times;</button>
     <h3 style="text-align:center;">🎰 Tip the House</h3>
-    <div class="modal-question" style="text-align:center;">Love what we're building? Send a tip to support the Predict Network.<br>Powered by <a href="https://spunk.bet" target="_blank" style="color:var(--accent);font-weight:700;">Spunk.bet</a></div>
+    <div class="modal-question" style="text-align:center;">Love what we're building? Send a tip to support the Predict Network.<br>Powered by <a href="https://spunk.bet" target="_blank" rel="noopener noreferrer" style="color:var(--accent);font-weight:700;">Spunk.bet</a></div>
     <div style="margin-bottom:0.8rem;">
       <div style="font-size:0.75rem;color:var(--muted);margin-bottom:0.3rem;font-weight:700;">₿ BTC</div>
       <div class="deposit-addr" onclick="navigator.clipboard.writeText('bc1qr4zcdh9wz26gtn4pqz9c8wmxwalpjut8fxzsfn').then(()=>showToast('BTC address copied!'))">
@@ -972,6 +1002,13 @@ const SITE_ID = 'tattoo';
 const ADMIN_HASH = 'a946d99fa96064f47f68c1bc2f0d6d8f9594a30018569175a6069bc66846e21f';
 const PLATFORM_FEE = 0.03;
 
+// Security: escape HTML to prevent XSS from user-generated content
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+// Track JS errors for audit
+let jsErrors = [];
+window.onerror = (msg, src, line) => { jsErrors.push({msg, src, line, t: Date.now()}); if (jsErrors.length > 50) jsErrors.shift(); };
+
 // Deposit addresses (BTC, ETH, SOL)
 const DEPOSIT_ADDRS = {
   btc: 'bc1qr4zcdh9wz26gtn4pqz9c8wmxwalpjut8fxzsfn',
@@ -1005,29 +1042,25 @@ let firebaseReady = false;
 function loadFirebaseSDK() {
   return new Promise((resolve) => {
     if (firebaseConfig.apiKey === 'YOUR_API_KEY') { resolve(false); return; }
-    const scripts = [
-      'https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js',
-      'https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js',
-      'https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js'
-    ];
-    let loaded = 0;
-    function next() {
-      if (loaded >= scripts.length) {
-        try {
-          firebase.initializeApp(firebaseConfig);
-          db = firebase.database();
-          firebaseReady = true;
-          resolve(true);
-        } catch(e) { console.warn('Firebase init failed:', e); resolve(false); }
-        return;
-      }
-      const s = document.createElement('script');
-      s.src = scripts[loaded];
-      s.onload = () => { loaded++; next(); };
-      s.onerror = () => { console.warn('Firebase SDK failed to load'); resolve(false); };
-      document.head.appendChild(s);
+    function loadScript(src) {
+      return new Promise((res, rej) => {
+        const s = document.createElement('script'); s.src = src;
+        s.onload = res; s.onerror = rej; document.head.appendChild(s);
+      });
     }
-    next();
+    // App must load first, then database + auth in parallel
+    loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js')
+      .then(() => Promise.all([
+        loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js'),
+        loadScript('https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js')
+      ]))
+      .then(() => {
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.database();
+        firebaseReady = true;
+        resolve(true);
+      })
+      .catch(() => { console.warn('Firebase SDK failed'); resolve(false); });
   });
 }
 
@@ -1155,15 +1188,18 @@ function renderMarkets(filter) {
     filtered = markets;
   }
 
-  // Sort: new user-created markets boosted for 24hrs, then by popularity
+  // Sort: pinned first, then new markets boosted 24hrs, then by popularity
   const now = Date.now();
   const open = filtered.filter(m => m.status === 'open' || !m.status);
   open.sort((a, b) => {
-    // Boost recently created markets (under 24hrs old) to the top
+    // Pinned markets always on top
+    const aPinned = a.pinned ? 10000000 : 0;
+    const bPinned = b.pinned ? 10000000 : 0;
+    // Boost recently created markets (under 24hrs old)
     const aNew = (a.createdAt && now - a.createdAt < 86400000) ? 1000000 : 0;
     const bNew = (b.createdAt && now - b.createdAt < 86400000) ? 1000000 : 0;
-    const aScore = aNew + (a.totalBets || 0) * 1000 + ((a.yesPool || 0) + (a.noPool || 0));
-    const bScore = bNew + (b.totalBets || 0) * 1000 + ((b.yesPool || 0) + (b.noPool || 0));
+    const aScore = aPinned + aNew + (a.totalBets || 0) * 1000 + ((a.yesPool || 0) + (a.noPool || 0));
+    const bScore = bPinned + bNew + (b.totalBets || 0) * 1000 + ((b.yesPool || 0) + (b.noPool || 0));
     return bScore - aScore;
   });
 
@@ -1173,15 +1209,16 @@ function renderMarkets(filter) {
     const noPct = 100 - yesPct;
     const daysLeft = Math.max(0, Math.ceil((new Date(m.ends) - new Date()) / 86400000));
     const key = m.fbKey || m.id;
-    const tag = (m.totalBets||0) > 300 ? '<span class="trending-tag">🔥 TRENDING</span>' :
+    const pinTag = m.pinned ? '<span class="pinned-badge">PINNED</span>' : '';
+    const tag = pinTag || ((m.totalBets||0) > 300 ? '<span class="trending-tag">🔥 TRENDING</span>' :
                 (m.totalBets||0) > 200 ? '<span class="hot-tag">HOT</span>' :
-                (m.autoGenerated || (m.totalBets||0) < 50) ? '<span class="new-tag">NEW</span>' : '';
+                (m.autoGenerated || (m.totalBets||0) < 50) ? '<span class="new-tag">NEW</span>' : '');
     return `
       <div class="market-card" data-category="${m.category}">
         <div class="market-header">
           <div>
-            <div class="market-category">${m.emoji} ${m.category} ${tag}</div>
-            <div class="market-question">${m.question}</div>
+            <div class="market-category">${esc(m.emoji)} ${esc(m.category)} ${tag}</div>
+            <div class="market-question">${esc(m.question)}</div>
           </div>
           <div class="market-meta">
             <div class="market-volume">${total.toLocaleString()} credits</div>
@@ -1896,13 +1933,21 @@ function renderAdminMarkets() {
   container.innerHTML = open.map(m => {
     const key = m.fbKey || m.id;
     return `<div class="admin-row">
-      <span style="flex:1">${m.emoji} ${m.question.slice(0,60)}${m.question.length>60?'...':''}</span>
+      <span style="flex:1">${esc(m.emoji)} ${esc(m.question.slice(0,60))}${m.question.length>60?'...':''} ${m.pinned?'📌':''}</span>
       <span>
+        <button class="admin-btn" onclick="togglePin('${key}')" style="background:var(--accent);color:#000;">${m.pinned?'Unpin':'Pin'}</button>
         <button class="admin-btn success" onclick="resolveMarket('${key}','yes')">YES Wins</button>
         <button class="admin-btn danger" onclick="resolveMarket('${key}','no')">NO Wins</button>
       </span>
     </div>`;
   }).join('') || '<div style="color:var(--muted);font-size:0.85rem;">No open markets</div>';
+}
+
+async function togglePin(marketKey) {
+  const market = markets.find(m => (m.fbKey || m.id) === marketKey);
+  const newVal = !(market && market.pinned);
+  await db.ref('markets/' + SITE_ID + '/' + marketKey + '/pinned').set(newVal);
+  showToast(newVal ? 'Market pinned to top' : 'Market unpinned');
 }
 
 async function adminCreateMarket() {
@@ -1916,7 +1961,8 @@ async function adminCreateMarket() {
   const market = {
     id: newId, category: category || 'wild', emoji,
     question, yesPool: 0, noPool: 0, totalBets: 0,
-    ends, status: 'open'
+    ends, status: 'open', pinned: true,
+    createdAt: firebase.database.ServerValue.TIMESTAMP
   };
 
   if (firebaseReady) {
@@ -2394,7 +2440,7 @@ function buildCrossPromo() {
   if (!container) return;
   const others = sites.filter(s => s.s !== SITE_ID).sort(() => Math.random() - 0.5).slice(0, 5);
   container.innerHTML = others.map(s =>
-    `<a class="cp-link" href="https://predict.${s.s}" target="_blank">${s.e} predict.${s.s}</a>`
+    `<a class="cp-link" href="https://predict.${s.s}" target="_blank" rel="noopener noreferrer">${s.e} predict.${s.s}</a>`
   ).join('');
 }
 
@@ -2578,8 +2624,8 @@ async function autoResolveMarkets() {
   }
 }
 
-// Run auto-resolution every 5 minutes
-setInterval(() => { if (firebaseReady) autoResolveMarkets(); }, 300000);
+// Run auto-resolution every 5 minutes (only when tab visible)
+setInterval(() => { if (firebaseReady && !document.hidden) autoResolveMarkets(); }, 300000);
 
 // ============================================================
 // FREE / REAL MODE
@@ -2893,7 +2939,7 @@ function runAudit() {
   checks.push({name: 'SOL Addr', pass: DEPOSIT_ADDRS.sol && DEPOSIT_ADDRS.sol.length > 30});
 
   // 7. No console errors (basic check)
-  checks.push({name: 'No Errors', pass: true});
+  checks.push({name: 'No Errors', pass: jsErrors.length === 0});
 
   // 8. Analytics running
   checks.push({name: 'Analytics', pass: typeof analytics !== 'undefined'});
@@ -2920,7 +2966,8 @@ function runAudit() {
       timestamp: firebase.database.ServerValue.TIMESTAMP,
       checks: passed,
       total: checks.length,
-      details: checks.map(c => c.name + ':' + (c.pass ? 'OK' : 'FAIL')).join(', ')
+      details: checks.map(c => c.name + ':' + (c.pass ? 'OK' : 'FAIL')).join(', '),
+      errors: jsErrors.length > 0 ? jsErrors.slice(-5).map(e => e.msg).join(' | ') : null
     });
   }
 
@@ -2930,16 +2977,17 @@ function runAudit() {
   return { passed, total: checks.length, checks };
 }
 
-// Update "last audit" time display
+// Update "last audit" time display (only when tab visible)
 setInterval(() => {
+  if (document.hidden) return;
   const timeEl = document.getElementById('last-audit-time');
   if (!timeEl) return;
   const mins = Math.floor((Date.now() - lastAuditTime) / 60000);
   timeEl.textContent = mins < 1 ? 'just now' : mins + 'm ago';
 }, 60000);
 
-// Run audit every 30 minutes
-setInterval(runAudit, 1800000);
+// Run audit every 30 minutes (only when tab visible)
+setInterval(() => { if (!document.hidden) runAudit(); }, 1800000);
 
 // ============================================================
 // TOAST
