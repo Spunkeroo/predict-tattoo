@@ -740,13 +740,35 @@
   </table>
 </div>
 
-<!-- Referral Box -->
+<!-- Affiliate Program -->
 <div class="referral-box" id="referral-box">
-  <h3>🔥 Invite Friends = 5,000 Credits Each</h3>
-  <p>Share your link. You both earn.</p>
+  <h3>🤝 Affiliate Program — Earn Forever</h3>
+  <p>Share your link. Earn 5,000 credits per signup + 5% of every bet your referrals place. Forever.</p>
   <div class="referral-link">
     <input type="text" id="referral-url" value="" readonly onclick="this.select()">
     <button onclick="copyReferral()">Copy</button>
+  </div>
+  <div id="affiliate-stats" style="display:none;margin-top:1rem;">
+    <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:0.6rem 1rem;min-width:80px;">
+        <div style="font-size:1.1rem;font-weight:800;color:var(--accent);" id="aff-referrals">0</div>
+        <div style="font-size:0.65rem;color:var(--muted);">Referrals</div>
+      </div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:0.6rem 1rem;min-width:80px;">
+        <div style="font-size:1.1rem;font-weight:800;color:var(--green);" id="aff-earned">0</div>
+        <div style="font-size:0.65rem;color:var(--muted);">Credits Earned</div>
+      </div>
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:0.6rem 1rem;min-width:80px;">
+        <div style="font-size:1.1rem;font-weight:800;color:var(--purple);" id="aff-tier">Starter</div>
+        <div style="font-size:0.65rem;color:var(--muted);">Tier</div>
+      </div>
+    </div>
+    <div style="margin-top:0.75rem;font-size:0.7rem;color:var(--muted);">
+      <b>Tiers:</b> Starter (5%) → Pro (7% at 10 refs) → Elite (10% at 50 refs)
+    </div>
+  </div>
+  <div style="display:flex;gap:0.5rem;justify-content:center;margin-top:0.75rem;flex-wrap:wrap;">
+    <button onclick="shareAffiliateOnX()" style="background:#000;color:#fff;border:1px solid #333;padding:0.4rem 0.8rem;border-radius:8px;font-size:0.75rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:0.3rem;"><svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:#fff;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> Share on X</button>
   </div>
 </div>
 
@@ -790,10 +812,10 @@
       <span class="r-earned" id="r-welcome-check" style="display:none">Claimed</span>
     </div>
     <div class="reward-card">
-      <div class="r-icon">🔗</div>
-      <div class="r-title">Refer a Friend</div>
-      <div class="r-amount">5,000 Credits Each</div>
-      <div class="r-desc">You both earn 5k when they bet.</div>
+      <div class="r-icon">🤝</div>
+      <div class="r-title">Affiliate Program</div>
+      <div class="r-amount">5% of Every Bet</div>
+      <div class="r-desc">Earn 5k + 5% ongoing from referrals.</div>
       <button class="r-action" onclick="copyReferral()">Copy Link</button>
       <span class="r-earned" id="r-referral-count">0 referred</span>
     </div>
@@ -1429,6 +1451,7 @@ async function placeBet() {
       updateRewardsUI();
       showSharePrompt(selectedMarket.question, selectedSide, amount);
       processReferralReward();
+      payAffiliateCommission(amount);
     } catch(e) {
       showToast('Error placing bet: ' + e.message);
     }
@@ -2212,25 +2235,24 @@ function awardShareBonus() {
 }
 
 // ============================================================
-// REFERRAL SYSTEM
+// AFFILIATE / REFERRAL SYSTEM
 // ============================================================
 function generateReferralLink() {
-  // Short clean code from wallet or random
   let code = localStorage.getItem('myRefCode_' + SITE_ID);
   if (!code) {
     code = (wallet || Math.random().toString(36)).replace(/[^a-z0-9]/gi,'').slice(-5);
     localStorage.setItem('myRefCode_' + SITE_ID, code);
-    // Save mapping in Firebase
     if (firebaseReady && userId) {
       db.ref('refCodes/' + SITE_ID + '/' + code).set(userId);
     }
   }
   document.getElementById('referral-url').value = getSiteUrl() + '?r=' + code;
+  loadAffiliateStats();
 }
 
 function copyReferral() {
   const input = document.getElementById('referral-url');
-  navigator.clipboard.writeText(input.value).then(() => showToast('Link copied!'));
+  navigator.clipboard.writeText(input.value).then(() => showToast('Affiliate link copied!'));
 }
 
 function checkReferral() {
@@ -2252,6 +2274,10 @@ function processReferralReward() {
     if (referrerId) {
       db.ref('users/' + referrerId + '/balance').set(firebase.database.ServerValue.increment(5000));
       db.ref('rewards/' + SITE_ID + '/' + referrerId + '/referrals').set(firebase.database.ServerValue.increment(1));
+      // Store affiliate link: who referred this user
+      if (userId) {
+        db.ref('affiliates/' + SITE_ID + '/' + userId).set(referrerId);
+      }
     }
   });
   if (userId) {
@@ -2259,6 +2285,57 @@ function processReferralReward() {
     showToast('+5,000 credits for joining via referral!');
     trackRewardEvent('referral_joined', 5000);
   }
+}
+
+// Affiliate commission: called after every bet
+function payAffiliateCommission(betAmount) {
+  if (!firebaseReady || !userId) return;
+  db.ref('affiliates/' + SITE_ID + '/' + userId).once('value', snap => {
+    const affiliateId = snap.val();
+    if (!affiliateId) return;
+    // Get affiliate tier
+    db.ref('rewards/' + SITE_ID + '/' + affiliateId + '/referrals').once('value', refSnap => {
+      const refs = refSnap.val() || 0;
+      let rate = 0.05; // 5% default
+      if (refs >= 50) rate = 0.10; // Elite
+      else if (refs >= 10) rate = 0.07; // Pro
+      const commission = Math.floor(betAmount * rate);
+      if (commission > 0) {
+        db.ref('users/' + affiliateId + '/balance').set(firebase.database.ServerValue.increment(commission));
+        db.ref('rewards/' + SITE_ID + '/' + affiliateId + '/affEarnings').set(firebase.database.ServerValue.increment(commission));
+      }
+    });
+  });
+}
+
+function getAffiliateTier(refs) {
+  if (refs >= 50) return 'Elite (10%)';
+  if (refs >= 10) return 'Pro (7%)';
+  return 'Starter (5%)';
+}
+
+function loadAffiliateStats() {
+  if (!firebaseReady || !userId) return;
+  const statsEl = document.getElementById('affiliate-stats');
+  if (!statsEl) return;
+  db.ref('rewards/' + SITE_ID + '/' + userId).once('value', snap => {
+    const d = snap.val() || {};
+    const refs = d.referrals || 0;
+    const earned = (d.affEarnings || 0) + (refs * 5000);
+    document.getElementById('aff-referrals').textContent = refs;
+    document.getElementById('aff-earned').textContent = earned.toLocaleString();
+    document.getElementById('aff-tier').textContent = getAffiliateTier(refs);
+    statsEl.style.display = 'block';
+    const refEl = document.getElementById('r-referral-count');
+    if (refEl) refEl.textContent = refs + ' referred';
+  });
+}
+
+function shareAffiliateOnX() {
+  const url = document.getElementById('referral-url').value || getSiteUrl();
+  const text = 'I\\'m earning credits on every bet my friends make on ' + document.title.split(' ')[0] + '\\n\\nFree to play. Real crypto prizes.\\n\\nJoin through my link 👇\\n\\n' + url;
+  window.open('https://x.com/intent/tweet?text=' + encodeURIComponent(text), '_blank');
+  trackRewardEvent('affiliate_share', 1000);
 }
 
 // ============================================================
