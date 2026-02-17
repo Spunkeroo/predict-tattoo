@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>predict.tattoo 🖋️ — Crypto Prediction Markets</title>
-<meta name="description" content="Bet on outcomes. Pick a side. Win crypto. Simple prediction markets powered by Bitcoin.">
+<title>predict.tattoo — Crypto Prediction Markets</title>
+<meta name="description" content="Tattoo prediction markets. Styles, artists, culture, and wild bets. 3% fee. No signup. No BS.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖋️</text></svg>">
 <style>
   *{margin:0;padding:0;box-sizing:border-box;}
-  :root{--bg:#0a0a0f;--card:#111118;--border:#1a1a25;--text:#e5e5e5;--muted:#666;--green:#22c55e;--red:#ef4444;--accent:#f59e0b;--yes:#22c55e;--no:#ef4444;--blue:#3b82f6;}
+  :root{--bg:#0a0a0f;--card:#111118;--border:#1a1a25;--text:#e5e5e5;--muted:#666;--green:#22c55e;--red:#ef4444;--accent:#f59e0b;--yes:#22c55e;--no:#ef4444;--blue:#3b82f6;--sol:#9945ff;}
   body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;}
   a{color:var(--accent);text-decoration:none;}
   a:hover{text-decoration:underline;}
@@ -17,11 +17,14 @@
   nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,15,0.95);backdrop-filter:blur(10px);z-index:100;}
   .logo{font-size:1.4rem;font-weight:800;letter-spacing:-0.5px;}
   .logo span{color:var(--accent);}
-  .nav-links{display:flex;gap:1.5rem;align-items:center;font-size:0.9rem;}
-  .nav-links a{color:var(--muted);transition:color 0.2s;}
-  .nav-links a:hover{color:var(--text);text-decoration:none;}
+  .nav-right{display:flex;gap:0.8rem;align-items:center;font-size:0.9rem;}
+  .nav-right a{color:var(--muted);transition:color 0.2s;}
+  .nav-right a:hover{color:var(--text);text-decoration:none;}
+  .nav-btn{background:var(--card);color:var(--text);border:1px solid var(--border);padding:0.45rem 1rem;border-radius:8px;font-weight:600;font-size:0.82rem;cursor:pointer;transition:all 0.2s;}
+  .nav-btn:hover{border-color:var(--accent);color:var(--accent);}
   .connect-btn{background:var(--accent);color:#000;border:none;padding:0.5rem 1.2rem;border-radius:8px;font-weight:700;font-size:0.85rem;cursor:pointer;transition:all 0.2s;}
   .connect-btn:hover{transform:scale(1.05);box-shadow:0 0 20px rgba(245,158,11,0.4);}
+  .balance-pill{background:var(--card);border:1px solid var(--border);padding:0.35rem 0.8rem;border-radius:20px;font-size:0.8rem;font-weight:700;color:var(--accent);display:none;}
 
   /* Hero */
   .hero{text-align:center;padding:3rem 1rem 2rem;max-width:700px;margin:0 auto;}
@@ -49,7 +52,9 @@
   .market-meta{text-align:right;flex-shrink:0;}
   .market-volume{font-size:0.8rem;color:var(--muted);}
   .market-ends{font-size:0.7rem;color:var(--muted);margin-top:0.2rem;}
-  .market-odds{display:flex;gap:0.5rem;margin-bottom:1rem;}
+  .market-live{font-size:0.6rem;color:var(--green);font-weight:700;margin-top:0.2rem;display:flex;align-items:center;gap:0.3rem;justify-content:flex-end;}
+  .market-live::before{content:'';width:6px;height:6px;background:var(--green);border-radius:50%;animation:pulse 1.5s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
   .odds-bar{flex:1;height:8px;border-radius:4px;background:var(--border);overflow:hidden;display:flex;}
   .odds-yes{background:var(--yes);height:100%;transition:width 0.5s;}
   .odds-no{background:var(--no);height:100%;transition:width 0.5s;}
@@ -63,10 +68,10 @@
   .bet-btn.no{background:rgba(239,68,68,0.15);color:var(--no);border:1px solid rgba(239,68,68,0.3);}
   .bet-btn.no:hover{background:rgba(239,68,68,0.25);transform:scale(1.02);}
 
-  /* Bet Modal */
+  /* Modals */
   .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
   .modal-overlay.show{display:flex;}
-  .modal{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2rem;max-width:420px;width:90%;animation:modalIn 0.2s;}
+  .modal{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2rem;max-width:460px;width:90%;animation:modalIn 0.2s;position:relative;max-height:90vh;overflow-y:auto;}
   @keyframes modalIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
   .modal h3{font-size:1.2rem;font-weight:800;margin-bottom:0.3rem;}
   .modal-question{color:var(--muted);font-size:0.9rem;margin-bottom:1.5rem;line-height:1.4;}
@@ -83,14 +88,74 @@
   .quick-amounts{display:flex;gap:0.3rem;margin-top:0.4rem;}
   .quick-amt{background:var(--bg);border:1px solid var(--border);color:var(--muted);padding:0.3rem 0.6rem;border-radius:6px;font-size:0.75rem;cursor:pointer;transition:all 0.15s;}
   .quick-amt:hover{color:var(--text);border-color:var(--accent);}
-  .payout-preview{background:var(--bg);border-radius:10px;padding:0.8rem;margin-bottom:1rem;display:flex;justify-content:space-between;font-size:0.85rem;}
-  .payout-preview .label{color:var(--muted);}
-  .payout-preview .value{font-weight:700;color:var(--accent);}
+  .payout-preview{background:var(--bg);border-radius:10px;padding:0.8rem;margin-bottom:1rem;}
+  .payout-row{display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:0.3rem;}
+  .payout-row:last-child{margin-bottom:0;}
+  .payout-row .label{color:var(--muted);}
+  .payout-row .value{font-weight:700;color:var(--accent);}
+  .payout-row .fee{color:var(--muted);font-size:0.75rem;}
   .place-bet-btn{width:100%;padding:0.8rem;border:none;border-radius:10px;font-weight:800;font-size:1rem;cursor:pointer;transition:all 0.2s;}
   .place-bet-btn.yes{background:var(--yes);color:#000;}
   .place-bet-btn.no{background:var(--no);color:#fff;}
   .place-bet-btn:hover{transform:scale(1.02);}
-  .modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--muted);font-size:1.5rem;cursor:pointer;}
+  .place-bet-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+  .modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--muted);font-size:1.5rem;cursor:pointer;line-height:1;}
+
+  /* User Panel */
+  .user-panel{max-width:900px;margin:0 auto;padding:1rem;display:none;}
+  .user-panel.show{display:block;}
+  .panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+  .panel-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;}
+  .panel-card h4{font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:0.8rem;}
+  .panel-card .big-val{font-size:1.8rem;font-weight:900;color:var(--accent);}
+  .panel-card .sub{font-size:0.75rem;color:var(--muted);margin-top:0.2rem;}
+  .panel-actions{display:flex;gap:0.5rem;margin-top:1rem;}
+  .panel-btn{flex:1;padding:0.6rem;border-radius:10px;font-weight:700;font-size:0.85rem;cursor:pointer;border:none;transition:all 0.2s;}
+  .panel-btn.deposit{background:var(--green);color:#000;}
+  .panel-btn.withdraw{background:var(--card);color:var(--text);border:1px solid var(--border);}
+  .panel-btn:hover{transform:scale(1.02);}
+  .bets-list{max-height:300px;overflow-y:auto;}
+  .bet-item{display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;border-bottom:1px solid var(--border);}
+  .bet-item:last-child{border-bottom:none;}
+  .bet-item .bet-q{font-size:0.85rem;font-weight:600;flex:1;margin-right:0.5rem;}
+  .bet-item .bet-side{font-size:0.75rem;font-weight:700;padding:0.2rem 0.5rem;border-radius:6px;}
+  .bet-item .bet-side.yes{background:rgba(34,197,94,0.15);color:var(--yes);}
+  .bet-item .bet-side.no{background:rgba(239,68,68,0.15);color:var(--no);}
+  .bet-item .bet-amt{font-size:0.85rem;font-weight:700;color:var(--accent);margin-left:0.5rem;white-space:nowrap;}
+
+  /* Deposit Modal */
+  .chain-tabs{display:flex;gap:0.3rem;margin-bottom:1rem;}
+  .chain-tab{flex:1;padding:0.5rem;border-radius:8px;font-weight:700;font-size:0.8rem;cursor:pointer;border:2px solid transparent;background:var(--bg);color:var(--muted);text-align:center;transition:all 0.2s;}
+  .chain-tab.active{border-color:var(--accent);color:var(--accent);background:rgba(245,158,11,0.1);}
+  .chain-tab.btc.active{border-color:#f7931a;color:#f7931a;}
+  .chain-tab.eth.active{border-color:#627eea;color:#627eea;}
+  .chain-tab.sol.active{border-color:var(--sol);color:var(--sol);}
+  .deposit-addr{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:0.8rem;font-family:monospace;font-size:0.75rem;word-break:break-all;margin-bottom:0.5rem;position:relative;cursor:pointer;}
+  .deposit-addr:hover{border-color:var(--accent);}
+  .deposit-addr .copy-hint{position:absolute;right:0.5rem;top:50%;transform:translateY(-50%);font-size:0.65rem;color:var(--muted);font-family:sans-serif;}
+  .deposit-note{font-size:0.75rem;color:var(--muted);margin-bottom:1rem;line-height:1.4;}
+  .deposit-confirm{width:100%;padding:0.7rem;border:none;border-radius:10px;font-weight:700;font-size:0.9rem;cursor:pointer;background:var(--accent);color:#000;transition:all 0.2s;}
+  .deposit-confirm:hover{transform:scale(1.02);}
+  .deposit-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:0.6rem 1rem;color:var(--text);font-size:0.95rem;font-weight:700;outline:none;margin-bottom:0.8rem;}
+  .deposit-input:focus{border-color:var(--accent);}
+
+  /* Admin Panel */
+  .admin-panel{max-width:900px;margin:0 auto;padding:1rem;display:none;}
+  .admin-panel.show{display:block;}
+  .admin-section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;margin-bottom:1rem;}
+  .admin-section h4{font-size:0.85rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:1rem;font-weight:800;}
+  .admin-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:0.5rem 0.8rem;color:var(--text);font-size:0.9rem;outline:none;margin-bottom:0.5rem;}
+  .admin-input:focus{border-color:var(--accent);}
+  .admin-btn{padding:0.5rem 1rem;border:none;border-radius:8px;font-weight:700;font-size:0.85rem;cursor:pointer;transition:all 0.2s;margin-right:0.3rem;margin-bottom:0.3rem;}
+  .admin-btn.primary{background:var(--accent);color:#000;}
+  .admin-btn.danger{background:var(--red);color:#fff;}
+  .admin-btn.success{background:var(--green);color:#000;}
+  .admin-row{display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0;border-bottom:1px solid var(--border);font-size:0.85rem;}
+  .admin-row:last-child{border-bottom:none;}
+  .admin-stat{text-align:center;padding:0.5rem;}
+  .admin-stat .val{font-size:1.4rem;font-weight:800;color:var(--accent);}
+  .admin-stat .label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;}
+  .admin-stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-bottom:1rem;}
 
   /* Footer */
   footer{border-top:1px solid var(--border);padding:2rem;text-align:center;margin-top:3rem;}
@@ -101,6 +166,11 @@
   .network-links a.current{border-color:var(--accent);background:rgba(245,158,11,0.15);}
   .footer-sub{font-size:0.75rem;color:var(--muted);}
   .fee-badge{display:inline-block;background:rgba(245,158,11,0.15);color:var(--accent);padding:0.2rem 0.6rem;border-radius:6px;font-size:0.7rem;font-weight:700;margin-top:0.5rem;}
+  .chains-badge{display:inline-flex;gap:0.5rem;margin-top:0.5rem;font-size:0.7rem;font-weight:700;}
+  .chains-badge span{padding:0.2rem 0.6rem;border-radius:6px;}
+  .chains-badge .btc{background:rgba(247,147,26,0.15);color:#f7931a;}
+  .chains-badge .eth{background:rgba(98,126,234,0.15);color:#627eea;}
+  .chains-badge .sol{background:rgba(153,69,255,0.15);color:#9945ff;}
 
   /* Toast */
   .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--card);border:1px solid var(--border);padding:0.8rem 1.5rem;border-radius:12px;font-size:0.9rem;z-index:300;transition:transform 0.3s;font-weight:600;}
@@ -110,22 +180,24 @@
   .how-it-works{max-width:700px;margin:2rem auto;padding:0 1rem;}
   .how-title{text-align:center;font-size:1.2rem;font-weight:800;margin-bottom:1.5rem;color:var(--muted);}
   .steps{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;}
-  .step{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;flex:1;min-width:180px;text-align:center;}
+  .step{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;flex:1;min-width:140px;text-align:center;}
   .step-num{font-size:1.5rem;font-weight:900;color:var(--accent);margin-bottom:0.3rem;}
   .step-title{font-weight:700;font-size:0.9rem;margin-bottom:0.3rem;}
   .step-desc{font-size:0.75rem;color:var(--muted);line-height:1.4;}
 
   /* Responsive */
   @media(max-width:600px){
-    nav{padding:0.8rem 1rem;}
+    nav{padding:0.8rem 1rem;flex-wrap:wrap;gap:0.5rem;}
     .logo{font-size:1.1rem;}
-    .nav-links{gap:0.8rem;}
+    .nav-right{gap:0.5rem;font-size:0.8rem;}
     .hero h1{font-size:1.6rem;}
     .hero p{font-size:0.9rem;}
     .hero-stats{gap:1rem;}
     .market-header{flex-direction:column;}
     .market-meta{text-align:left;margin-top:0.3rem;}
     .steps{flex-direction:column;}
+    .panel-grid{grid-template-columns:1fr;}
+    .admin-stats-grid{grid-template-columns:repeat(2,1fr);}
   }
 </style>
 </head>
@@ -133,9 +205,12 @@
 
 <nav>
   <div class="logo">predict<span>.tattoo</span> 🖋️</div>
-  <div class="nav-links">
+  <div class="nav-right">
     <a href="#markets">Markets</a>
     <a href="#how">How It Works</a>
+    <span class="balance-pill" id="balance-pill">0 credits</span>
+    <button class="nav-btn" id="panel-btn" style="display:none" onclick="toggleUserPanel()">My Bets</button>
+    <button class="nav-btn" id="admin-toggle" style="display:none" onclick="toggleAdmin()">Admin</button>
     <button class="connect-btn" id="connect-btn" onclick="connectWallet()">Connect Wallet</button>
   </div>
 </nav>
@@ -143,9 +218,9 @@
 <div class="hero">
   <div class="hero-emoji">💉</div>
   <h1>Predict. Bet. <span>Win.</span></h1>
-  <p>Simple crypto prediction markets. Pick a side, stake sats, collect if you're right. 3% fee. No signup. No BS.</p>
+  <p>Tattoo prediction markets. Styles, artists, culture, and wild bets. 3% fee. No signup. No BS.</p>
   <div class="hero-stats">
-    <div class="hero-stat"><div class="val" id="total-volume">0</div><div class="label">Total Volume (sats)</div></div>
+    <div class="hero-stat"><div class="val" id="total-volume">0</div><div class="label">Total Volume</div></div>
     <div class="hero-stat"><div class="val" id="active-markets">0</div><div class="label">Active Markets</div></div>
     <div class="hero-stat"><div class="val" id="total-bets">0</div><div class="label">Bets Placed</div></div>
   </div>
@@ -159,6 +234,27 @@
   <button class="filter-btn" onclick="filterMarkets('wild')">Wild</button>
 </div>
 
+<!-- User Panel -->
+<div class="user-panel" id="user-panel">
+  <div class="panel-grid">
+    <div class="panel-card">
+      <h4>Balance</h4>
+      <div class="big-val" id="user-balance">0</div>
+      <div class="sub">credits</div>
+      <div class="panel-actions">
+        <button class="panel-btn deposit" onclick="openDeposit()">Deposit</button>
+        <button class="panel-btn withdraw" onclick="openWithdraw()">Withdraw</button>
+      </div>
+    </div>
+    <div class="panel-card">
+      <h4>My Active Bets</h4>
+      <div class="bets-list" id="my-bets">
+        <div style="color:var(--muted);font-size:0.85rem;padding:1rem 0;text-align:center;">No bets yet — pick a market!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="markets" id="markets"></div>
 
 <div id="how" class="how-it-works">
@@ -166,19 +262,57 @@
   <div class="steps">
     <div class="step">
       <div class="step-num">1</div>
-      <div class="step-title">Pick a Market</div>
-      <div class="step-desc">Tattoo styles, artist milestones, culture shifts, wild bets.</div>
+      <div class="step-title">Connect Wallet</div>
+      <div class="step-desc">MetaMask, Phantom, Xverse, or Unisat. Your wallet = your account.</div>
     </div>
     <div class="step">
       <div class="step-num">2</div>
-      <div class="step-title">Choose a Side</div>
-      <div class="step-desc">Bet YES or NO. Stake your sats on the outcome you believe in.</div>
+      <div class="step-title">Deposit</div>
+      <div class="step-desc">Send BTC, ETH, or SOL. Get credits instantly.</div>
     </div>
     <div class="step">
       <div class="step-num">3</div>
-      <div class="step-title">Collect Winnings</div>
-      <div class="step-desc">If you're right, you split the losing side's pool. 3% fee, rest is yours.</div>
+      <div class="step-title">Pick a Side</div>
+      <div class="step-desc">Bet YES or NO on any market. Real pools, real odds.</div>
     </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-title">Win & Withdraw</div>
+      <div class="step-desc">Market resolves — winners split the pot. 3% fee, rest is yours.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Panel -->
+<div class="admin-panel" id="admin-panel">
+  <div class="admin-section">
+    <h4>Dashboard</h4>
+    <div class="admin-stats-grid">
+      <div class="admin-stat"><div class="val" id="admin-users">0</div><div class="label">Users</div></div>
+      <div class="admin-stat"><div class="val" id="admin-bets">0</div><div class="label">Total Bets</div></div>
+      <div class="admin-stat"><div class="val" id="admin-volume">0</div><div class="label">Volume</div></div>
+      <div class="admin-stat"><div class="val" id="admin-fees">0</div><div class="label">Fees Earned</div></div>
+    </div>
+  </div>
+  <div class="admin-section">
+    <h4>Create Market</h4>
+    <input class="admin-input" id="admin-question" placeholder="Market question...">
+    <input class="admin-input" id="admin-category" placeholder="Category (e.g. racing, crypto)">
+    <input class="admin-input" id="admin-emoji" placeholder="Emoji (e.g. 🏎️)">
+    <input class="admin-input" id="admin-ends" type="date" placeholder="End date">
+    <button class="admin-btn primary" onclick="adminCreateMarket()">Create Market</button>
+  </div>
+  <div class="admin-section">
+    <h4>Active Markets — Resolve</h4>
+    <div id="admin-markets-list"></div>
+  </div>
+  <div class="admin-section">
+    <h4>Pending Deposits</h4>
+    <div id="admin-deposits-list"><div style="color:var(--muted);font-size:0.85rem;">No pending deposits</div></div>
+  </div>
+  <div class="admin-section">
+    <h4>Withdrawal Requests</h4>
+    <div id="admin-withdrawals-list"><div style="color:var(--muted);font-size:0.85rem;">No pending withdrawals</div></div>
   </div>
 </div>
 
@@ -204,11 +338,16 @@
   </div>
   <div class="footer-sub">Crypto-native prediction markets. No signup. No custody.</div>
   <div class="fee-badge">3% Platform Fee</div>
+  <div class="chains-badge">
+    <span class="btc">BTC</span>
+    <span class="eth">ETH</span>
+    <span class="sol">SOL</span>
+  </div>
 </footer>
 
 <!-- Bet Modal -->
 <div class="modal-overlay" id="bet-modal">
-  <div class="modal" style="position:relative;">
+  <div class="modal">
     <button class="modal-close" onclick="closeBetModal()">&times;</button>
     <h3 id="modal-title">Place Your Bet</h3>
     <div class="modal-question" id="modal-question"></div>
@@ -217,7 +356,7 @@
       <button class="side-btn no" id="side-no" onclick="selectSide('no')">NO</button>
     </div>
     <div class="bet-input-group">
-      <label>Amount (sats)</label>
+      <label>Amount (credits)</label>
       <input type="number" class="bet-input" id="bet-amount" value="10000" min="1000" oninput="updatePayout()">
       <div class="quick-amounts">
         <button class="quick-amt" onclick="setAmount(5000)">5k</button>
@@ -228,83 +367,251 @@
       </div>
     </div>
     <div class="payout-preview">
-      <span class="label">Potential payout</span>
-      <span class="value" id="payout-value">—</span>
+      <div class="payout-row"><span class="label">Your balance</span><span class="value" id="modal-balance">0</span></div>
+      <div class="payout-row"><span class="label">Potential payout</span><span class="value" id="payout-value">—</span></div>
+      <div class="payout-row"><span class="label">Platform fee</span><span class="fee" id="fee-value">3% on winnings</span></div>
     </div>
     <button class="place-bet-btn yes" id="place-bet-btn" onclick="placeBet()">Place Bet</button>
   </div>
 </div>
 
+<!-- Deposit Modal -->
+<div class="modal-overlay" id="deposit-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeDeposit()">&times;</button>
+    <h3>Deposit Crypto</h3>
+    <div class="modal-question">Send crypto to get credits. 1 credit ≈ 1 sat equivalent.</div>
+    <div class="chain-tabs">
+      <button class="chain-tab btc active" onclick="switchChain('btc')">₿ BTC</button>
+      <button class="chain-tab eth" onclick="switchChain('eth')">Ξ ETH</button>
+      <button class="chain-tab sol" onclick="switchChain('sol')">◎ SOL</button>
+    </div>
+    <div class="deposit-addr" id="deposit-addr" onclick="copyAddr()">
+      <span id="deposit-addr-text">Loading...</span>
+      <span class="copy-hint">Click to copy</span>
+    </div>
+    <div class="deposit-note" id="deposit-note">Send any amount of BTC to this address. Credits will be added after confirmation.</div>
+    <div class="bet-input-group">
+      <label>Transaction hash (optional — speeds up verification)</label>
+      <input class="deposit-input" id="deposit-txhash" placeholder="Paste tx hash...">
+    </div>
+    <button class="deposit-confirm" onclick="confirmDeposit()">I've Sent My Deposit</button>
+  </div>
+</div>
+
+<!-- Withdraw Modal -->
+<div class="modal-overlay" id="withdraw-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeWithdraw()">&times;</button>
+    <h3>Withdraw</h3>
+    <div class="modal-question">Request a withdrawal. Credits → crypto sent to your wallet.</div>
+    <div class="chain-tabs">
+      <button class="chain-tab btc active" onclick="switchWithdrawChain('btc')">₿ BTC</button>
+      <button class="chain-tab eth" onclick="switchWithdrawChain('eth')">Ξ ETH</button>
+      <button class="chain-tab sol" onclick="switchWithdrawChain('sol')">◎ SOL</button>
+    </div>
+    <div class="bet-input-group">
+      <label>Amount (credits)</label>
+      <input class="deposit-input" id="withdraw-amount" type="number" placeholder="Amount to withdraw...">
+    </div>
+    <div class="bet-input-group">
+      <label>Destination wallet address</label>
+      <input class="deposit-input" id="withdraw-addr" placeholder="Your wallet address...">
+    </div>
+    <div class="payout-preview">
+      <div class="payout-row"><span class="label">Available</span><span class="value" id="withdraw-available">0</span></div>
+    </div>
+    <button class="deposit-confirm" onclick="submitWithdraw()">Request Withdrawal</button>
+  </div>
+</div>
+
+<!-- Admin Login Modal -->
+<div class="modal-overlay" id="admin-login-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAdminLogin()">&times;</button>
+    <h3>Admin Access</h3>
+    <div class="modal-question">Enter admin password to access the control panel.</div>
+    <input class="admin-input" id="admin-pw" type="password" placeholder="Password..." onkeydown="if(event.key==='Enter')adminLogin()">
+    <button class="admin-btn primary" onclick="adminLogin()" style="margin-top:0.5rem">Enter</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+
 <script>
-// ===== MARKETS DATA =====
-const MARKETS = [
-  {
-    id: 1, category: 'styles', emoji: '🌊',
-    question: 'Will watercolor tattoos be the #1 requested style in 2026?',
-    yesPool: 420000, noPool: 580000, totalBets: 112,
-    ends: '2026-12-31', status: 'open'
-  },
-  {
-    id: 2, category: 'artists', emoji: '🏆',
-    question: 'Will a tattoo artist win a major fine art award this year?',
-    yesPool: 190000, noPool: 810000, totalBets: 145,
-    ends: '2026-12-31', status: 'open'
-  },
-  {
-    id: 3, category: 'culture', emoji: '📺',
-    question: 'Will a tattoo reality show break Netflix top 10?',
-    yesPool: 670000, noPool: 330000, totalBets: 203,
-    ends: '2026-12-31', status: 'open'
-  },
-  {
-    id: 4, category: 'wild', emoji: '🤖',
-    question: 'Will an AI-designed tattoo go viral with 100M+ views?',
-    yesPool: 890000, noPool: 310000, totalBets: 278,
-    ends: '2026-12-31', status: 'open'
-  },
-  {
-    id: 5, category: 'styles', emoji: '✨',
-    question: 'Will UV-reactive tattoos become mainstream by end of 2026?',
-    yesPool: 340000, noPool: 660000, totalBets: 89,
-    ends: '2026-12-31', status: 'open'
-  },
-  {
-    id: 6, category: 'artists', emoji: '💰',
-    question: 'Will a single tattoo session sell for over $100k?',
-    yesPool: 150000, noPool: 950000, totalBets: 167,
-    ends: '2026-12-31', status: 'open'
-  },
-  {
-    id: 7, category: 'culture', emoji: '⚖️',
-    question: 'Will a country lift its ban on visible tattoos in workplaces?',
-    yesPool: 510000, noPool: 490000, totalBets: 134,
-    ends: '2026-12-31', status: 'open'
-  },
-  {
-    id: 8, category: 'wild', emoji: '🧬',
-    question: 'Will removable biotech tattoos hit the market in 2026?',
-    yesPool: 280000, noPool: 720000, totalBets: 198,
-    ends: '2026-12-31', status: 'open'
-  }
+// ============================================================
+// CONFIG
+// ============================================================
+const SITE_ID = 'tattoo';
+const ADMIN_HASH = '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8'; // sha256 of 'password' — CHANGE THIS
+const PLATFORM_FEE = 0.03;
+
+// Deposit addresses (BTC, ETH, SOL)
+const DEPOSIT_ADDRS = {
+  btc: 'bc1pkepg42ctsvsxk499qu02qqyyz88gwjchnjpsu22wmng9rhpfv3jqw2t2hm',
+  eth: '0x0000000000000000000000000000000000000000',
+  sol: '11111111111111111111111111111111'
+};
+const DEPOSIT_NOTES = {
+  btc: 'Send any amount of BTC to this address. Credits will be added after admin confirmation.',
+  eth: 'Send any amount of ETH to this address. Credits will be added after admin confirmation.',
+  sol: 'Send any amount of SOL to this address. Credits will be added after admin confirmation.'
+};
+
+// ============================================================
+// FIREBASE CONFIG — Replace with your project config
+// ============================================================
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+  projectId: "YOUR_PROJECT",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "000000000000",
+  appId: "YOUR_APP_ID"
+};
+
+let db = null;
+let fbUser = null;
+let firebaseReady = false;
+
+// Try to init Firebase
+try {
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.database();
+  firebaseReady = firebaseConfig.apiKey !== 'YOUR_API_KEY';
+} catch(e) {
+  console.warn('Firebase not configured — running in local demo mode');
+}
+
+// ============================================================
+// SEED MARKETS (used as fallback when Firebase has no data)
+// ============================================================
+const SEED_MARKETS = [
+  {id:1,category:"styles",emoji:"🌊",question:"Will watercolor tattoos be the #1 requested style in 2026?",yesPool:420000,noPool:580000,totalBets:112,ends:"2026-12-31",status:"open"},
+  {id:2,category:"artists",emoji:"🏆",question:"Will a tattoo artist win a major fine art award this year?",yesPool:190000,noPool:810000,totalBets:145,ends:"2026-12-31",status:"open"},
+  {id:3,category:"culture",emoji:"📺",question:"Will a tattoo reality show break Netflix top 10?",yesPool:670000,noPool:330000,totalBets:203,ends:"2026-12-31",status:"open"},
+  {id:4,category:"wild",emoji:"🤖",question:"Will an AI-designed tattoo go viral with 100M+ views?",yesPool:890000,noPool:310000,totalBets:278,ends:"2026-12-31",status:"open"},
+  {id:5,category:"styles",emoji:"✨",question:"Will UV-reactive tattoos become mainstream by end of 2026?",yesPool:340000,noPool:660000,totalBets:89,ends:"2026-12-31",status:"open"},
+  {id:6,category:"artists",emoji:"💰",question:"Will a single tattoo session sell for over $100k?",yesPool:150000,noPool:950000,totalBets:167,ends:"2026-12-31",status:"open"},
+  {id:7,category:"culture",emoji:"⚖️",question:"Will a country lift its ban on visible tattoos in workplaces?",yesPool:510000,noPool:490000,totalBets:134,ends:"2026-12-31",status:"open"},
+  {id:8,category:"wild",emoji:"🧬",question:"Will removable biotech tattoos hit the market in 2026?",yesPool:280000,noPool:720000,totalBets:198,ends:"2026-12-31",status:"open"},
 ];
 
-// ===== STATE =====
+// ============================================================
+// STATE
+// ============================================================
 let wallet = null;
+let walletChain = null;
+let userId = null;
+let userBalance = 0;
+let markets = [];
+let userBets = [];
 let selectedMarket = null;
 let selectedSide = 'yes';
-let userBets = JSON.parse(localStorage.getItem('predict_tattoo_bets') || '[]');
+let currentFilter = 'all';
+let isAdmin = false;
+let depositChain = 'btc';
+let withdrawChain = 'btc';
 
-// ===== RENDER =====
+// ============================================================
+// FIREBASE AUTH
+// ============================================================
+async function initAuth() {
+  if (!firebaseReady) return;
+  try {
+    await firebase.auth().signInAnonymously();
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        fbUser = user;
+        if (wallet) loadUserData();
+      }
+    });
+  } catch(e) {
+    console.warn('Auth error:', e);
+  }
+}
+
+// ============================================================
+// DATA LAYER (Firebase with localStorage fallback)
+// ============================================================
+function loadMarkets() {
+  if (!firebaseReady) {
+    markets = JSON.parse(JSON.stringify(SEED_MARKETS));
+    renderMarkets();
+    return;
+  }
+  const ref = db.ref('markets/' + SITE_ID);
+  ref.on('value', snap => {
+    const data = snap.val();
+    if (data) {
+      markets = Object.keys(data).map(k => ({...data[k], fbKey: k}));
+      markets.sort((a,b) => a.id - b.id);
+    } else {
+      // Seed Firebase with initial markets
+      seedMarkets();
+      return;
+    }
+    renderMarkets();
+    if (isAdmin) renderAdminMarkets();
+  });
+}
+
+function seedMarkets() {
+  if (!firebaseReady) return;
+  const ref = db.ref('markets/' + SITE_ID);
+  SEED_MARKETS.forEach(m => {
+    ref.push({...m});
+  });
+}
+
+function loadUserData() {
+  if (!firebaseReady || !userId) return;
+  // Balance
+  db.ref('users/' + userId + '/balance').on('value', snap => {
+    userBalance = snap.val() || 0;
+    updateBalanceUI();
+  });
+  // Bets
+  db.ref('bets/' + SITE_ID).orderByChild('userId').equalTo(userId).on('value', snap => {
+    userBets = [];
+    snap.forEach(child => {
+      userBets.push({...child.val(), fbKey: child.key});
+    });
+    renderMyBets();
+  });
+}
+
+function updateBalanceUI() {
+  const pill = document.getElementById('balance-pill');
+  pill.textContent = userBalance.toLocaleString() + ' credits';
+  pill.style.display = wallet ? 'inline-block' : 'none';
+  document.getElementById('user-balance').textContent = userBalance.toLocaleString();
+  document.getElementById('modal-balance').textContent = userBalance.toLocaleString() + ' credits';
+  document.getElementById('withdraw-available').textContent = userBalance.toLocaleString();
+}
+
+// ============================================================
+// RENDER
+// ============================================================
 function renderMarkets(filter) {
+  if (filter) currentFilter = filter;
   const container = document.getElementById('markets');
-  const filtered = filter && filter !== 'all' ? MARKETS.filter(m => m.category === filter) : MARKETS;
-  container.innerHTML = filtered.map(m => {
-    const total = m.yesPool + m.noPool;
-    const yesPct = total > 0 ? Math.round((m.yesPool / total) * 100) : 50;
+  const filtered = currentFilter && currentFilter !== 'all'
+    ? markets.filter(m => m.category === currentFilter)
+    : markets;
+
+  container.innerHTML = filtered.filter(m => m.status === 'open' || !m.status).map(m => {
+    const total = (m.yesPool || 0) + (m.noPool || 0);
+    const yesPct = total > 0 ? Math.round(((m.yesPool || 0) / total) * 100) : 50;
     const noPct = 100 - yesPct;
     const daysLeft = Math.max(0, Math.ceil((new Date(m.ends) - new Date()) / 86400000));
+    const key = m.fbKey || m.id;
     return `
       <div class="market-card" data-category="${m.category}">
         <div class="market-header">
@@ -313,8 +620,9 @@ function renderMarkets(filter) {
             <div class="market-question">${m.question}</div>
           </div>
           <div class="market-meta">
-            <div class="market-volume">${(total / 100000000).toFixed(4)} BTC</div>
-            <div class="market-ends">${daysLeft}d left · ${m.totalBets} bets</div>
+            <div class="market-volume">${total.toLocaleString()} credits</div>
+            <div class="market-ends">${daysLeft}d left · ${m.totalBets || 0} bets</div>
+            ${firebaseReady ? '<div class="market-live">LIVE</div>' : ''}
           </div>
         </div>
         <div class="odds-labels">
@@ -326,17 +634,17 @@ function renderMarkets(filter) {
           <div class="odds-no" style="width:${noPct}%"></div>
         </div>
         <div class="market-actions">
-          <button class="bet-btn yes" onclick="openBetModal(${m.id},'yes')">YES ${yesPct}¢</button>
-          <button class="bet-btn no" onclick="openBetModal(${m.id},'no')">NO ${noPct}¢</button>
+          <button class="bet-btn yes" onclick="openBetModal('${key}','yes')">YES ${yesPct}¢</button>
+          <button class="bet-btn no" onclick="openBetModal('${key}','no')">NO ${noPct}¢</button>
         </div>
       </div>`;
   }).join('');
 
-  // Update stats
-  const activeMarkets = MARKETS.filter(m => m.status === 'open').length;
-  const totalVol = MARKETS.reduce((s, m) => s + m.yesPool + m.noPool, 0);
-  const totalBets = MARKETS.reduce((s, m) => s + m.totalBets, 0);
-  document.getElementById('active-markets').textContent = activeMarkets;
+  // Update hero stats
+  const open = markets.filter(m => m.status === 'open' || !m.status);
+  const totalVol = markets.reduce((s, m) => s + (m.yesPool || 0) + (m.noPool || 0), 0);
+  const totalBets = markets.reduce((s, m) => s + (m.totalBets || 0), 0);
+  document.getElementById('active-markets').textContent = open.length;
   document.getElementById('total-volume').textContent = totalVol.toLocaleString();
   document.getElementById('total-bets').textContent = totalBets.toLocaleString();
 }
@@ -347,20 +655,37 @@ function filterMarkets(cat) {
   renderMarkets(cat);
 }
 
-// ===== BET MODAL =====
-function openBetModal(id, side) {
-  selectedMarket = MARKETS.find(m => m.id === id);
+function renderMyBets() {
+  const container = document.getElementById('my-bets');
+  if (userBets.length === 0) {
+    container.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;padding:1rem 0;text-align:center;">No bets yet — pick a market!</div>';
+    return;
+  }
+  container.innerHTML = userBets.map(b => {
+    const mkt = markets.find(m => (m.fbKey || m.id) == b.marketId) || {};
+    const q = mkt.question || 'Market #' + b.marketId;
+    return `<div class="bet-item">
+      <span class="bet-q">${q.length > 50 ? q.slice(0,50)+'...' : q}</span>
+      <span class="bet-side ${b.side}">${b.side.toUpperCase()}</span>
+      <span class="bet-amt">${(b.amount||0).toLocaleString()}</span>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// BET MODAL
+// ============================================================
+function openBetModal(key, side) {
+  selectedMarket = markets.find(m => (m.fbKey || m.id) == key);
   if (!selectedMarket) return;
   selectedSide = side;
   document.getElementById('modal-question').textContent = selectedMarket.question;
+  document.getElementById('modal-balance').textContent = userBalance.toLocaleString() + ' credits';
   selectSide(side);
   updatePayout();
   document.getElementById('bet-modal').classList.add('show');
 }
-
-function closeBetModal() {
-  document.getElementById('bet-modal').classList.remove('show');
-}
+function closeBetModal() { document.getElementById('bet-modal').classList.remove('show'); }
 
 function selectSide(side) {
   selectedSide = side;
@@ -379,103 +704,480 @@ function setAmount(v) {
 function updatePayout() {
   if (!selectedMarket) return;
   const amount = parseInt(document.getElementById('bet-amount').value) || 0;
-  const total = selectedMarket.yesPool + selectedMarket.noPool + amount;
-  const myPool = selectedSide === 'yes' ? selectedMarket.yesPool + amount : selectedMarket.noPool + amount;
+  const total = (selectedMarket.yesPool || 0) + (selectedMarket.noPool || 0) + amount;
+  const myPool = selectedSide === 'yes'
+    ? (selectedMarket.yesPool || 0) + amount
+    : (selectedMarket.noPool || 0) + amount;
   const share = myPool > 0 ? amount / myPool : 0;
   const gross = share * total;
-  const payout = Math.floor(gross * 0.97); // 3% fee
-  document.getElementById('payout-value').textContent = payout.toLocaleString() + ' sats';
+  const fee = Math.floor(gross * PLATFORM_FEE);
+  const payout = Math.floor(gross - fee);
+  document.getElementById('payout-value').textContent = payout.toLocaleString() + ' credits';
+  document.getElementById('fee-value').textContent = fee.toLocaleString() + ' (' + (PLATFORM_FEE*100) + '%)';
 }
 
-function placeBet() {
-  if (!wallet) {
-    showToast('Connect your wallet first');
-    return;
-  }
+async function placeBet() {
+  if (!wallet) { showToast('Connect your wallet first'); return; }
   const amount = parseInt(document.getElementById('bet-amount').value) || 0;
-  if (amount < 1000) { showToast('Minimum bet: 1,000 sats'); return; }
+  if (amount < 1000) { showToast('Minimum bet: 1,000 credits'); return; }
 
-  // Record bet locally
-  if (selectedSide === 'yes') selectedMarket.yesPool += amount;
-  else selectedMarket.noPool += amount;
-  selectedMarket.totalBets++;
+  if (firebaseReady) {
+    if (amount > userBalance) { showToast('Insufficient balance — deposit first'); return; }
+    const key = selectedMarket.fbKey;
+    if (!key) { showToast('Error: market key missing'); return; }
 
-  userBets.push({
-    marketId: selectedMarket.id,
-    side: selectedSide,
-    amount,
-    timestamp: Date.now()
-  });
-  localStorage.setItem('predict_tattoo_bets', JSON.stringify(userBets));
+    const updates = {};
+    const poolField = selectedSide === 'yes' ? 'yesPool' : 'noPool';
+    const newPool = (selectedMarket[poolField] || 0) + amount;
+    const newBets = (selectedMarket.totalBets || 0) + 1;
 
-  closeBetModal();
-  renderMarkets();
-  showToast('Bet placed! ' + amount.toLocaleString() + ' sats on ' + selectedSide.toUpperCase());
+    updates['markets/' + SITE_ID + '/' + key + '/' + poolField] = newPool;
+    updates['markets/' + SITE_ID + '/' + key + '/totalBets'] = newBets;
+    updates['users/' + userId + '/balance'] = userBalance - amount;
+
+    const betRef = db.ref('bets/' + SITE_ID).push();
+    updates['bets/' + SITE_ID + '/' + betRef.key] = {
+      userId: userId,
+      marketId: key,
+      side: selectedSide,
+      amount: amount,
+      timestamp: firebase.database.ServerValue.TIMESTAMP
+    };
+
+    try {
+      await db.ref().update(updates);
+      closeBetModal();
+      showToast('Bet placed! ' + amount.toLocaleString() + ' on ' + selectedSide.toUpperCase());
+    } catch(e) {
+      showToast('Error placing bet: ' + e.message);
+    }
+  } else {
+    // Local demo mode
+    if (selectedSide === 'yes') selectedMarket.yesPool = (selectedMarket.yesPool||0) + amount;
+    else selectedMarket.noPool = (selectedMarket.noPool||0) + amount;
+    selectedMarket.totalBets = (selectedMarket.totalBets||0) + 1;
+    closeBetModal();
+    renderMarkets();
+    showToast('Bet placed! (Demo mode — configure Firebase for real markets)');
+  }
 }
 
-// ===== WALLET =====
-function connectWallet() {
-  // Simple wallet connect simulation — replace with real Xverse/Unisat integration
-  if (window.BitcoinProvider || window.XverseProviders || window.unisat) {
-    connectRealWallet();
+// ============================================================
+// WALLET CONNECT (BTC + ETH + SOL)
+// ============================================================
+async function connectWallet() {
+  // Try Phantom (SOL) first, then MetaMask (ETH), then Xverse/Unisat (BTC)
+  if (window.solana && window.solana.isPhantom) {
+    await connectPhantom();
+  } else if (window.ethereum) {
+    await connectMetaMask();
+  } else if (window.XverseProviders?.BitcoinProvider || window.BitcoinProvider || window.unisat) {
+    await connectBTC();
   } else {
     // Demo mode
-    wallet = { address: 'bc1q' + Math.random().toString(36).slice(2, 10) + '...' };
-    document.getElementById('connect-btn').textContent = wallet.address;
-    document.getElementById('connect-btn').style.background = '#1a1a25';
-    document.getElementById('connect-btn').style.color = 'var(--accent)';
-    document.getElementById('connect-btn').style.border = '1px solid var(--accent)';
-    showToast('Demo wallet connected');
+    wallet = 'demo_' + Math.random().toString(36).slice(2, 10);
+    walletChain = 'demo';
+    userId = wallet;
+    onWalletConnected('demo');
+    showToast('Demo wallet connected — install Phantom, MetaMask, Xverse, or Unisat for real wallets');
   }
 }
 
-async function connectRealWallet() {
+async function connectPhantom() {
   try {
-    let provider = null;
-    if (window.XverseProviders?.BitcoinProvider) provider = window.XverseProviders.BitcoinProvider;
-    else if (window.BitcoinProvider) provider = window.BitcoinProvider;
-
-    if (provider) {
-      const resp = await provider.request('getAccounts', { purposes: ['payment'] });
-      if (resp.result && resp.result.length > 0) {
-        wallet = { address: resp.result[0].address };
-        const short = wallet.address.slice(0, 6) + '...' + wallet.address.slice(-4);
-        document.getElementById('connect-btn').textContent = short;
-        document.getElementById('connect-btn').style.background = '#1a1a25';
-        document.getElementById('connect-btn').style.color = 'var(--accent)';
-        document.getElementById('connect-btn').style.border = '1px solid var(--accent)';
-        showToast('Wallet connected');
-        return;
-      }
-    }
-    if (window.unisat) {
-      const accounts = await window.unisat.requestAccounts();
-      if (accounts.length > 0) {
-        wallet = { address: accounts[0] };
-        const short = wallet.address.slice(0, 6) + '...' + wallet.address.slice(-4);
-        document.getElementById('connect-btn').textContent = short;
-        showToast('Wallet connected');
-        return;
-      }
-    }
-    showToast('No wallet found — using demo mode');
-    wallet = { address: 'demo' };
-  } catch (e) {
-    showToast('Wallet error — using demo mode');
-    wallet = { address: 'demo' };
+    const resp = await window.solana.connect();
+    wallet = resp.publicKey.toString();
+    walletChain = 'sol';
+    userId = 'sol_' + wallet;
+    onWalletConnected(wallet);
+    showToast('Phantom wallet connected (SOL)');
+  } catch(e) {
+    showToast('Phantom connection failed');
   }
 }
 
-// ===== TOAST =====
+async function connectMetaMask() {
+  try {
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    if (accounts.length > 0) {
+      wallet = accounts[0];
+      walletChain = 'eth';
+      userId = 'eth_' + wallet.toLowerCase();
+      onWalletConnected(wallet);
+      showToast('MetaMask connected (ETH)');
+    }
+  } catch(e) {
+    showToast('MetaMask connection failed');
+  }
+}
+
+async function connectBTC() {
+  try {
+    let addr = null;
+    if (window.XverseProviders?.BitcoinProvider) {
+      const resp = await window.XverseProviders.BitcoinProvider.request('getAccounts', { purposes: ['payment'] });
+      if (resp.result?.length > 0) addr = resp.result[0].address;
+    } else if (window.BitcoinProvider) {
+      const resp = await window.BitcoinProvider.request('getAccounts', { purposes: ['payment'] });
+      if (resp.result?.length > 0) addr = resp.result[0].address;
+    } else if (window.unisat) {
+      const accounts = await window.unisat.requestAccounts();
+      if (accounts.length > 0) addr = accounts[0];
+    }
+    if (addr) {
+      wallet = addr;
+      walletChain = 'btc';
+      userId = 'btc_' + wallet;
+      onWalletConnected(wallet);
+      showToast('BTC wallet connected');
+    } else {
+      showToast('No BTC wallet found');
+    }
+  } catch(e) {
+    showToast('BTC wallet connection failed');
+  }
+}
+
+function onWalletConnected(addr) {
+  const short = addr.length > 12 ? addr.slice(0,6) + '...' + addr.slice(-4) : addr;
+  const btn = document.getElementById('connect-btn');
+  btn.textContent = short;
+  btn.style.background = '#1a1a25';
+  btn.style.color = 'var(--accent)';
+  btn.style.border = '1px solid var(--accent)';
+  btn.onclick = null;
+
+  document.getElementById('panel-btn').style.display = 'inline-block';
+  document.getElementById('balance-pill').style.display = 'inline-block';
+
+  if (firebaseReady) {
+    // Register user if new
+    db.ref('users/' + userId).once('value').then(snap => {
+      if (!snap.exists()) {
+        db.ref('users/' + userId).set({
+          wallet: wallet,
+          chain: walletChain,
+          balance: 0,
+          joined: firebase.database.ServerValue.TIMESTAMP
+        });
+      }
+    });
+    loadUserData();
+  }
+  updateBalanceUI();
+}
+
+// ============================================================
+// DEPOSIT
+// ============================================================
+function openDeposit() {
+  depositChain = 'btc';
+  updateDepositUI();
+  document.getElementById('deposit-modal').classList.add('show');
+}
+function closeDeposit() { document.getElementById('deposit-modal').classList.remove('show'); }
+
+function switchChain(chain) {
+  depositChain = chain;
+  document.querySelectorAll('#deposit-modal .chain-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('#deposit-modal .chain-tab.' + chain).classList.add('active');
+  updateDepositUI();
+}
+
+function updateDepositUI() {
+  document.getElementById('deposit-addr-text').textContent = DEPOSIT_ADDRS[depositChain];
+  document.getElementById('deposit-note').textContent = DEPOSIT_NOTES[depositChain];
+}
+
+function copyAddr() {
+  navigator.clipboard.writeText(DEPOSIT_ADDRS[depositChain]).then(() => showToast('Address copied!'));
+}
+
+async function confirmDeposit() {
+  if (!wallet) { showToast('Connect wallet first'); return; }
+  const txHash = document.getElementById('deposit-txhash').value.trim();
+  if (firebaseReady) {
+    await db.ref('deposits/' + userId).push({
+      chain: depositChain,
+      txHash: txHash || null,
+      status: 'pending',
+      timestamp: firebase.database.ServerValue.TIMESTAMP
+    });
+    closeDeposit();
+    showToast('Deposit recorded — admin will credit your balance shortly');
+  } else {
+    // Demo mode: auto-credit
+    userBalance += 100000;
+    updateBalanceUI();
+    closeDeposit();
+    showToast('Demo: 100,000 credits added');
+  }
+}
+
+// ============================================================
+// WITHDRAW
+// ============================================================
+function openWithdraw() {
+  withdrawChain = 'btc';
+  document.getElementById('withdraw-available').textContent = userBalance.toLocaleString();
+  document.getElementById('withdraw-addr').value = wallet || '';
+  document.getElementById('withdraw-modal').classList.add('show');
+}
+function closeWithdraw() { document.getElementById('withdraw-modal').classList.remove('show'); }
+
+function switchWithdrawChain(chain) {
+  withdrawChain = chain;
+  document.querySelectorAll('#withdraw-modal .chain-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('#withdraw-modal .chain-tab.' + chain).classList.add('active');
+}
+
+async function submitWithdraw() {
+  const amount = parseInt(document.getElementById('withdraw-amount').value) || 0;
+  const addr = document.getElementById('withdraw-addr').value.trim();
+  if (amount <= 0) { showToast('Enter an amount'); return; }
+  if (amount > userBalance) { showToast('Insufficient balance'); return; }
+  if (!addr) { showToast('Enter a wallet address'); return; }
+
+  if (firebaseReady) {
+    const updates = {};
+    updates['users/' + userId + '/balance'] = userBalance - amount;
+    const wRef = db.ref('withdrawals/' + userId).push();
+    updates['withdrawals/' + userId + '/' + wRef.key] = {
+      amount: amount,
+      chain: withdrawChain,
+      wallet: addr,
+      status: 'pending',
+      timestamp: firebase.database.ServerValue.TIMESTAMP
+    };
+    await db.ref().update(updates);
+    closeWithdraw();
+    showToast('Withdrawal requested — admin will process shortly');
+  } else {
+    userBalance -= amount;
+    updateBalanceUI();
+    closeWithdraw();
+    showToast('Demo: ' + amount.toLocaleString() + ' credits withdrawn');
+  }
+}
+
+// ============================================================
+// USER PANEL
+// ============================================================
+function toggleUserPanel() {
+  const panel = document.getElementById('user-panel');
+  panel.classList.toggle('show');
+}
+
+// ============================================================
+// ADMIN
+// ============================================================
+function toggleAdmin() {
+  if (!isAdmin) {
+    document.getElementById('admin-login-modal').classList.add('show');
+    return;
+  }
+  document.getElementById('admin-panel').classList.toggle('show');
+}
+
+function closeAdminLogin() { document.getElementById('admin-login-modal').classList.remove('show'); }
+
+async function adminLogin() {
+  const pw = document.getElementById('admin-pw').value;
+  const hash = await sha256(pw);
+  if (hash === ADMIN_HASH) {
+    isAdmin = true;
+    document.getElementById('admin-toggle').style.display = 'inline-block';
+    closeAdminLogin();
+    document.getElementById('admin-panel').classList.add('show');
+    loadAdminData();
+    showToast('Admin access granted');
+  } else {
+    showToast('Wrong password');
+  }
+}
+
+async function sha256(msg) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+function loadAdminData() {
+  if (!firebaseReady) return;
+  // Users count
+  db.ref('users').on('value', snap => {
+    const count = snap.numChildren();
+    document.getElementById('admin-users').textContent = count;
+  });
+  // Pending deposits
+  db.ref('deposits').on('value', snap => {
+    const container = document.getElementById('admin-deposits-list');
+    let html = '';
+    snap.forEach(userDeposits => {
+      userDeposits.forEach(dep => {
+        const d = dep.val();
+        if (d.status === 'pending') {
+          html += `<div class="admin-row">
+            <span>${userDeposits.key.slice(0,12)}... · ${d.chain.toUpperCase()} · ${d.txHash ? d.txHash.slice(0,16)+'...' : 'no tx'}</span>
+            <span>
+              <input class="admin-input" style="width:100px;display:inline;margin:0" placeholder="Amount" id="dep-amt-${dep.key}">
+              <button class="admin-btn success" onclick="approveDeposit('${userDeposits.key}','${dep.key}')">Approve</button>
+            </span>
+          </div>`;
+        }
+      });
+    });
+    container.innerHTML = html || '<div style="color:var(--muted);font-size:0.85rem;">No pending deposits</div>';
+  });
+  // Pending withdrawals
+  db.ref('withdrawals').on('value', snap => {
+    const container = document.getElementById('admin-withdrawals-list');
+    let html = '';
+    snap.forEach(userWithdrawals => {
+      userWithdrawals.forEach(wd => {
+        const w = wd.val();
+        if (w.status === 'pending') {
+          html += `<div class="admin-row">
+            <span>${w.wallet ? w.wallet.slice(0,10)+'...' : '?'} · ${w.chain.toUpperCase()} · ${(w.amount||0).toLocaleString()} credits</span>
+            <button class="admin-btn success" onclick="approveWithdrawal('${userWithdrawals.key}','${wd.key}')">Mark Sent</button>
+          </div>`;
+        }
+      });
+    });
+    container.innerHTML = html || '<div style="color:var(--muted);font-size:0.85rem;">No pending withdrawals</div>';
+  });
+  renderAdminMarkets();
+  // Fee stats
+  db.ref('fees/' + SITE_ID).on('value', snap => {
+    document.getElementById('admin-fees').textContent = (snap.val() || 0).toLocaleString();
+  });
+}
+
+function renderAdminMarkets() {
+  const container = document.getElementById('admin-markets-list');
+  const open = markets.filter(m => m.status === 'open' || !m.status);
+  container.innerHTML = open.map(m => {
+    const key = m.fbKey || m.id;
+    return `<div class="admin-row">
+      <span style="flex:1">${m.emoji} ${m.question.slice(0,60)}${m.question.length>60?'...':''}</span>
+      <span>
+        <button class="admin-btn success" onclick="resolveMarket('${key}','yes')">YES Wins</button>
+        <button class="admin-btn danger" onclick="resolveMarket('${key}','no')">NO Wins</button>
+      </span>
+    </div>`;
+  }).join('') || '<div style="color:var(--muted);font-size:0.85rem;">No open markets</div>';
+}
+
+async function adminCreateMarket() {
+  const question = document.getElementById('admin-question').value.trim();
+  const category = document.getElementById('admin-category').value.trim();
+  const emoji = document.getElementById('admin-emoji').value.trim() || '📊';
+  const ends = document.getElementById('admin-ends').value;
+  if (!question || !ends) { showToast('Fill in question and end date'); return; }
+
+  const newId = markets.length + 1;
+  const market = {
+    id: newId, category: category || 'wild', emoji,
+    question, yesPool: 0, noPool: 0, totalBets: 0,
+    ends, status: 'open'
+  };
+
+  if (firebaseReady) {
+    await db.ref('markets/' + SITE_ID).push(market);
+    showToast('Market created!');
+    document.getElementById('admin-question').value = '';
+    document.getElementById('admin-category').value = '';
+    document.getElementById('admin-emoji').value = '';
+  } else {
+    markets.push(market);
+    renderMarkets();
+    showToast('Market created (demo mode)');
+  }
+}
+
+async function resolveMarket(key, winningSide) {
+  if (!confirm('Resolve this market? ' + winningSide.toUpperCase() + ' wins. This cannot be undone.')) return;
+  if (!firebaseReady) { showToast('Firebase required for resolution'); return; }
+
+  // Get all bets for this market
+  const betsSnap = await db.ref('bets/' + SITE_ID).orderByChild('marketId').equalTo(key).once('value');
+  const mktSnap = await db.ref('markets/' + SITE_ID + '/' + key).once('value');
+  const mkt = mktSnap.val();
+  if (!mkt) { showToast('Market not found'); return; }
+
+  const totalPool = (mkt.yesPool || 0) + (mkt.noPool || 0);
+  const winningPool = winningSide === 'yes' ? (mkt.yesPool || 0) : (mkt.noPool || 0);
+  const updates = {};
+  let totalFees = 0;
+
+  betsSnap.forEach(betSnap => {
+    const bet = betSnap.val();
+    if (bet.side === winningSide) {
+      const share = winningPool > 0 ? bet.amount / winningPool : 0;
+      const gross = share * totalPool;
+      const fee = Math.floor(gross * PLATFORM_FEE);
+      const payout = Math.floor(gross - fee);
+      totalFees += fee;
+      // Credit winner
+      updates['users/' + bet.userId + '/balance'] = firebase.database.ServerValue.increment(payout);
+    }
+    updates['bets/' + SITE_ID + '/' + betSnap.key + '/resolved'] = true;
+    updates['bets/' + SITE_ID + '/' + betSnap.key + '/won'] = bet.side === winningSide;
+  });
+
+  updates['markets/' + SITE_ID + '/' + key + '/status'] = 'resolved';
+  updates['markets/' + SITE_ID + '/' + key + '/winner'] = winningSide;
+  updates['fees/' + SITE_ID] = firebase.database.ServerValue.increment(totalFees);
+
+  try {
+    await db.ref().update(updates);
+    showToast('Market resolved! ' + winningSide.toUpperCase() + ' wins. Fees: ' + totalFees.toLocaleString());
+  } catch(e) {
+    showToast('Error resolving: ' + e.message);
+  }
+}
+
+async function approveDeposit(userId, depKey) {
+  const amtInput = document.getElementById('dep-amt-' + depKey);
+  const amount = parseInt(amtInput?.value) || 0;
+  if (amount <= 0) { showToast('Enter credit amount'); return; }
+
+  const updates = {};
+  updates['deposits/' + userId + '/' + depKey + '/status'] = 'approved';
+  updates['deposits/' + userId + '/' + depKey + '/credited'] = amount;
+  updates['users/' + userId + '/balance'] = firebase.database.ServerValue.increment(amount);
+
+  await db.ref().update(updates);
+  showToast('Deposit approved: ' + amount.toLocaleString() + ' credits');
+}
+
+async function approveWithdrawal(userId, wdKey) {
+  const updates = {};
+  updates['withdrawals/' + userId + '/' + wdKey + '/status'] = 'completed';
+  await db.ref().update(updates);
+  showToast('Withdrawal marked as sent');
+}
+
+// ============================================================
+// TOAST
+// ============================================================
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// ===== INIT =====
-renderMarkets();
+// ============================================================
+// INIT
+// ============================================================
+(async function() {
+  // Check for admin URL param
+  if (location.hash === '#admin' || location.search.includes('admin')) {
+    document.getElementById('admin-toggle').style.display = 'inline-block';
+  }
+  await initAuth();
+  loadMarkets();
+})();
 </script>
 </body>
 </html>
