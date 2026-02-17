@@ -425,7 +425,7 @@
     <a href="#leaderboard">Ranks</a>
     <a href="#community">Community</a>
     <span class="balance-pill" id="balance-pill">0 credits</span>
-    <button class="nav-btn" id="propose-btn" style="display:none" onclick="openPropose()">+ Propose Market</button>
+    <button class="nav-btn" id="propose-btn" style="display:none" onclick="openPropose()">+ Create Market</button>
     <button class="nav-btn" id="panel-btn" style="display:none" onclick="toggleUserPanel()">My Bets</button>
     <button class="nav-btn" id="admin-toggle" style="display:none" onclick="toggleAdmin()">Admin</button>
     <button class="connect-btn" id="connect-btn" onclick="connectWallet()">Connect Wallet</button>
@@ -893,8 +893,8 @@
 <div class="modal-overlay" id="propose-modal">
   <div class="modal">
     <button class="modal-close" onclick="closePropose()">&times;</button>
-    <h3>Propose a Market</h3>
-    <div class="modal-question">Submit a prediction question. If approved, it goes live and anyone can bet on it.</div>
+    <h3>Create a Market</h3>
+    <div class="modal-question">Create a prediction market instantly. It goes live immediately — anyone can bet on it.</div>
     <div class="bet-input-group">
       <label>Your prediction question</label>
       <input class="deposit-input" id="propose-question" placeholder="Will [something] happen by [date]?">
@@ -913,7 +913,7 @@
         <input class="deposit-input" id="propose-ends" type="date" style="margin-bottom:0">
       </div>
     </div>
-    <button class="deposit-confirm" onclick="submitProposal()">Submit for Review</button>
+    <button class="deposit-confirm" onclick="submitProposal()">Create Market — Go Live Now</button>
   </div>
 </div>
 
@@ -1741,18 +1741,27 @@ async function submitProposal() {
   if (!ends) { showToast('Pick an end date'); return; }
 
   if (firebaseReady) {
-    await db.ref('proposals/' + SITE_ID).push({
-      question, category: category || 'wild', emoji, ends,
+    // Auto-approve — create market directly
+    await db.ref('markets/' + SITE_ID).push({
+      id: Date.now(),
+      category: category || 'wild',
+      emoji: emoji,
+      question: question,
+      yesPool: 0,
+      noPool: 0,
+      totalBets: 0,
+      ends: ends,
+      status: 'open',
       proposedBy: userId,
       wallet: wallet,
-      status: 'pending',
-      timestamp: firebase.database.ServerValue.TIMESTAMP
+      createdAt: firebase.database.ServerValue.TIMESTAMP
     });
     closePropose();
     document.getElementById('propose-question').value = '';
     document.getElementById('propose-category').value = '';
     document.getElementById('propose-emoji').value = '';
-    showToast('Market proposed! It will go live once approved.');
+    showToast('Market is LIVE! Your prediction is now open for betting.');
+    analytics.track('market_created', { question, category });
   } else {
     closePropose();
     showToast('Proposal submitted (demo mode)');
