@@ -467,6 +467,8 @@
   <button class="filter-btn" onclick="filterMarkets('artists')">Artists</button>
   <button class="filter-btn" onclick="filterMarkets('culture')">Culture</button>
   <button class="filter-btn" onclick="filterMarkets('wild')">Wild</button>
+  <button class="filter-btn" onclick="filterMarkets('new')" style="border-color:rgba(59,130,246,0.3);color:var(--blue);">🆕 New</button>
+  <button class="filter-btn" onclick="filterMarkets('hot')" style="border-color:rgba(239,68,68,0.3);color:var(--red);">🔥 Hot</button>
 </div>
 
 <!-- User Panel -->
@@ -1137,9 +1139,16 @@ function updateBalanceUI() {
 function renderMarkets(filter) {
   if (filter) currentFilter = filter;
   const container = document.getElementById('markets');
-  const filtered = currentFilter && currentFilter !== 'all'
-    ? markets.filter(m => m.category === currentFilter)
-    : markets;
+  let filtered;
+  if (currentFilter === 'new') {
+    filtered = markets.filter(m => (m.createdAt && Date.now() - m.createdAt < 86400000) || (m.totalBets || 0) < 20);
+  } else if (currentFilter === 'hot') {
+    filtered = markets.filter(m => (m.totalBets || 0) > 100);
+  } else if (currentFilter && currentFilter !== 'all') {
+    filtered = markets.filter(m => m.category === currentFilter);
+  } else {
+    filtered = markets;
+  }
 
   // Sort: new user-created markets boosted for 24hrs, then by popularity
   const now = Date.now();
