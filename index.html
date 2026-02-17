@@ -1913,9 +1913,11 @@ async function adminLogin() {
     isAdmin = true;
     document.getElementById('admin-toggle').style.display = 'inline-block';
     closeAdminLogin();
-    document.getElementById('admin-panel').classList.add('show');
+    const ap = document.getElementById('admin-panel');
+    ap.classList.add('show');
+    ap.scrollIntoView({behavior:'smooth', block:'start'});
     loadAdminData();
-    showToast('Admin access granted');
+    showToast('Admin access granted — scroll down to see panel');
   } else {
     showToast('Wrong password');
   }
