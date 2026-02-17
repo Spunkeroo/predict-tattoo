@@ -209,6 +209,7 @@
     <a href="#markets">Markets</a>
     <a href="#how">How It Works</a>
     <span class="balance-pill" id="balance-pill">0 credits</span>
+    <button class="nav-btn" id="propose-btn" style="display:none" onclick="openPropose()">+ Propose Market</button>
     <button class="nav-btn" id="panel-btn" style="display:none" onclick="toggleUserPanel()">My Bets</button>
     <button class="nav-btn" id="admin-toggle" style="display:none" onclick="toggleAdmin()">Admin</button>
     <button class="connect-btn" id="connect-btn" onclick="connectWallet()">Connect Wallet</button>
@@ -301,6 +302,10 @@
     <input class="admin-input" id="admin-emoji" placeholder="Emoji (e.g. 🏎️)">
     <input class="admin-input" id="admin-ends" type="date" placeholder="End date">
     <button class="admin-btn primary" onclick="adminCreateMarket()">Create Market</button>
+  </div>
+  <div class="admin-section">
+    <h4>Proposed Markets — Approve or Reject</h4>
+    <div id="admin-proposals-list"><div style="color:var(--muted);font-size:0.85rem;">No pending proposals</div></div>
   </div>
   <div class="admin-section">
     <h4>Active Markets — Resolve</h4>
@@ -422,6 +427,34 @@
       <div class="payout-row"><span class="label">Available</span><span class="value" id="withdraw-available">0</span></div>
     </div>
     <button class="deposit-confirm" onclick="submitWithdraw()">Request Withdrawal</button>
+  </div>
+</div>
+
+<!-- Propose Market Modal -->
+<div class="modal-overlay" id="propose-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closePropose()">&times;</button>
+    <h3>Propose a Market</h3>
+    <div class="modal-question">Submit a prediction question. If approved, it goes live and anyone can bet on it.</div>
+    <div class="bet-input-group">
+      <label>Your prediction question</label>
+      <input class="deposit-input" id="propose-question" placeholder="Will [something] happen by [date]?">
+    </div>
+    <div class="bet-input-group">
+      <label>Category</label>
+      <input class="deposit-input" id="propose-category" placeholder="e.g. crypto, sports, culture...">
+    </div>
+    <div class="bet-input-group" style="display:flex;gap:0.5rem;">
+      <div style="flex:1">
+        <label>Emoji</label>
+        <input class="deposit-input" id="propose-emoji" placeholder="🔥" style="margin-bottom:0">
+      </div>
+      <div style="flex:2">
+        <label>End date</label>
+        <input class="deposit-input" id="propose-ends" type="date" style="margin-bottom:0">
+      </div>
+    </div>
+    <button class="deposit-confirm" onclick="submitProposal()">Submit for Review</button>
   </div>
 </div>
 
@@ -863,6 +896,7 @@ function onWalletConnected(addr) {
   btn.style.border = '1px solid var(--accent)';
   btn.onclick = null;
 
+  document.getElementById('propose-btn').style.display = 'inline-block';
   document.getElementById('panel-btn').style.display = 'inline-block';
   document.getElementById('balance-pill').style.display = 'inline-block';
 
@@ -985,6 +1019,42 @@ function toggleUserPanel() {
 }
 
 // ============================================================
+// PROPOSE MARKET (any user)
+// ============================================================
+function openPropose() {
+  if (!wallet) { showToast('Connect wallet first'); return; }
+  document.getElementById('propose-modal').classList.add('show');
+}
+function closePropose() { document.getElementById('propose-modal').classList.remove('show'); }
+
+async function submitProposal() {
+  const question = document.getElementById('propose-question').value.trim();
+  const category = document.getElementById('propose-category').value.trim();
+  const emoji = document.getElementById('propose-emoji').value.trim() || '📊';
+  const ends = document.getElementById('propose-ends').value;
+  if (!question) { showToast('Enter a prediction question'); return; }
+  if (!ends) { showToast('Pick an end date'); return; }
+
+  if (firebaseReady) {
+    await db.ref('proposals/' + SITE_ID).push({
+      question, category: category || 'wild', emoji, ends,
+      proposedBy: userId,
+      wallet: wallet,
+      status: 'pending',
+      timestamp: firebase.database.ServerValue.TIMESTAMP
+    });
+    closePropose();
+    document.getElementById('propose-question').value = '';
+    document.getElementById('propose-category').value = '';
+    document.getElementById('propose-emoji').value = '';
+    showToast('Market proposed! It will go live once approved.');
+  } else {
+    closePropose();
+    showToast('Proposal submitted (demo mode)');
+  }
+}
+
+// ============================================================
 // ADMIN
 // ============================================================
 function toggleAdmin() {
@@ -1060,6 +1130,26 @@ function loadAdminData() {
       });
     });
     container.innerHTML = html || '<div style="color:var(--muted);font-size:0.85rem;">No pending withdrawals</div>';
+  });
+  // Pending proposals
+  db.ref('proposals/' + SITE_ID).on('value', snap => {
+    const container = document.getElementById('admin-proposals-list');
+    let html = '';
+    snap.forEach(prop => {
+      const p = prop.val();
+      if (p.status === 'pending') {
+        const w = p.wallet ? p.wallet.slice(0,8)+'...' : '?';
+        html += `<div class="admin-row" style="flex-wrap:wrap;gap:0.5rem;">
+          <span style="flex:1">${p.emoji || '📊'} <strong>${p.question}</strong><br>
+          <small style="color:var(--muted)">${p.category} · ends ${p.ends} · by ${w}</small></span>
+          <span>
+            <button class="admin-btn success" onclick="approveProposal('${prop.key}')">Approve</button>
+            <button class="admin-btn danger" onclick="rejectProposal('${prop.key}')">Reject</button>
+          </span>
+        </div>`;
+      }
+    });
+    container.innerHTML = html || '<div style="color:var(--muted);font-size:0.85rem;">No pending proposals</div>';
   });
   renderAdminMarkets();
   // Fee stats
@@ -1150,6 +1240,33 @@ async function resolveMarket(key, winningSide) {
   } catch(e) {
     showToast('Error resolving: ' + e.message);
   }
+}
+
+async function approveProposal(propKey) {
+  if (!firebaseReady) return;
+  const snap = await db.ref('proposals/' + SITE_ID + '/' + propKey).once('value');
+  const p = snap.val();
+  if (!p) { showToast('Proposal not found'); return; }
+
+  const newId = markets.length + 1;
+  const market = {
+    id: newId, category: p.category || 'wild', emoji: p.emoji || '📊',
+    question: p.question, yesPool: 0, noPool: 0, totalBets: 0,
+    ends: p.ends, status: 'open', proposedBy: p.proposedBy || null
+  };
+
+  const updates = {};
+  const mRef = db.ref('markets/' + SITE_ID).push();
+  updates['markets/' + SITE_ID + '/' + mRef.key] = market;
+  updates['proposals/' + SITE_ID + '/' + propKey + '/status'] = 'approved';
+  await db.ref().update(updates);
+  showToast('Market approved and live!');
+}
+
+async function rejectProposal(propKey) {
+  if (!firebaseReady) return;
+  await db.ref('proposals/' + SITE_ID + '/' + propKey + '/status').set('rejected');
+  showToast('Proposal rejected');
 }
 
 async function approveDeposit(userId, depKey) {
