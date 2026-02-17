@@ -172,6 +172,11 @@
   .chains-badge .eth{background:rgba(98,126,234,0.15);color:#627eea;}
   .chains-badge .sol{background:rgba(153,69,255,0.15);color:#9945ff;}
 
+  /* Tip Button — Spunk.bet style */
+  .tip-btn{background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;border:none;padding:0.4rem 1rem;border-radius:8px;font-weight:800;font-size:0.8rem;cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;text-transform:uppercase;display:inline-flex;align-items:center;gap:0.3rem;text-decoration:none;}
+  .tip-btn:hover{transform:scale(1.05);box-shadow:0 0 15px rgba(245,158,11,0.4);text-decoration:none;}
+  .tip-footer{margin-top:0.8rem;}
+
   /* Wallet Modal */
   .wallet-option{display:flex;align-items:center;gap:1rem;padding:0.9rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:12px;margin-bottom:0.5rem;cursor:pointer;transition:all 0.2s;}
   .wallet-option:hover{border-color:var(--accent);transform:translateX(4px);}
@@ -233,6 +238,26 @@
   .hot-tag{display:inline-block;background:rgba(245,158,11,0.2);color:var(--accent);font-size:0.65rem;font-weight:800;padding:0.1rem 0.4rem;border-radius:4px;margin-left:0.3rem;text-transform:uppercase;}
   .new-tag{display:inline-block;background:rgba(59,130,246,0.15);color:var(--blue);font-size:0.65rem;font-weight:800;padding:0.1rem 0.4rem;border-radius:4px;margin-left:0.3rem;text-transform:uppercase;}
 
+  /* Trust & Security Section */
+  .trust-section{max-width:900px;margin:2rem auto;padding:0 1rem;}
+  .trust-title{text-align:center;font-size:1.2rem;font-weight:800;margin-bottom:1.5rem;color:var(--text);}
+  .trust-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+  .trust-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;text-align:center;transition:all 0.2s;}
+  .trust-card:hover{border-color:var(--green);transform:translateY(-2px);}
+  .trust-icon{font-size:2rem;margin-bottom:0.5rem;}
+  .trust-label{font-weight:700;font-size:0.85rem;margin-bottom:0.2rem;}
+  .trust-desc{font-size:0.72rem;color:var(--muted);line-height:1.4;}
+  .security-banner{background:linear-gradient(135deg,rgba(34,197,94,0.08),rgba(59,130,246,0.08));border:1px solid rgba(34,197,94,0.2);border-radius:14px;padding:1rem 1.5rem;max-width:900px;margin:1rem auto;display:flex;align-items:center;gap:1rem;font-size:0.85rem;}
+  .security-banner .sec-icon{font-size:1.5rem;flex-shrink:0;}
+  .security-banner .sec-text{flex:1;color:var(--muted);line-height:1.5;}
+  .security-banner .sec-text strong{color:var(--green);}
+  .wallet-chain-label{display:inline-block;font-size:0.6rem;padding:0.1rem 0.3rem;border-radius:3px;font-weight:800;text-transform:uppercase;margin-left:0.2rem;}
+  .wallet-chain-label.sol{background:rgba(153,69,255,0.15);color:#9945ff;}
+  .wallet-chain-label.eth{background:rgba(98,126,234,0.15);color:#627eea;}
+  .wallet-chain-label.btc{background:rgba(247,147,26,0.15);color:#f7931a;}
+  .wallet-chain-label.multi{background:rgba(245,158,11,0.15);color:var(--accent);}
+  @media(max-width:600px){.trust-grid{grid-template-columns:1fr 1fr;}}
+
   /* Toast */
   .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--card);border:1px solid var(--border);padding:0.8rem 1.5rem;border-radius:12px;font-size:0.9rem;z-index:300;transition:transform 0.3s;font-weight:600;}
   .toast.show{transform:translateX(-50%) translateY(0);}
@@ -275,6 +300,7 @@
     <button class="nav-btn" id="panel-btn" style="display:none" onclick="toggleUserPanel()">My Bets</button>
     <button class="nav-btn" id="admin-toggle" style="display:none" onclick="toggleAdmin()">Admin</button>
     <button class="connect-btn" id="connect-btn" onclick="connectWallet()">Connect Wallet</button>
+    <a href="https://spunk.bet" target="_blank" class="tip-btn" onclick="openTipModal(event)">🎰 Tip</a>
   </div>
 </nav>
 
@@ -357,6 +383,42 @@
   </div>
 </div>
 
+<!-- Trust & Security -->
+<div class="trust-section">
+  <div class="trust-title">Why Predict With Us?</div>
+  <div class="trust-grid">
+    <div class="trust-card">
+      <div class="trust-icon">🔒</div>
+      <div class="trust-label">Non-Custodial</div>
+      <div class="trust-desc">Your wallet, your keys. We never hold your private keys or seed phrases. You stay in control.</div>
+    </div>
+    <div class="trust-card">
+      <div class="trust-icon">🛡️</div>
+      <div class="trust-label">Secure & Encrypted</div>
+      <div class="trust-desc">HTTPS everywhere. Firebase security rules. All data encrypted in transit and at rest.</div>
+    </div>
+    <div class="trust-card">
+      <div class="trust-icon">⚡</div>
+      <div class="trust-label">Instant Settlement</div>
+      <div class="trust-desc">Markets resolve in real-time. Winners credited instantly. Withdraw anytime — no lockups.</div>
+    </div>
+    <div class="trust-card">
+      <div class="trust-icon">📊</div>
+      <div class="trust-label">Provably Fair</div>
+      <div class="trust-desc">All bets and pools visible on-chain. 3% fee — transparent, fixed, no hidden costs.</div>
+    </div>
+  </div>
+</div>
+
+<div class="security-banner">
+  <div class="sec-icon">🔐</div>
+  <div class="sec-text">
+    <strong>Your funds are safe.</strong> We use industry-standard wallet connections (Phantom, MetaMask, Xverse, and more).
+    We never ask for your seed phrase or private keys. All connections are read-only until you approve a transaction.
+    Deposits go to verified, dedicated wallets — one for BTC, ETH, and SOL each.
+  </div>
+</div>
+
 <!-- Admin Panel -->
 <div class="admin-panel" id="admin-panel">
   <div class="admin-section">
@@ -366,6 +428,12 @@
       <div class="admin-stat"><div class="val" id="admin-bets">0</div><div class="label">Total Bets</div></div>
       <div class="admin-stat"><div class="val" id="admin-volume">0</div><div class="label">Volume</div></div>
       <div class="admin-stat"><div class="val" id="admin-fees">0</div><div class="label">Fees Earned</div></div>
+    </div>
+    <div class="admin-stats-grid" style="margin-top:0.5rem;">
+      <div class="admin-stat"><div class="val" id="admin-views-today">0</div><div class="label">Views Today</div></div>
+      <div class="admin-stat"><div class="val" id="admin-unique-today">0</div><div class="label">Unique Today</div></div>
+      <div class="admin-stat"><div class="val" id="admin-events-hour">0</div><div class="label">Events/hr</div></div>
+      <div class="admin-stat"><div class="val" id="admin-wallets-connected">0</div><div class="label">Wallets</div></div>
     </div>
   </div>
   <div class="admin-section">
@@ -451,15 +519,22 @@
     <span class="eth">ETH</span>
     <span class="sol">SOL</span>
   </div>
+  <div class="tip-footer">
+    <a href="#" class="tip-btn" onclick="openTipModal(event)">🎰 Tip the House — Powered by Spunk.bet</a>
+  </div>
+  <div style="margin-top:0.5rem;font-size:0.7rem;color:var(--muted);">
+    Part of the <a href="https://spunk.bet" target="_blank" style="color:var(--accent);font-weight:700;">Spunk.bet</a> Network · <a href="https://x.com/SpunkArt13" target="_blank" style="color:var(--accent);">@SpunkArt13</a>
+  </div>
 </footer>
 
 <!-- Wallet Connect Modal -->
 <div class="modal-overlay" id="wallet-modal">
   <div class="modal">
     <button class="modal-close" onclick="closeWalletModal()">&times;</button>
-    <h3>Connect Wallet</h3>
-    <div class="modal-question">Choose your wallet to start betting. One click — no signup needed.</div>
+    <h3>🔒 Connect Wallet</h3>
+    <div class="modal-question">Secure, non-custodial connection. We never see your private keys or seed phrase. Read-only until you approve.</div>
     <div id="wallet-options"></div>
+    <div style="text-align:center;font-size:0.7rem;color:var(--muted);margin:0.5rem 0;">🔐 HTTPS encrypted · 🛡️ No seed phrase required · ⚡ One-click connect</div>
     <div class="wallet-divider">or try it first</div>
     <div class="wallet-option" onclick="connectDemo()" style="border-style:dashed;">
       <div class="w-icon">🎮</div>
@@ -588,6 +663,39 @@
     <div class="modal-question">Enter admin password to access the control panel.</div>
     <input class="admin-input" id="admin-pw" type="password" placeholder="Password..." onkeydown="if(event.key==='Enter')adminLogin()">
     <button class="admin-btn primary" onclick="adminLogin()" style="margin-top:0.5rem">Enter</button>
+  </div>
+</div>
+
+<!-- Tip Modal -->
+<div class="modal-overlay" id="tip-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeTipModal()">&times;</button>
+    <h3 style="text-align:center;">🎰 Tip the House</h3>
+    <div class="modal-question" style="text-align:center;">Love what we're building? Send a tip to support the Predict Network.<br>Powered by <a href="https://spunk.bet" target="_blank" style="color:var(--accent);font-weight:700;">Spunk.bet</a></div>
+    <div style="margin-bottom:0.8rem;">
+      <div style="font-size:0.75rem;color:var(--muted);margin-bottom:0.3rem;font-weight:700;">₿ BTC</div>
+      <div class="deposit-addr" onclick="navigator.clipboard.writeText('bc1qr4zcdh9wz26gtn4pqz9c8wmxwalpjut8fxzsfn').then(()=>showToast('BTC address copied!'))">
+        <span>bc1qr4zcdh9wz26gtn4pqz9c8wmxwalpjut8fxzsfn</span>
+        <span class="copy-hint">Copy</span>
+      </div>
+    </div>
+    <div style="margin-bottom:0.8rem;">
+      <div style="font-size:0.75rem;color:var(--muted);margin-bottom:0.3rem;font-weight:700;">Ξ ETH</div>
+      <div class="deposit-addr" onclick="navigator.clipboard.writeText('0xD2aC89253b5F20f5b03b5B591297Fa4FCC37d41c').then(()=>showToast('ETH address copied!'))">
+        <span>0xD2aC89253b5F20f5b03b5B591297Fa4FCC37d41c</span>
+        <span class="copy-hint">Copy</span>
+      </div>
+    </div>
+    <div style="margin-bottom:0.8rem;">
+      <div style="font-size:0.75rem;color:var(--muted);margin-bottom:0.3rem;font-weight:700;">◎ SOL</div>
+      <div class="deposit-addr" onclick="navigator.clipboard.writeText('Cds2aUuhyJa4NaZo7JER7LakW4VmmfnqVixHusrKKZsm').then(()=>showToast('SOL address copied!'))">
+        <span>Cds2aUuhyJa4NaZo7JER7LakW4VmmfnqVixHusrKKZsm</span>
+        <span class="copy-hint">Copy</span>
+      </div>
+    </div>
+    <div style="text-align:center;font-size:0.75rem;color:var(--muted);margin-top:0.5rem;">
+      Every tip supports development, prizes, and keeping everything free. 🙏
+    </div>
   </div>
 </div>
 
@@ -928,6 +1036,7 @@ async function placeBet() {
       await db.ref().update(updates);
       closeBetModal();
       showToast('Bet placed! ' + amount.toLocaleString() + ' on ' + selectedSide.toUpperCase());
+      analytics.trackBet(key, selectedSide, amount);
       showSharePrompt(selectedMarket.question, selectedSide, amount);
       processReferralReward();
     } catch(e) {
@@ -948,13 +1057,24 @@ async function placeBet() {
 // WALLET CONNECT (BTC + ETH + SOL) — Modal with all options
 // ============================================================
 const WALLETS = [
-  {id:'phantom',  name:'Phantom',       chain:'SOL', icon:'👻', color:'#9945ff', detect:()=>window.solana?.isPhantom, url:'https://phantom.app/'},
-  {id:'solflare', name:'Solflare',      chain:'SOL', icon:'🔥', color:'#9945ff', detect:()=>window.solflare?.isSolflare, url:'https://solflare.com/'},
-  {id:'metamask', name:'MetaMask',      chain:'ETH', icon:'🦊', color:'#627eea', detect:()=>window.ethereum?.isMetaMask, url:'https://metamask.io/'},
-  {id:'coinbase', name:'Coinbase Wallet',chain:'ETH',icon:'🔵', color:'#627eea', detect:()=>window.ethereum?.isCoinbaseWallet, url:'https://www.coinbase.com/wallet'},
-  {id:'xverse',   name:'Xverse',        chain:'BTC', icon:'✖️', color:'#f7931a', detect:()=>!!window.XverseProviders?.BitcoinProvider, url:'https://www.xverse.app/'},
-  {id:'unisat',   name:'Unisat',        chain:'BTC', icon:'🟡', color:'#f7931a', detect:()=>!!window.unisat, url:'https://unisat.io/'},
-  {id:'leather',  name:'Leather',       chain:'BTC', icon:'🟤', color:'#f7931a', detect:()=>!!window.LeatherProvider, url:'https://leather.io/'},
+  // SOL wallets
+  {id:'phantom',   name:'Phantom',        chain:'SOL',  icon:'👻', detect:()=>window.solana?.isPhantom, url:'https://phantom.app/'},
+  {id:'solflare',  name:'Solflare',       chain:'SOL',  icon:'🔥', detect:()=>window.solflare?.isSolflare, url:'https://solflare.com/'},
+  {id:'backpack',  name:'Backpack',       chain:'SOL',  icon:'🎒', detect:()=>!!window.backpack, url:'https://backpack.app/'},
+  // ETH wallets
+  {id:'metamask',  name:'MetaMask',       chain:'ETH',  icon:'🦊', detect:()=>window.ethereum?.isMetaMask, url:'https://metamask.io/'},
+  {id:'coinbase',  name:'Coinbase Wallet',chain:'ETH',  icon:'🔵', detect:()=>window.ethereum?.isCoinbaseWallet, url:'https://www.coinbase.com/wallet'},
+  {id:'rainbow',   name:'Rainbow',        chain:'ETH',  icon:'🌈', detect:()=>window.ethereum?.isRainbow, url:'https://rainbow.me/'},
+  {id:'rabby',     name:'Rabby',          chain:'ETH',  icon:'🐰', detect:()=>window.ethereum?.isRabby, url:'https://rabby.io/'},
+  // BTC wallets
+  {id:'xverse',    name:'Xverse',         chain:'BTC',  icon:'✖️', detect:()=>!!window.XverseProviders?.BitcoinProvider, url:'https://www.xverse.app/'},
+  {id:'unisat',    name:'Unisat',         chain:'BTC',  icon:'🟡', detect:()=>!!window.unisat, url:'https://unisat.io/'},
+  {id:'leather',   name:'Leather',        chain:'BTC',  icon:'🟤', detect:()=>!!window.LeatherProvider, url:'https://leather.io/'},
+  {id:'magiceden', name:'Magic Eden',     chain:'BTC',  icon:'🪄', detect:()=>!!window.magicEden?.bitcoin, url:'https://wallet.magiceden.io/'},
+  // Multi-chain
+  {id:'okx',       name:'OKX Wallet',     chain:'MULTI',icon:'⭕', detect:()=>!!window.okxwallet, url:'https://www.okx.com/web3'},
+  {id:'trust',     name:'Trust Wallet',   chain:'MULTI',icon:'🛡️', detect:()=>window.ethereum?.isTrust||!!window.trustwallet, url:'https://trustwallet.com/'},
+  {id:'bitget',    name:'Bitget Wallet',  chain:'MULTI',icon:'🔷', detect:()=>!!window.bitkeep, url:'https://web3.bitget.com/'},
 ];
 
 function connectWallet() {
@@ -965,23 +1085,32 @@ function closeWalletModal() { document.getElementById('wallet-modal').classList.
 
 function renderWalletOptions() {
   const container = document.getElementById('wallet-options');
-  // Sort: detected wallets first
+  // Sort: detected first, then by chain grouping
+  const chainOrder = {SOL:0, ETH:1, BTC:2, MULTI:3};
   const sorted = [...WALLETS].sort((a,b) => {
-    const aD = a.detect() ? 1 : 0;
-    const bD = b.detect() ? 1 : 0;
-    return bD - aD;
+    const aD = a.detect() ? -10 : 0;
+    const bD = b.detect() ? -10 : 0;
+    return (aD + chainOrder[a.chain]) - (bD + chainOrder[b.chain]);
   });
-  container.innerHTML = sorted.map(w => {
+  let lastChain = '';
+  let html = '';
+  sorted.forEach(w => {
     const detected = w.detect();
-    return `<div class="wallet-option ${detected ? 'detected' : ''}" onclick="${detected ? `doConnect('${w.id}')` : `window.open('${w.url}','_blank')`}">
+    if (detected && w.chain !== lastChain && lastChain !== '') {
+      // no divider for detected group
+    }
+    const chainCls = w.chain.toLowerCase();
+    const chainLabel = w.chain === 'MULTI' ? 'BTC · ETH · SOL' : w.chain;
+    html += `<div class="wallet-option ${detected ? 'detected' : ''}" onclick="${detected ? `doConnect('${w.id}')` : `window.open('${w.url}','_blank')`}">
       <div class="w-icon">${w.icon}</div>
       <div class="w-info">
-        <div class="w-name">${w.name}</div>
-        <div class="w-chain">${w.chain} · ${detected ? 'Ready to connect' : 'Click to install'}</div>
+        <div class="w-name">${w.name} <span class="wallet-chain-label ${chainCls}">${chainLabel}</span></div>
+        <div class="w-chain">${detected ? '🟢 Ready to connect' : 'Click to install'}</div>
       </div>
       <div class="w-status ${detected ? 'ready' : 'install'}">${detected ? 'Connect' : 'Install'}</div>
     </div>`;
-  }).join('');
+  });
+  container.innerHTML = html;
 }
 
 async function doConnect(id) {
@@ -1047,6 +1176,82 @@ async function doConnect(id) {
         }
         break;
       }
+      case 'backpack': {
+        const resp = await window.backpack.connect();
+        wallet = resp.publicKey.toString();
+        walletChain = 'sol'; userId = 'sol_' + wallet;
+        onWalletConnected(wallet);
+        showToast('Backpack connected (SOL)');
+        break;
+      }
+      case 'rainbow':
+      case 'rabby': {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        if (accounts.length > 0) {
+          wallet = accounts[0];
+          walletChain = 'eth'; userId = 'eth_' + wallet.toLowerCase();
+          onWalletConnected(wallet);
+          showToast(id.charAt(0).toUpperCase() + id.slice(1) + ' connected (ETH)');
+        }
+        break;
+      }
+      case 'magiceden': {
+        const meAccounts = await window.magicEden.bitcoin.requestAccounts();
+        if (meAccounts.length > 0) {
+          wallet = meAccounts[0];
+          walletChain = 'btc'; userId = 'btc_' + wallet;
+          onWalletConnected(wallet);
+          showToast('Magic Eden connected (BTC)');
+        }
+        break;
+      }
+      case 'okx': {
+        // OKX supports multiple chains — try ETH first
+        if (window.okxwallet?.ethereum) {
+          const accounts = await window.okxwallet.ethereum.request({ method: 'eth_requestAccounts' });
+          if (accounts.length > 0) {
+            wallet = accounts[0];
+            walletChain = 'eth'; userId = 'eth_' + wallet.toLowerCase();
+            onWalletConnected(wallet);
+            showToast('OKX Wallet connected (ETH)');
+          }
+        } else if (window.okxwallet?.solana) {
+          const resp = await window.okxwallet.solana.connect();
+          wallet = resp.publicKey.toString();
+          walletChain = 'sol'; userId = 'sol_' + wallet;
+          onWalletConnected(wallet);
+          showToast('OKX Wallet connected (SOL)');
+        } else if (window.okxwallet?.bitcoin) {
+          const accounts = await window.okxwallet.bitcoin.requestAccounts();
+          wallet = accounts[0];
+          walletChain = 'btc'; userId = 'btc_' + wallet;
+          onWalletConnected(wallet);
+          showToast('OKX Wallet connected (BTC)');
+        }
+        break;
+      }
+      case 'trust': {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        if (accounts.length > 0) {
+          wallet = accounts[0];
+          walletChain = 'eth'; userId = 'eth_' + wallet.toLowerCase();
+          onWalletConnected(wallet);
+          showToast('Trust Wallet connected (ETH)');
+        }
+        break;
+      }
+      case 'bitget': {
+        if (window.bitkeep?.ethereum) {
+          const accounts = await window.bitkeep.ethereum.request({ method: 'eth_requestAccounts' });
+          if (accounts.length > 0) {
+            wallet = accounts[0];
+            walletChain = 'eth'; userId = 'eth_' + wallet.toLowerCase();
+            onWalletConnected(wallet);
+            showToast('Bitget Wallet connected (ETH)');
+          }
+        }
+        break;
+      }
     }
   } catch(e) {
     showToast('Connection failed — try again');
@@ -1079,6 +1284,9 @@ function onWalletConnected(addr) {
   // Update sticky CTA
   const stickyBtn = document.querySelector('.sticky-cta button');
   if (stickyBtn) { stickyBtn.textContent = '🔥 Place a Bet — Markets Are Live!'; stickyBtn.onclick = () => document.getElementById('markets').scrollIntoView({behavior:'smooth'}); }
+
+  // Track wallet connect
+  analytics.trackWalletConnect(walletChain, walletChain);
 
   // Save wallet state
   localStorage.setItem('wallet_' + SITE_ID, addr);
@@ -1145,6 +1353,7 @@ async function confirmDeposit() {
       timestamp: firebase.database.ServerValue.TIMESTAMP
     });
     closeDeposit();
+    analytics.trackDeposit(depositChain);
     showToast('Deposit recorded — admin will credit your balance shortly');
   } else {
     // Demo mode: auto-credit
@@ -1192,6 +1401,7 @@ async function submitWithdraw() {
     };
     await db.ref().update(updates);
     closeWithdraw();
+    analytics.trackWithdraw(withdrawChain, amount);
     showToast('Withdrawal requested — admin will process shortly');
   } else {
     userBalance -= amount;
@@ -1343,6 +1553,7 @@ function loadAdminData() {
     container.innerHTML = html || '<div style="color:var(--muted);font-size:0.85rem;">No pending proposals</div>';
   });
   renderAdminMarkets();
+  loadAdminAnalytics();
   // Fee stats
   db.ref('fees/' + SITE_ID).on('value', snap => {
     document.getElementById('admin-fees').textContent = (snap.val() || 0).toLocaleString();
@@ -1521,10 +1732,10 @@ function openShareModal(question, yesPct) {
 }
 function closeShareModal() { document.getElementById('share-modal').classList.remove('show'); }
 
-function doShareX() { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText + '\n\nBet now 👇\n' + shareUrl)}`, '_blank'); closeShareModal(); awardShareBonus(); }
-function doShareTelegram() { window.open(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`, '_blank'); closeShareModal(); awardShareBonus(); }
-function doShareWhatsApp() { window.open(`https://wa.me/?text=${encodeURIComponent(shareText + '\n' + shareUrl)}`, '_blank'); closeShareModal(); awardShareBonus(); }
-function doShareCopy() { navigator.clipboard.writeText(shareText + '\n' + shareUrl).then(() => { showToast('Copied to clipboard!'); closeShareModal(); }); }
+function doShareX() { analytics.trackShare('x'); window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText + '\n\nBet now 👇\n' + shareUrl)}`, '_blank'); closeShareModal(); awardShareBonus(); }
+function doShareTelegram() { analytics.trackShare('telegram'); window.open(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`, '_blank'); closeShareModal(); awardShareBonus(); }
+function doShareWhatsApp() { analytics.trackShare('whatsapp'); window.open(`https://wa.me/?text=${encodeURIComponent(shareText + '\n' + shareUrl)}`, '_blank'); closeShareModal(); awardShareBonus(); }
+function doShareCopy() { analytics.trackShare('copy_link'); navigator.clipboard.writeText(shareText + '\n' + shareUrl).then(() => { showToast('Copied to clipboard!'); closeShareModal(); }); }
 
 function awardShareBonus() {
   if (!wallet) return;
@@ -1667,6 +1878,136 @@ function showToast(msg) {
 }
 
 // ============================================================
+// TIP MODAL
+// ============================================================
+function openTipModal(e) {
+  if (e) e.preventDefault();
+  document.getElementById('tip-modal').classList.add('show');
+  analytics.track('tip_modal_opened');
+}
+function closeTipModal() { document.getElementById('tip-modal').classList.remove('show'); }
+
+// ============================================================
+// ANALYTICS — Track everything for scaling
+// ============================================================
+const analytics = {
+  sessionId: 'sess_' + Math.random().toString(36).slice(2,10),
+  startTime: Date.now(),
+
+  track(event, data = {}) {
+    const payload = {
+      event,
+      site: SITE_ID,
+      session: this.sessionId,
+      timestamp: Date.now(),
+      timeOnSite: Math.round((Date.now() - this.startTime) / 1000),
+      referrer: document.referrer || 'direct',
+      screen: window.innerWidth + 'x' + window.innerHeight,
+      mobile: window.innerWidth < 768,
+      ...data
+    };
+    // Write to Firebase analytics node
+    if (firebaseReady && db) {
+      db.ref('analytics/' + SITE_ID + '/events').push(payload);
+    }
+    // Also store pageview/session data
+    if (event === 'pageview') {
+      const today = new Date().toISOString().split('T')[0];
+      if (firebaseReady && db) {
+        db.ref('analytics/' + SITE_ID + '/daily/' + today + '/views').set(firebase.database.ServerValue.increment(1));
+        db.ref('analytics/' + SITE_ID + '/daily/' + today + '/unique').transaction(val => {
+          const arr = val ? (typeof val === 'object' ? val : []) : [];
+          const fp = this.getFingerprint();
+          if (!arr.includes(fp)) arr.push(fp);
+          return arr;
+        });
+      }
+    }
+  },
+
+  getFingerprint() {
+    const data = navigator.userAgent + screen.width + screen.height + navigator.language;
+    let hash = 0;
+    for (let i = 0; i < data.length; i++) {
+      hash = ((hash << 5) - hash) + data.charCodeAt(i);
+      hash |= 0;
+    }
+    return 'fp_' + Math.abs(hash).toString(36);
+  },
+
+  trackPageview() {
+    this.track('pageview', {
+      url: location.href,
+      path: location.pathname,
+      ua: navigator.userAgent,
+      lang: navigator.language,
+      utmSource: new URLSearchParams(location.search).get('utm_source') || null,
+      utmMedium: new URLSearchParams(location.search).get('utm_medium') || null,
+      utmCampaign: new URLSearchParams(location.search).get('utm_campaign') || null,
+      ref: new URLSearchParams(location.search).get('ref') || null
+    });
+  },
+
+  trackWalletConnect(walletId, chain) {
+    this.track('wallet_connect', { walletId, chain });
+  },
+
+  trackBet(marketId, side, amount) {
+    this.track('bet_placed', { marketId, side, amount });
+  },
+
+  trackShare(platform) {
+    this.track('share', { platform });
+  },
+
+  trackDeposit(chain) {
+    this.track('deposit_initiated', { chain });
+  },
+
+  trackWithdraw(chain, amount) {
+    this.track('withdraw_requested', { chain, amount });
+  },
+
+  // Track time on site when user leaves
+  trackExit() {
+    this.track('session_end', {
+      duration: Math.round((Date.now() - this.startTime) / 1000),
+      betsPlaced: userBets.length,
+      walletConnected: !!wallet
+    });
+  }
+};
+
+// Track exit
+window.addEventListener('beforeunload', () => analytics.trackExit());
+// Track visibility changes (tab switches)
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) analytics.track('tab_hidden');
+  else analytics.track('tab_visible');
+});
+
+// ============================================================
+// ADMIN ANALYTICS DASHBOARD
+// ============================================================
+function loadAdminAnalytics() {
+  if (!firebaseReady) return;
+  const today = new Date().toISOString().split('T')[0];
+  // Listen to today's stats
+  db.ref('analytics/' + SITE_ID + '/daily/' + today).on('value', snap => {
+    const data = snap.val() || {};
+    const viewsEl = document.getElementById('admin-views-today');
+    const uniqueEl = document.getElementById('admin-unique-today');
+    if (viewsEl) viewsEl.textContent = (data.views || 0).toLocaleString();
+    if (uniqueEl) uniqueEl.textContent = Array.isArray(data.unique) ? data.unique.length : 0;
+  });
+  // Recent events count
+  db.ref('analytics/' + SITE_ID + '/events').orderByChild('timestamp').startAt(Date.now() - 3600000).on('value', snap => {
+    const eventsEl = document.getElementById('admin-events-hour');
+    if (eventsEl) eventsEl.textContent = snap.numChildren();
+  });
+}
+
+// ============================================================
 // INIT — render immediately, then try Firebase in background
 // ============================================================
 // Show markets right away from seed data (no waiting)
@@ -1701,6 +2042,7 @@ loadFirebaseSDK().then(async (ok) => {
     await initAuth();
     loadMarkets(); // This will replace seed data with live Firebase data
     autoGenerateMarkets(); // Auto-create fresh markets daily
+    analytics.trackPageview(); // Track visit
   }
 });
 </script>
