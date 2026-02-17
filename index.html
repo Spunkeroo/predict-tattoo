@@ -377,7 +377,6 @@
   .community-card:hover .cc-btn{transform:scale(1.05);}
   .community-card.telegram .cc-btn{background:#0088cc;color:#fff;}
   .community-card.x-card .cc-btn{background:#fff;color:#000;}
-  .community-card.discord .cc-btn{background:#5865F2;color:#fff;}
   @media(max-width:600px){.community-grid{grid-template-columns:1fr;}}
 
   /* Engagement Popup */
@@ -816,17 +815,17 @@
       <div class="cc-desc">Predictions + announcements.</div>
       <div class="cc-btn">Follow @SpunkArt13</div>
     </a>
-    <a class="community-card" href="https://reddit.com/r/predictnetwork" target="_blank" rel="noopener noreferrer" style="border-color:rgba(255,69,0,0.3);">
-      <div class="cc-icon">🔴</div>
-      <div class="cc-name">Reddit</div>
-      <div class="cc-desc">Discussion + predictions.</div>
-      <div class="cc-btn" style="background:#ff4500;color:#fff;">Join Reddit</div>
+    <a class="community-card" href="https://spunk.bet" target="_blank" rel="noopener noreferrer" style="border-color:rgba(255,95,31,0.3);">
+      <div class="cc-icon">🎰</div>
+      <div class="cc-name">Spunk.Bet</div>
+      <div class="cc-desc">Free crypto casino on Bitcoin.</div>
+      <div class="cc-btn" style="background:#ff5f1f;color:#000;">Play Free</div>
     </a>
-    <a class="community-card discord" href="https://discord.gg/predictnetwork" target="_blank" rel="noopener noreferrer">
-      <div class="cc-icon">💬</div>
-      <div class="cc-name">Discord</div>
-      <div class="cc-desc">Chat + strategy.</div>
-      <div class="cc-btn">Join Discord</div>
+    <a class="community-card" href="https://spunkart.com" target="_blank" rel="noopener noreferrer" style="border-color:rgba(168,85,247,0.3);">
+      <div class="cc-icon">🎨</div>
+      <div class="cc-name">SpunkArt</div>
+      <div class="cc-desc">Art + ordinals on Bitcoin.</div>
+      <div class="cc-btn" style="background:#a855f7;color:#fff;">Visit</div>
     </a>
   </div>
 </div>
@@ -882,7 +881,6 @@
     <div class="share-preview" id="share-preview-text"></div>
     <div class="share-grid">
       <div class="share-option" onclick="doShareX()"><span class="s-icon">𝕏</span> X / Twitter</div>
-      <div class="share-option" onclick="doShareReddit()"><span class="s-icon">🔴</span> Reddit</div>
       <div class="share-option" onclick="doShareFacebook()"><span class="s-icon">📘</span> Facebook</div>
       <div class="share-option" onclick="doShareCopy()"><span class="s-icon">🔗</span> Copy Link</div>
     </div>
@@ -2264,7 +2262,6 @@ function openShareModal(question, yesPct) {
 function closeShareModal() { document.getElementById('share-modal').classList.remove('show'); }
 
 function doShareX() { analytics.trackShare('x'); window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`, '_blank'); closeShareModal(); awardShareBonus(); }
-function doShareReddit() { analytics.trackShare('reddit'); window.open(`https://reddit.com/submit?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent(shareText.split('\n')[0])}`, '_blank'); closeShareModal(); awardShareBonus(); }
 function doShareFacebook() { analytics.trackShare('facebook'); window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank'); closeShareModal(); awardShareBonus(); }
 function doShareCopy() { analytics.trackShare('copy_link'); navigator.clipboard.writeText(shareText + '\n' + shareUrl).then(() => { showToast('Copied!'); closeShareModal(); }); }
 
@@ -2641,7 +2638,7 @@ function engageRefer() {
 }
 
 function engageCommunity() {
-  window.open('https://discord.gg/predictnetwork', '_blank');
+  window.open('https://x.com/SpunkArt13', '_blank');
   dismissEngagePopup();
   analytics.track('community_join_click');
 }
