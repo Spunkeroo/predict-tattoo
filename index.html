@@ -375,8 +375,8 @@
 
 <!-- Mode Toggle -->
 <div class="mode-toggle" id="mode-toggle">
-  <button class="mode-btn free active" onclick="switchMode('free')">🆓 Free Play</button>
-  <button class="mode-btn real" onclick="switchMode('real')">💰 Real Crypto</button>
+  <button class="mode-btn free" onclick="switchMode('free')">🆓 Free Play</button>
+  <button class="mode-btn real active" onclick="switchMode('real')">💰 Real Crypto</button>
 </div>
 
 <!-- Promo Banner -->
@@ -2069,7 +2069,7 @@ setInterval(() => { if (firebaseReady) autoResolveMarkets(); }, 300000);
 // ============================================================
 // FREE / REAL MODE
 // ============================================================
-let playMode = localStorage.getItem('playMode_' + SITE_ID) || 'free';
+let playMode = localStorage.getItem('playMode_' + SITE_ID) || 'real';
 
 function switchMode(mode) {
   playMode = mode;
@@ -2537,9 +2537,9 @@ if (localStorage.getItem('promoDismissed_' + SITE_ID)) {
 }
 
 // Restore play mode
-if (playMode === 'real') {
+if (playMode === 'free') {
   document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector('.mode-btn.real').classList.add('active');
+  document.querySelector('.mode-btn.free').classList.add('active');
 }
 
 // Hide sticky CTA if wallet already connected
