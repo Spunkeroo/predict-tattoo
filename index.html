@@ -1938,49 +1938,112 @@ function dismissPromo() {
 }
 
 // ============================================================
-// AUTO-GENERATE MARKETS
+// AUTO-GENERATE MARKETS — Crypto, News, Short-term + Long-term
 // ============================================================
-const AUTO_MARKET_TEMPLATES = [
-  {emoji:'📈',q:'Will predict.tattoo see 1,000+ total bets this month?',cat:'meta'},
-  {emoji:'🔥',q:'Will the most popular market on predict.tattoo hit 1M credits in volume?',cat:'meta'},
-  {emoji:'🌐',q:'Will predict.tattoo get featured on a major news outlet?',cat:'viral'},
-  {emoji:'📱',q:'Will predict.tattoo reach 10,000 unique visitors this month?',cat:'growth'},
-  {emoji:'🏆',q:'Will a single user win 500k+ credits in one bet on predict.tattoo?',cat:'wild'},
-  {emoji:'⚡',q:'Will 50+ markets be active on predict.tattoo simultaneously?',cat:'meta'},
-  {emoji:'🎯',q:'Will the YES side win more markets than NO this month?',cat:'meta'},
-  {emoji:'💎',q:'Will total deposits on predict.tattoo exceed $10,000 this month?',cat:'growth'},
+
+// Short-term crypto markets (1hr, 4hr, 24hr)
+const CRYPTO_QUICK_MARKETS = [
+  {emoji:'₿',q:'Will BTC be above $PRICE in 24 hours?',cat:'crypto',hours:24},
+  {emoji:'₿',q:'Will BTC pump 3%+ in the next 4 hours?',cat:'crypto',hours:4},
+  {emoji:'Ξ',q:'Will ETH break $ETHPRICE in the next 24 hours?',cat:'crypto',hours:24},
+  {emoji:'Ξ',q:'Will ETH outperform BTC in the next 12 hours?',cat:'crypto',hours:12},
+  {emoji:'◎',q:'Will SOL pump 5%+ in the next 24 hours?',cat:'crypto',hours:24},
+  {emoji:'◎',q:'Will SOL stay above $SOLPRICE for the next 4 hours?',cat:'crypto',hours:4},
+  {emoji:'📉',q:'Will any top-10 crypto drop 10%+ in the next 24 hours?',cat:'crypto',hours:24},
+  {emoji:'🚀',q:'Will total crypto market cap hit a new ATH this week?',cat:'crypto',hours:168},
+  {emoji:'💎',q:'Will a new memecoin 100x in the next 48 hours?',cat:'crypto',hours:48},
+  {emoji:'🐋',q:'Will a whale move $100M+ in BTC in the next 12 hours?',cat:'crypto',hours:12},
+];
+
+// Breaking news rapid markets (1hr-24hr)
+const NEWS_QUICK_MARKETS = [
+  {emoji:'🏛️',q:'Will a world leader make a major policy announcement today?',cat:'news',hours:24},
+  {emoji:'📰',q:'Will the #1 trending topic on X change in the next 4 hours?',cat:'news',hours:4},
+  {emoji:'🌍',q:'Will a natural disaster make global headlines today?',cat:'news',hours:24},
+  {emoji:'💼',q:'Will a Fortune 500 company announce layoffs this week?',cat:'news',hours:168},
+  {emoji:'🤖',q:'Will a major AI announcement happen today?',cat:'news',hours:24},
+  {emoji:'🏈',q:'Will the biggest sports upset of the week happen today?',cat:'news',hours:24},
+  {emoji:'📱',q:'Will a social media platform go down for 1hr+ today?',cat:'news',hours:24},
+  {emoji:'🎬',q:'Will a celebrity scandal trend #1 on X today?',cat:'news',hours:24},
+  {emoji:'⚖️',q:'Will a major court ruling make headlines this week?',cat:'news',hours:168},
+  {emoji:'🚨',q:'Will breaking news interrupt live TV today?',cat:'news',hours:24},
+];
+
+// Long-term meta markets
+const META_MARKET_TEMPLATES = [
+  {emoji:'📈',q:'Will predict.tattoo see 1,000+ total bets this month?',cat:'meta',hours:720},
+  {emoji:'🔥',q:'Will the most popular market on predict.tattoo hit 1M in volume?',cat:'meta',hours:720},
+  {emoji:'🌐',q:'Will predict.tattoo get featured on a major news outlet?',cat:'viral',hours:720},
+  {emoji:'📱',q:'Will predict.tattoo reach 10,000 unique visitors this month?',cat:'growth',hours:720},
+  {emoji:'🏆',q:'Will a single user win 500k+ credits on predict.tattoo?',cat:'wild',hours:720},
+  {emoji:'🎯',q:'Will YES side win more markets than NO this month?',cat:'meta',hours:720},
 ];
 
 function autoGenerateMarkets() {
   if (!firebaseReady) return;
-  const lastGen = localStorage.getItem('autoGen_' + SITE_ID);
+
   const now = Date.now();
-  if (lastGen && now - parseInt(lastGen) < 86400000) return; // Once per day
-  localStorage.setItem('autoGen_' + SITE_ID, now.toString());
-
   const siteTitle = document.title.split(' —')[0];
-  const template = AUTO_MARKET_TEMPLATES[Math.floor(Math.random() * AUTO_MARKET_TEMPLATES.length)];
-  const question = template.q.replace('predict.tattoo', siteTitle);
 
-  // Check if similar market already exists
-  const exists = markets.some(m => m.question === question);
-  if (exists) return;
+  // Generate SHORT-TERM markets every 4 hours
+  const lastQuick = localStorage.getItem('quickGen_' + SITE_ID);
+  if (!lastQuick || now - parseInt(lastQuick) > 14400000) {
+    localStorage.setItem('quickGen_' + SITE_ID, now.toString());
 
-  const endDate = new Date();
-  endDate.setMonth(endDate.getMonth() + 1);
+    // Pick 2 crypto + 1 news quick market
+    const cryptoPicks = CRYPTO_QUICK_MARKETS.sort(() => Math.random() - 0.5).slice(0, 2);
+    const newsPick = NEWS_QUICK_MARKETS[Math.floor(Math.random() * NEWS_QUICK_MARKETS.length)];
 
-  db.ref('markets/' + SITE_ID).push({
-    id: markets.length + 1,
-    category: template.cat,
-    emoji: template.emoji,
-    question: question,
-    yesPool: Math.floor(Math.random() * 50000) + 10000,
-    noPool: Math.floor(Math.random() * 50000) + 10000,
-    totalBets: Math.floor(Math.random() * 20) + 5,
-    ends: endDate.toISOString().split('T')[0],
-    status: 'open',
-    autoGenerated: true
-  });
+    [cryptoPicks[0], cryptoPicks[1], newsPick].forEach(template => {
+      if (!template) return;
+      let question = template.q
+        .replace('$PRICE', (50000 + Math.floor(Math.random() * 60000)).toLocaleString())
+        .replace('$ETHPRICE', (2000 + Math.floor(Math.random() * 2000)).toLocaleString())
+        .replace('$SOLPRICE', (50 + Math.floor(Math.random() * 150)).toLocaleString());
+
+      // Check if similar exists
+      if (markets.some(m => m.question === question)) return;
+
+      const endDate = new Date(now + template.hours * 3600000);
+      db.ref('markets/' + SITE_ID).push({
+        id: Date.now(),
+        category: template.cat,
+        emoji: template.emoji,
+        question: question,
+        yesPool: Math.floor(Math.random() * 30000) + 5000,
+        noPool: Math.floor(Math.random() * 30000) + 5000,
+        totalBets: Math.floor(Math.random() * 15) + 3,
+        ends: endDate.toISOString().split('T')[0] + 'T' + endDate.toISOString().split('T')[1].slice(0,5),
+        status: 'open',
+        autoGenerated: true,
+        quickMarket: true,
+        expiresAt: endDate.getTime()
+      });
+    });
+  }
+
+  // Generate LONG-TERM meta markets once per day
+  const lastMeta = localStorage.getItem('metaGen_' + SITE_ID);
+  if (!lastMeta || now - parseInt(lastMeta) > 86400000) {
+    localStorage.setItem('metaGen_' + SITE_ID, now.toString());
+    const template = META_MARKET_TEMPLATES[Math.floor(Math.random() * META_MARKET_TEMPLATES.length)];
+    const question = template.q.replace('predict.tattoo', siteTitle);
+    if (!markets.some(m => m.question === question)) {
+      const endDate = new Date(now + template.hours * 3600000);
+      db.ref('markets/' + SITE_ID).push({
+        id: Date.now(),
+        category: template.cat,
+        emoji: template.emoji,
+        question: question,
+        yesPool: Math.floor(Math.random() * 50000) + 10000,
+        noPool: Math.floor(Math.random() * 50000) + 10000,
+        totalBets: Math.floor(Math.random() * 20) + 5,
+        ends: endDate.toISOString().split('T')[0],
+        status: 'open',
+        autoGenerated: true
+      });
+    }
+  }
 }
 
 // ============================================================
