@@ -287,6 +287,25 @@
   .lb-tab.active{border-color:var(--accent);color:var(--accent);background:rgba(245,158,11,0.1);}
   .lb-you{background:rgba(245,158,11,0.08) !important;}
 
+  /* Mode Toggle (Free/Real) */
+  .mode-toggle{display:flex;align-items:center;gap:0.5rem;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:0.2rem;margin:0.8rem auto;max-width:280px;}
+  .mode-btn{flex:1;padding:0.4rem 0.8rem;border-radius:18px;font-size:0.8rem;font-weight:700;cursor:pointer;border:none;text-align:center;transition:all 0.2s;background:transparent;color:var(--muted);}
+  .mode-btn.active{color:#000;}
+  .mode-btn.free.active{background:var(--green);color:#000;}
+  .mode-btn.real.active{background:var(--accent);color:#000;}
+  .free-badge{display:inline-block;background:rgba(34,197,94,0.15);color:var(--green);font-size:0.65rem;font-weight:800;padding:0.1rem 0.4rem;border-radius:4px;margin-left:0.3rem;}
+
+  /* Prize Banner */
+  .prize-banner{background:linear-gradient(135deg,rgba(153,69,255,0.1),rgba(245,158,11,0.1));border:1px solid rgba(153,69,255,0.3);border-radius:14px;padding:1rem 1.5rem;max-width:900px;margin:1rem auto;text-align:center;}
+  .prize-banner h3{font-size:1rem;font-weight:800;color:#9945ff;margin-bottom:0.3rem;}
+  .prize-banner p{font-size:0.8rem;color:var(--muted);line-height:1.5;}
+  .prize-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.8rem;margin-top:0.8rem;}
+  .prize-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:0.8rem;text-align:center;}
+  .prize-card .prize-period{font-size:0.65rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:700;}
+  .prize-card .prize-amount{font-size:1.2rem;font-weight:900;color:var(--accent);margin:0.2rem 0;}
+  .prize-card .prize-desc{font-size:0.7rem;color:var(--muted);}
+  @media(max-width:600px){.prize-grid{grid-template-columns:1fr;}}
+
   /* Audit Status Bar */
   .audit-bar{background:var(--card);border-top:1px solid var(--border);padding:0.4rem 1rem;display:flex;align-items:center;justify-content:center;gap:1rem;font-size:0.7rem;color:var(--muted);flex-wrap:wrap;}
   .audit-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 2s infinite;}
@@ -349,6 +368,12 @@
     <div class="hero-stat"><div class="val" id="active-markets">0</div><div class="label">Active Markets</div></div>
     <div class="hero-stat"><div class="val" id="total-bets">0</div><div class="label">Bets Placed</div></div>
   </div>
+</div>
+
+<!-- Mode Toggle -->
+<div class="mode-toggle" id="mode-toggle">
+  <button class="mode-btn free active" onclick="switchMode('free')">🆓 Free Play</button>
+  <button class="mode-btn real" onclick="switchMode('real')">💰 Real Crypto</button>
 </div>
 
 <!-- Promo Banner -->
@@ -498,10 +523,39 @@
   </div>
 </div>
 
+<!-- Prize Banner -->
+<div class="prize-banner" id="prize-banner">
+  <h3>🏆 Leaderboard Prizes — Win Real Rewards!</h3>
+  <p>Top predictors win prizes every day, week, and month. Play free or with crypto — leaderboard ranks count either way!</p>
+  <div class="prize-grid">
+    <div class="prize-card">
+      <div class="prize-period">Daily</div>
+      <div class="prize-amount">50,000 Credits</div>
+      <div class="prize-desc">Top predictor each day wins bonus credits</div>
+    </div>
+    <div class="prize-card">
+      <div class="prize-period">Weekly</div>
+      <div class="prize-amount">250,000 Credits</div>
+      <div class="prize-desc">Top 3 predictors split the weekly prize pool</div>
+    </div>
+    <div class="prize-card">
+      <div class="prize-period">Monthly</div>
+      <div class="prize-amount">Crypto Prizes</div>
+      <div class="prize-desc">#1 wins BTC/ETH/SOL + exclusive NFT badge</div>
+    </div>
+  </div>
+</div>
+
 <!-- Leaderboard -->
 <div class="leaderboard" id="leaderboard">
   <div class="leaderboard-title">🏆 Leaderboard</div>
   <div class="leaderboard-sub">Top predictors on predict.tattoo — climb the ranks!</div>
+  <div class="lb-tabs" id="lb-period-tabs" style="margin-bottom:0.5rem;">
+    <button class="lb-tab active" onclick="switchLbPeriod('all',this)">All Time</button>
+    <button class="lb-tab" onclick="switchLbPeriod('monthly',this)">Monthly</button>
+    <button class="lb-tab" onclick="switchLbPeriod('weekly',this)">Weekly</button>
+    <button class="lb-tab" onclick="switchLbPeriod('daily',this)">Daily</button>
+  </div>
   <div class="lb-tabs">
     <button class="lb-tab active" onclick="switchLbTab('volume',this)">Volume</button>
     <button class="lb-tab" onclick="switchLbTab('wins',this)">Most Wins</button>
@@ -2010,13 +2064,46 @@ async function autoResolveMarkets() {
 setInterval(() => { if (firebaseReady) autoResolveMarkets(); }, 300000);
 
 // ============================================================
-// LEADERBOARD — Per-site rankings
+// FREE / REAL MODE
+// ============================================================
+let playMode = localStorage.getItem('playMode_' + SITE_ID) || 'free';
+
+function switchMode(mode) {
+  playMode = mode;
+  localStorage.setItem('playMode_' + SITE_ID, mode);
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.mode-btn.' + mode).classList.add('active');
+
+  if (mode === 'free') {
+    // Free mode — give instant credits, no deposit needed
+    if (!wallet) {
+      showToast('Free play! Connect any wallet or use Demo Mode to start');
+    } else if (userBalance < 10000) {
+      // Top up free credits
+      if (firebaseReady && userId) {
+        db.ref('users/' + userId + '/balance').set(firebase.database.ServerValue.increment(50000));
+      } else {
+        userBalance += 50000;
+        updateBalanceUI();
+      }
+      showToast('🆓 Free mode active! 50k credits added — play for fun & climb the leaderboard!');
+    }
+  } else {
+    showToast('💰 Real crypto mode — deposit BTC, ETH, or SOL to bet with real money!');
+  }
+  analytics.track('mode_switch', { mode });
+}
+
+// ============================================================
+// LEADERBOARD — Per-site, Daily/Weekly/Monthly/All Time
 // ============================================================
 let lbData = [];
 let lbSort = 'volume';
+let lbPeriod = 'all';
 
 function loadLeaderboard() {
   if (!firebaseReady) return;
+  // Load all-time leaderboard
   db.ref('leaderboard/' + SITE_ID).on('value', snap => {
     lbData = [];
     snap.forEach(child => {
@@ -2029,16 +2116,34 @@ function loadLeaderboard() {
         wins: d.wins || 0,
         losses: d.losses || 0,
         totalWon: d.totalWon || 0,
-        streak: d.streak || 0
+        streak: d.streak || 0,
+        lastBet: d.lastBet || 0,
+        dailyVolume: d.dailyVolume || 0,
+        weeklyVolume: d.weeklyVolume || 0,
+        monthlyVolume: d.monthlyVolume || 0,
+        dailyBets: d.dailyBets || 0,
+        weeklyBets: d.weeklyBets || 0,
+        monthlyBets: d.monthlyBets || 0,
+        dailyWins: d.dailyWins || 0,
+        weeklyWins: d.weeklyWins || 0,
+        monthlyWins: d.monthlyWins || 0
       });
     });
     renderLeaderboard();
   });
 }
 
+function switchLbPeriod(period, el) {
+  lbPeriod = period;
+  document.querySelectorAll('#lb-period-tabs .lb-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderLeaderboard();
+}
+
 function switchLbTab(sort, el) {
   lbSort = sort;
-  document.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
+  // Only deactivate sort tabs (not period tabs)
+  el.parentNode.querySelectorAll('.lb-tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   renderLeaderboard();
 }
@@ -2054,47 +2159,142 @@ function getRank(volume, bets) {
 function renderLeaderboard() {
   const tbody = document.getElementById('lb-body');
   if (lbData.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" class="lb-empty">No predictions yet — be the first! Connect wallet & bet to climb the ranks.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="lb-empty">No predictions yet — be the first! Connect wallet & bet to climb the ranks. Free or real — everyone ranks!</td></tr>';
     return;
   }
 
-  let sorted = [...lbData];
+  // Pick volume/bets/wins based on period
+  let sorted = lbData.map(u => {
+    let vol, bets, wins;
+    switch(lbPeriod) {
+      case 'daily': vol = u.dailyVolume; bets = u.dailyBets; wins = u.dailyWins; break;
+      case 'weekly': vol = u.weeklyVolume; bets = u.weeklyBets; wins = u.weeklyWins; break;
+      case 'monthly': vol = u.monthlyVolume; bets = u.monthlyBets; wins = u.monthlyWins; break;
+      default: vol = u.totalVolume; bets = u.totalBets; wins = u.wins;
+    }
+    return {...u, pVol: vol, pBets: bets, pWins: wins};
+  }).filter(u => u.pVol > 0 || u.pBets > 0);
+
   switch(lbSort) {
-    case 'volume': sorted.sort((a,b) => b.totalVolume - a.totalVolume); break;
-    case 'wins': sorted.sort((a,b) => b.wins - a.wins); break;
+    case 'volume': sorted.sort((a,b) => b.pVol - a.pVol); break;
+    case 'wins': sorted.sort((a,b) => b.pWins - a.pWins); break;
     case 'streak': sorted.sort((a,b) => b.streak - a.streak); break;
-    case 'bets': sorted.sort((a,b) => b.totalBets - a.totalBets); break;
+    case 'bets': sorted.sort((a,b) => b.pBets - a.pBets); break;
   }
 
-  const top = sorted.slice(0, 20);
+  if (sorted.length === 0) {
+    const periodLabel = lbPeriod === 'all' ? '' : lbPeriod;
+    tbody.innerHTML = `<tr><td colspan="5" class="lb-empty">No ${periodLabel} activity yet — place a bet to start climbing!</td></tr>`;
+    return;
+  }
+
+  const top = sorted.slice(0, 25);
+  const prizeEmoji = lbPeriod === 'daily' ? '🎁' : lbPeriod === 'weekly' ? '💎' : lbPeriod === 'monthly' ? '🏆' : '';
   tbody.innerHTML = top.map((u, i) => {
     const rank = getRank(u.totalVolume, u.totalBets);
-    const winRate = u.totalBets > 0 ? Math.round((u.wins / u.totalBets) * 100) : 0;
+    const winRate = u.pBets > 0 ? Math.round((u.pWins / u.pBets) * 100) : 0;
     const wrClass = winRate >= 60 ? 'good' : winRate >= 40 ? 'mid' : 'low';
     const rankCls = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
     const medal = i === 0 ? '👑' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
     const short = u.wallet.length > 12 ? u.wallet.slice(0,6) + '...' + u.wallet.slice(-4) : u.wallet;
     const isYou = userId && u.id === userId ? ' lb-you' : '';
     const youTag = userId && u.id === userId ? ' (YOU)' : '';
+    const prizeTag = (i < 3 && lbPeriod !== 'all') ? ` ${prizeEmoji}` : '';
     return `<tr class="${isYou}">
       <td class="lb-rank ${rankCls}">${medal}</td>
-      <td class="lb-user">${rank.emoji} ${short}${youTag} <span class="lb-badge ${rank.cls}">${rank.name}</span></td>
-      <td class="lb-val">${u.totalVolume.toLocaleString()}</td>
-      <td>${u.totalBets}</td>
+      <td class="lb-user">${rank.emoji} ${short}${youTag}${prizeTag} <span class="lb-badge ${rank.cls}">${rank.name}</span></td>
+      <td class="lb-val">${u.pVol.toLocaleString()}</td>
+      <td>${u.pBets}</td>
       <td class="lb-winrate ${wrClass}">${winRate}%</td>
     </tr>`;
   }).join('');
 }
 
-// Update leaderboard on bet placement
+// Update leaderboard on bet placement (all time + period)
 function updateLeaderboardOnBet(amount) {
   if (!firebaseReady || !userId) return;
+  const today = new Date().toISOString().split('T')[0];
+  const weekNum = getWeekNumber();
+  const monthKey = today.slice(0, 7);
   const updates = {};
+  // All time
   updates['leaderboard/' + SITE_ID + '/' + userId + '/totalVolume'] = firebase.database.ServerValue.increment(amount);
   updates['leaderboard/' + SITE_ID + '/' + userId + '/totalBets'] = firebase.database.ServerValue.increment(1);
   updates['leaderboard/' + SITE_ID + '/' + userId + '/wallet'] = wallet;
   updates['leaderboard/' + SITE_ID + '/' + userId + '/lastBet'] = firebase.database.ServerValue.TIMESTAMP;
+  updates['leaderboard/' + SITE_ID + '/' + userId + '/mode'] = playMode;
+  // Daily
+  updates['leaderboard/' + SITE_ID + '/' + userId + '/dailyVolume'] = firebase.database.ServerValue.increment(amount);
+  updates['leaderboard/' + SITE_ID + '/' + userId + '/dailyBets'] = firebase.database.ServerValue.increment(1);
+  updates['leaderboard/' + SITE_ID + '/' + userId + '/dailyKey'] = today;
+  // Weekly
+  updates['leaderboard/' + SITE_ID + '/' + userId + '/weeklyVolume'] = firebase.database.ServerValue.increment(amount);
+  updates['leaderboard/' + SITE_ID + '/' + userId + '/weeklyBets'] = firebase.database.ServerValue.increment(1);
+  updates['leaderboard/' + SITE_ID + '/' + userId + '/weeklyKey'] = weekNum;
+  // Monthly
+  updates['leaderboard/' + SITE_ID + '/' + userId + '/monthlyVolume'] = firebase.database.ServerValue.increment(amount);
+  updates['leaderboard/' + SITE_ID + '/' + userId + '/monthlyBets'] = firebase.database.ServerValue.increment(1);
+  updates['leaderboard/' + SITE_ID + '/' + userId + '/monthlyKey'] = monthKey;
   db.ref().update(updates);
+}
+
+function getWeekNumber() {
+  const d = new Date();
+  const start = new Date(d.getFullYear(), 0, 1);
+  const diff = d - start;
+  const week = Math.ceil(diff / 604800000);
+  return d.getFullYear() + '-W' + String(week).padStart(2, '0');
+}
+
+// Reset daily/weekly/monthly counters when period changes
+function checkLeaderboardResets() {
+  if (!firebaseReady || !userId) return;
+  const today = new Date().toISOString().split('T')[0];
+  const weekNum = getWeekNumber();
+  const monthKey = today.slice(0, 7);
+
+  db.ref('leaderboard/' + SITE_ID + '/' + userId).once('value', snap => {
+    const d = snap.val();
+    if (!d) return;
+    const updates = {};
+    if (d.dailyKey && d.dailyKey !== today) {
+      updates['leaderboard/' + SITE_ID + '/' + userId + '/dailyVolume'] = 0;
+      updates['leaderboard/' + SITE_ID + '/' + userId + '/dailyBets'] = 0;
+      updates['leaderboard/' + SITE_ID + '/' + userId + '/dailyWins'] = 0;
+      updates['leaderboard/' + SITE_ID + '/' + userId + '/dailyKey'] = today;
+    }
+    if (d.weeklyKey && d.weeklyKey !== weekNum) {
+      updates['leaderboard/' + SITE_ID + '/' + userId + '/weeklyVolume'] = 0;
+      updates['leaderboard/' + SITE_ID + '/' + userId + '/weeklyBets'] = 0;
+      updates['leaderboard/' + SITE_ID + '/' + userId + '/weeklyWins'] = 0;
+      updates['leaderboard/' + SITE_ID + '/' + userId + '/weeklyKey'] = weekNum;
+    }
+    if (d.monthlyKey && d.monthlyKey !== monthKey) {
+      updates['leaderboard/' + SITE_ID + '/' + userId + '/monthlyVolume'] = 0;
+      updates['leaderboard/' + SITE_ID + '/' + userId + '/monthlyBets'] = 0;
+      updates['leaderboard/' + SITE_ID + '/' + userId + '/monthlyWins'] = 0;
+      updates['leaderboard/' + SITE_ID + '/' + userId + '/monthlyKey'] = monthKey;
+    }
+    if (Object.keys(updates).length > 0) db.ref().update(updates);
+  });
+}
+
+// Award daily prizes automatically (runs on page load)
+async function awardDailyPrizes() {
+  if (!firebaseReady) return;
+  const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+  const awarded = localStorage.getItem('dailyPrize_' + SITE_ID);
+  if (awarded === yesterday) return;
+
+  // Check if this user was #1 yesterday
+  const snap = await db.ref('leaderboard/' + SITE_ID).orderByChild('dailyVolume').limitToLast(1).once('value');
+  snap.forEach(child => {
+    if (child.key === userId && child.val().dailyVolume > 0) {
+      db.ref('users/' + userId + '/balance').set(firebase.database.ServerValue.increment(50000));
+      showToast('🏆 You were #1 yesterday! 50,000 bonus credits awarded!');
+    }
+  });
+  localStorage.setItem('dailyPrize_' + SITE_ID, yesterday);
 }
 
 // ============================================================
@@ -2333,6 +2533,12 @@ if (localStorage.getItem('promoDismissed_' + SITE_ID)) {
   document.getElementById('promo-banner').style.display = 'none';
 }
 
+// Restore play mode
+if (playMode === 'real') {
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.mode-btn.real').classList.add('active');
+}
+
 // Hide sticky CTA if wallet already connected
 if (localStorage.getItem('wallet_' + SITE_ID)) {
   const stickyBtn = document.querySelector('.sticky-cta button');
@@ -2353,6 +2559,8 @@ loadFirebaseSDK().then(async (ok) => {
     autoGenerateMarkets(); // Auto-create fresh markets daily
     autoResolveMarkets(); // Auto-resolve expired markets
     analytics.trackPageview(); // Track visit
+    // Leaderboard period resets + daily prizes
+    if (userId) { checkLeaderboardResets(); awardDailyPrizes(); }
     // Run first audit after Firebase is ready
     setTimeout(runAudit, 2000);
   } else {
