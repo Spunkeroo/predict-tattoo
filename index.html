@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>predict.tattoo 🖋️ — Crypto Prediction Markets</title>
+<meta name="description" content="Bet on outcomes. Pick a side. Win crypto. Simple prediction markets powered by Bitcoin.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖋️</text></svg>">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  :root{--bg:#0a0a0f;--card:#111118;--border:#1a1a25;--text:#e5e5e5;--muted:#666;--green:#22c55e;--red:#ef4444;--accent:#f59e0b;--yes:#22c55e;--no:#ef4444;--blue:#3b82f6;}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;}
+  a{color:var(--accent);text-decoration:none;}
+  a:hover{text-decoration:underline;}
+
+  /* Nav */
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1rem 2rem;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,15,0.95);backdrop-filter:blur(10px);z-index:100;}
+  .logo{font-size:1.4rem;font-weight:800;letter-spacing:-0.5px;}
+  .logo span{color:var(--accent);}
+  .nav-links{display:flex;gap:1.5rem;align-items:center;font-size:0.9rem;}
+  .nav-links a{color:var(--muted);transition:color 0.2s;}
+  .nav-links a:hover{color:var(--text);text-decoration:none;}
+  .connect-btn{background:var(--accent);color:#000;border:none;padding:0.5rem 1.2rem;border-radius:8px;font-weight:700;font-size:0.85rem;cursor:pointer;transition:all 0.2s;}
+  .connect-btn:hover{transform:scale(1.05);box-shadow:0 0 20px rgba(245,158,11,0.4);}
+
+  /* Hero */
+  .hero{text-align:center;padding:3rem 1rem 2rem;max-width:700px;margin:0 auto;}
+  .hero-emoji{font-size:4rem;margin-bottom:1rem;}
+  .hero h1{font-size:2.4rem;font-weight:900;letter-spacing:-1px;margin-bottom:0.5rem;}
+  .hero h1 span{color:var(--accent);}
+  .hero p{color:var(--muted);font-size:1.1rem;line-height:1.5;}
+  .hero-stats{display:flex;gap:2rem;justify-content:center;margin-top:1.5rem;}
+  .hero-stat{text-align:center;}
+  .hero-stat .val{font-size:1.5rem;font-weight:800;color:var(--accent);}
+  .hero-stat .label{font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+
+  /* Filters */
+  .filters{display:flex;gap:0.5rem;justify-content:center;padding:1rem;flex-wrap:wrap;}
+  .filter-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:0.4rem 1rem;border-radius:20px;font-size:0.8rem;cursor:pointer;transition:all 0.2s;}
+  .filter-btn.active,.filter-btn:hover{color:var(--text);border-color:var(--accent);background:rgba(245,158,11,0.1);}
+
+  /* Markets Grid */
+  .markets{max-width:900px;margin:0 auto;padding:1rem;}
+  .market-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;margin-bottom:1rem;transition:all 0.2s;}
+  .market-card:hover{border-color:#333;transform:translateY(-1px);}
+  .market-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;}
+  .market-category{font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--accent);font-weight:700;margin-bottom:0.4rem;}
+  .market-question{font-size:1.15rem;font-weight:700;line-height:1.4;}
+  .market-meta{text-align:right;flex-shrink:0;}
+  .market-volume{font-size:0.8rem;color:var(--muted);}
+  .market-ends{font-size:0.7rem;color:var(--muted);margin-top:0.2rem;}
+  .market-odds{display:flex;gap:0.5rem;margin-bottom:1rem;}
+  .odds-bar{flex:1;height:8px;border-radius:4px;background:var(--border);overflow:hidden;display:flex;}
+  .odds-yes{background:var(--yes);height:100%;transition:width 0.5s;}
+  .odds-no{background:var(--no);height:100%;transition:width 0.5s;}
+  .odds-labels{display:flex;justify-content:space-between;font-size:0.8rem;font-weight:600;margin-bottom:0.8rem;}
+  .odds-labels .yes{color:var(--yes);}
+  .odds-labels .no{color:var(--no);}
+  .market-actions{display:flex;gap:0.5rem;}
+  .bet-btn{flex:1;padding:0.7rem;border:none;border-radius:10px;font-weight:800;font-size:0.95rem;cursor:pointer;transition:all 0.2s;letter-spacing:0.5px;}
+  .bet-btn.yes{background:rgba(34,197,94,0.15);color:var(--yes);border:1px solid rgba(34,197,94,0.3);}
+  .bet-btn.yes:hover{background:rgba(34,197,94,0.25);transform:scale(1.02);}
+  .bet-btn.no{background:rgba(239,68,68,0.15);color:var(--no);border:1px solid rgba(239,68,68,0.3);}
+  .bet-btn.no:hover{background:rgba(239,68,68,0.25);transform:scale(1.02);}
+
+  /* Bet Modal */
+  .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+  .modal-overlay.show{display:flex;}
+  .modal{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2rem;max-width:420px;width:90%;animation:modalIn 0.2s;}
+  @keyframes modalIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+  .modal h3{font-size:1.2rem;font-weight:800;margin-bottom:0.3rem;}
+  .modal-question{color:var(--muted);font-size:0.9rem;margin-bottom:1.5rem;line-height:1.4;}
+  .modal-side{display:flex;gap:0.5rem;margin-bottom:1rem;}
+  .side-btn{flex:1;padding:0.6rem;border-radius:10px;font-weight:700;font-size:0.9rem;cursor:pointer;border:2px solid transparent;transition:all 0.2s;background:var(--bg);}
+  .side-btn.yes{color:var(--yes);}
+  .side-btn.yes.selected{border-color:var(--yes);background:rgba(34,197,94,0.15);}
+  .side-btn.no{color:var(--no);}
+  .side-btn.no.selected{border-color:var(--no);background:rgba(239,68,68,0.15);}
+  .bet-input-group{margin-bottom:1rem;}
+  .bet-input-group label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:0.3rem;}
+  .bet-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:0.7rem 1rem;color:var(--text);font-size:1.1rem;font-weight:700;outline:none;}
+  .bet-input:focus{border-color:var(--accent);}
+  .quick-amounts{display:flex;gap:0.3rem;margin-top:0.4rem;}
+  .quick-amt{background:var(--bg);border:1px solid var(--border);color:var(--muted);padding:0.3rem 0.6rem;border-radius:6px;font-size:0.75rem;cursor:pointer;transition:all 0.15s;}
+  .quick-amt:hover{color:var(--text);border-color:var(--accent);}
+  .payout-preview{background:var(--bg);border-radius:10px;padding:0.8rem;margin-bottom:1rem;display:flex;justify-content:space-between;font-size:0.85rem;}
+  .payout-preview .label{color:var(--muted);}
+  .payout-preview .value{font-weight:700;color:var(--accent);}
+  .place-bet-btn{width:100%;padding:0.8rem;border:none;border-radius:10px;font-weight:800;font-size:1rem;cursor:pointer;transition:all 0.2s;}
+  .place-bet-btn.yes{background:var(--yes);color:#000;}
+  .place-bet-btn.no{background:var(--no);color:#fff;}
+  .place-bet-btn:hover{transform:scale(1.02);}
+  .modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--muted);font-size:1.5rem;cursor:pointer;}
+
+  /* Footer */
+  footer{border-top:1px solid var(--border);padding:2rem;text-align:center;margin-top:3rem;}
+  .network-title{font-size:0.7rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:0.8rem;}
+  .network-links{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:1rem;}
+  .network-links a{color:var(--accent);font-weight:700;font-size:0.9rem;padding:0.3rem 0.8rem;border:1px solid var(--border);border-radius:8px;transition:all 0.2s;}
+  .network-links a:hover{border-color:var(--accent);background:rgba(245,158,11,0.1);text-decoration:none;}
+  .network-links a.current{border-color:var(--accent);background:rgba(245,158,11,0.15);}
+  .footer-sub{font-size:0.75rem;color:var(--muted);}
+  .fee-badge{display:inline-block;background:rgba(245,158,11,0.15);color:var(--accent);padding:0.2rem 0.6rem;border-radius:6px;font-size:0.7rem;font-weight:700;margin-top:0.5rem;}
+
+  /* Toast */
+  .toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--card);border:1px solid var(--border);padding:0.8rem 1.5rem;border-radius:12px;font-size:0.9rem;z-index:300;transition:transform 0.3s;font-weight:600;}
+  .toast.show{transform:translateX(-50%) translateY(0);}
+
+  /* How It Works */
+  .how-it-works{max-width:700px;margin:2rem auto;padding:0 1rem;}
+  .how-title{text-align:center;font-size:1.2rem;font-weight:800;margin-bottom:1.5rem;color:var(--muted);}
+  .steps{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;}
+  .step{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.2rem;flex:1;min-width:180px;text-align:center;}
+  .step-num{font-size:1.5rem;font-weight:900;color:var(--accent);margin-bottom:0.3rem;}
+  .step-title{font-weight:700;font-size:0.9rem;margin-bottom:0.3rem;}
+  .step-desc{font-size:0.75rem;color:var(--muted);line-height:1.4;}
+
+  /* Responsive */
+  @media(max-width:600px){
+    nav{padding:0.8rem 1rem;}
+    .logo{font-size:1.1rem;}
+    .nav-links{gap:0.8rem;}
+    .hero h1{font-size:1.6rem;}
+    .hero p{font-size:0.9rem;}
+    .hero-stats{gap:1rem;}
+    .market-header{flex-direction:column;}
+    .market-meta{text-align:left;margin-top:0.3rem;}
+    .steps{flex-direction:column;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">predict<span>.tattoo</span> 🖋️</div>
+  <div class="nav-links">
+    <a href="#markets">Markets</a>
+    <a href="#how">How It Works</a>
+    <button class="connect-btn" id="connect-btn" onclick="connectWallet()">Connect Wallet</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-emoji">💉</div>
+  <h1>Predict. Bet. <span>Win.</span></h1>
+  <p>Simple crypto prediction markets. Pick a side, stake sats, collect if you're right. 3% fee. No signup. No BS.</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="val" id="total-volume">0</div><div class="label">Total Volume (sats)</div></div>
+    <div class="hero-stat"><div class="val" id="active-markets">0</div><div class="label">Active Markets</div></div>
+    <div class="hero-stat"><div class="val" id="total-bets">0</div><div class="label">Bets Placed</div></div>
+  </div>
+</div>
+
+<div class="filters" id="filters">
+  <button class="filter-btn active" onclick="filterMarkets('all')">All</button>
+  <button class="filter-btn" onclick="filterMarkets('styles')">Styles</button>
+  <button class="filter-btn" onclick="filterMarkets('artists')">Artists</button>
+  <button class="filter-btn" onclick="filterMarkets('culture')">Culture</button>
+  <button class="filter-btn" onclick="filterMarkets('wild')">Wild</button>
+</div>
+
+<div class="markets" id="markets"></div>
+
+<div id="how" class="how-it-works">
+  <div class="how-title">How It Works</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-title">Pick a Market</div>
+      <div class="step-desc">Tattoo styles, artist milestones, culture shifts, wild bets.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-title">Choose a Side</div>
+      <div class="step-desc">Bet YES or NO. Stake your sats on the outcome you believe in.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-title">Collect Winnings</div>
+      <div class="step-desc">If you're right, you split the losing side's pool. 3% fee, rest is yours.</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="network-title">Predict Network</div>
+  <div class="network-links">
+    <a href="https://predict.horse">predict.horse 🐴</a>
+    <a href="https://predict.pics">predict.pics 🖼️</a>
+    <a href="https://predict.mom">predict.mom 👩</a>
+    <a href="https://predict.gay">predict.gay 🏳️‍🌈</a>
+    <a href="https://predict.autos">predict.autos 🏎️</a>
+    <a href="https://predict.beauty">predict.beauty 💄</a>
+    <a href="https://predict.christmas">predict.christmas 🎄</a>
+    <a href="https://predict.codes">predict.codes 💻</a>
+    <a href="https://predict.courses">predict.courses 📚</a>
+    <a href="https://predict.hair">predict.hair 💇</a>
+    <a href="https://predict.garden">predict.garden 🌱</a>
+    <a href="https://predict.makeup">predict.makeup 💋</a>
+    <a href="https://predict.singles">predict.singles 💘</a>
+    <a href="https://predict.tattoo" class="current">predict.tattoo 🖋️</a>
+    <a href="https://predict.skin">predict.skin 🧴</a>
+    <a href="https://predict.surf">predict.surf 🏄</a>
+  </div>
+  <div class="footer-sub">Crypto-native prediction markets. No signup. No custody.</div>
+  <div class="fee-badge">3% Platform Fee</div>
+</footer>
+
+<!-- Bet Modal -->
+<div class="modal-overlay" id="bet-modal">
+  <div class="modal" style="position:relative;">
+    <button class="modal-close" onclick="closeBetModal()">&times;</button>
+    <h3 id="modal-title">Place Your Bet</h3>
+    <div class="modal-question" id="modal-question"></div>
+    <div class="modal-side">
+      <button class="side-btn yes" id="side-yes" onclick="selectSide('yes')">YES</button>
+      <button class="side-btn no" id="side-no" onclick="selectSide('no')">NO</button>
+    </div>
+    <div class="bet-input-group">
+      <label>Amount (sats)</label>
+      <input type="number" class="bet-input" id="bet-amount" value="10000" min="1000" oninput="updatePayout()">
+      <div class="quick-amounts">
+        <button class="quick-amt" onclick="setAmount(5000)">5k</button>
+        <button class="quick-amt" onclick="setAmount(10000)">10k</button>
+        <button class="quick-amt" onclick="setAmount(25000)">25k</button>
+        <button class="quick-amt" onclick="setAmount(50000)">50k</button>
+        <button class="quick-amt" onclick="setAmount(100000)">100k</button>
+      </div>
+    </div>
+    <div class="payout-preview">
+      <span class="label">Potential payout</span>
+      <span class="value" id="payout-value">—</span>
+    </div>
+    <button class="place-bet-btn yes" id="place-bet-btn" onclick="placeBet()">Place Bet</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== MARKETS DATA =====
+const MARKETS = [
+  {
+    id: 1, category: 'styles', emoji: '🌊',
+    question: 'Will watercolor tattoos be the #1 requested style in 2026?',
+    yesPool: 420000, noPool: 580000, totalBets: 112,
+    ends: '2026-12-31', status: 'open'
+  },
+  {
+    id: 2, category: 'artists', emoji: '🏆',
+    question: 'Will a tattoo artist win a major fine art award this year?',
+    yesPool: 190000, noPool: 810000, totalBets: 145,
+    ends: '2026-12-31', status: 'open'
+  },
+  {
+    id: 3, category: 'culture', emoji: '📺',
+    question: 'Will a tattoo reality show break Netflix top 10?',
+    yesPool: 670000, noPool: 330000, totalBets: 203,
+    ends: '2026-12-31', status: 'open'
+  },
+  {
+    id: 4, category: 'wild', emoji: '🤖',
+    question: 'Will an AI-designed tattoo go viral with 100M+ views?',
+    yesPool: 890000, noPool: 310000, totalBets: 278,
+    ends: '2026-12-31', status: 'open'
+  },
+  {
+    id: 5, category: 'styles', emoji: '✨',
+    question: 'Will UV-reactive tattoos become mainstream by end of 2026?',
+    yesPool: 340000, noPool: 660000, totalBets: 89,
+    ends: '2026-12-31', status: 'open'
+  },
+  {
+    id: 6, category: 'artists', emoji: '💰',
+    question: 'Will a single tattoo session sell for over $100k?',
+    yesPool: 150000, noPool: 950000, totalBets: 167,
+    ends: '2026-12-31', status: 'open'
+  },
+  {
+    id: 7, category: 'culture', emoji: '⚖️',
+    question: 'Will a country lift its ban on visible tattoos in workplaces?',
+    yesPool: 510000, noPool: 490000, totalBets: 134,
+    ends: '2026-12-31', status: 'open'
+  },
+  {
+    id: 8, category: 'wild', emoji: '🧬',
+    question: 'Will removable biotech tattoos hit the market in 2026?',
+    yesPool: 280000, noPool: 720000, totalBets: 198,
+    ends: '2026-12-31', status: 'open'
+  }
+];
+
+// ===== STATE =====
+let wallet = null;
+let selectedMarket = null;
+let selectedSide = 'yes';
+let userBets = JSON.parse(localStorage.getItem('predict_tattoo_bets') || '[]');
+
+// ===== RENDER =====
+function renderMarkets(filter) {
+  const container = document.getElementById('markets');
+  const filtered = filter && filter !== 'all' ? MARKETS.filter(m => m.category === filter) : MARKETS;
+  container.innerHTML = filtered.map(m => {
+    const total = m.yesPool + m.noPool;
+    const yesPct = total > 0 ? Math.round((m.yesPool / total) * 100) : 50;
+    const noPct = 100 - yesPct;
+    const daysLeft = Math.max(0, Math.ceil((new Date(m.ends) - new Date()) / 86400000));
+    return `
+      <div class="market-card" data-category="${m.category}">
+        <div class="market-header">
+          <div>
+            <div class="market-category">${m.emoji} ${m.category}</div>
+            <div class="market-question">${m.question}</div>
+          </div>
+          <div class="market-meta">
+            <div class="market-volume">${(total / 100000000).toFixed(4)} BTC</div>
+            <div class="market-ends">${daysLeft}d left · ${m.totalBets} bets</div>
+          </div>
+        </div>
+        <div class="odds-labels">
+          <span class="yes">YES ${yesPct}%</span>
+          <span class="no">NO ${noPct}%</span>
+        </div>
+        <div class="odds-bar">
+          <div class="odds-yes" style="width:${yesPct}%"></div>
+          <div class="odds-no" style="width:${noPct}%"></div>
+        </div>
+        <div class="market-actions">
+          <button class="bet-btn yes" onclick="openBetModal(${m.id},'yes')">YES ${yesPct}¢</button>
+          <button class="bet-btn no" onclick="openBetModal(${m.id},'no')">NO ${noPct}¢</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Update stats
+  const activeMarkets = MARKETS.filter(m => m.status === 'open').length;
+  const totalVol = MARKETS.reduce((s, m) => s + m.yesPool + m.noPool, 0);
+  const totalBets = MARKETS.reduce((s, m) => s + m.totalBets, 0);
+  document.getElementById('active-markets').textContent = activeMarkets;
+  document.getElementById('total-volume').textContent = totalVol.toLocaleString();
+  document.getElementById('total-bets').textContent = totalBets.toLocaleString();
+}
+
+function filterMarkets(cat) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  renderMarkets(cat);
+}
+
+// ===== BET MODAL =====
+function openBetModal(id, side) {
+  selectedMarket = MARKETS.find(m => m.id === id);
+  if (!selectedMarket) return;
+  selectedSide = side;
+  document.getElementById('modal-question').textContent = selectedMarket.question;
+  selectSide(side);
+  updatePayout();
+  document.getElementById('bet-modal').classList.add('show');
+}
+
+function closeBetModal() {
+  document.getElementById('bet-modal').classList.remove('show');
+}
+
+function selectSide(side) {
+  selectedSide = side;
+  document.getElementById('side-yes').classList.toggle('selected', side === 'yes');
+  document.getElementById('side-no').classList.toggle('selected', side === 'no');
+  document.getElementById('place-bet-btn').className = 'place-bet-btn ' + side;
+  document.getElementById('place-bet-btn').textContent = 'Bet ' + side.toUpperCase();
+  updatePayout();
+}
+
+function setAmount(v) {
+  document.getElementById('bet-amount').value = v;
+  updatePayout();
+}
+
+function updatePayout() {
+  if (!selectedMarket) return;
+  const amount = parseInt(document.getElementById('bet-amount').value) || 0;
+  const total = selectedMarket.yesPool + selectedMarket.noPool + amount;
+  const myPool = selectedSide === 'yes' ? selectedMarket.yesPool + amount : selectedMarket.noPool + amount;
+  const share = myPool > 0 ? amount / myPool : 0;
+  const gross = share * total;
+  const payout = Math.floor(gross * 0.97); // 3% fee
+  document.getElementById('payout-value').textContent = payout.toLocaleString() + ' sats';
+}
+
+function placeBet() {
+  if (!wallet) {
+    showToast('Connect your wallet first');
+    return;
+  }
+  const amount = parseInt(document.getElementById('bet-amount').value) || 0;
+  if (amount < 1000) { showToast('Minimum bet: 1,000 sats'); return; }
+
+  // Record bet locally
+  if (selectedSide === 'yes') selectedMarket.yesPool += amount;
+  else selectedMarket.noPool += amount;
+  selectedMarket.totalBets++;
+
+  userBets.push({
+    marketId: selectedMarket.id,
+    side: selectedSide,
+    amount,
+    timestamp: Date.now()
+  });
+  localStorage.setItem('predict_tattoo_bets', JSON.stringify(userBets));
+
+  closeBetModal();
+  renderMarkets();
+  showToast('Bet placed! ' + amount.toLocaleString() + ' sats on ' + selectedSide.toUpperCase());
+}
+
+// ===== WALLET =====
+function connectWallet() {
+  // Simple wallet connect simulation — replace with real Xverse/Unisat integration
+  if (window.BitcoinProvider || window.XverseProviders || window.unisat) {
+    connectRealWallet();
+  } else {
+    // Demo mode
+    wallet = { address: 'bc1q' + Math.random().toString(36).slice(2, 10) + '...' };
+    document.getElementById('connect-btn').textContent = wallet.address;
+    document.getElementById('connect-btn').style.background = '#1a1a25';
+    document.getElementById('connect-btn').style.color = 'var(--accent)';
+    document.getElementById('connect-btn').style.border = '1px solid var(--accent)';
+    showToast('Demo wallet connected');
+  }
+}
+
+async function connectRealWallet() {
+  try {
+    let provider = null;
+    if (window.XverseProviders?.BitcoinProvider) provider = window.XverseProviders.BitcoinProvider;
+    else if (window.BitcoinProvider) provider = window.BitcoinProvider;
+
+    if (provider) {
+      const resp = await provider.request('getAccounts', { purposes: ['payment'] });
+      if (resp.result && resp.result.length > 0) {
+        wallet = { address: resp.result[0].address };
+        const short = wallet.address.slice(0, 6) + '...' + wallet.address.slice(-4);
+        document.getElementById('connect-btn').textContent = short;
+        document.getElementById('connect-btn').style.background = '#1a1a25';
+        document.getElementById('connect-btn').style.color = 'var(--accent)';
+        document.getElementById('connect-btn').style.border = '1px solid var(--accent)';
+        showToast('Wallet connected');
+        return;
+      }
+    }
+    if (window.unisat) {
+      const accounts = await window.unisat.requestAccounts();
+      if (accounts.length > 0) {
+        wallet = { address: accounts[0] };
+        const short = wallet.address.slice(0, 6) + '...' + wallet.address.slice(-4);
+        document.getElementById('connect-btn').textContent = short;
+        showToast('Wallet connected');
+        return;
+      }
+    }
+    showToast('No wallet found — using demo mode');
+    wallet = { address: 'demo' };
+  } catch (e) {
+    showToast('Wallet error — using demo mode');
+    wallet = { address: 'demo' };
+  }
+}
+
+// ===== TOAST =====
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ===== INIT =====
+renderMarkets();
+</script>
+</body>
+</html>
