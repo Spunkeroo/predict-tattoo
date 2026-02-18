@@ -1,0 +1,27 @@
+# predict.tattoo — Tattoos & Body Art Prediction Markets
+
+> Real-time prediction markets for tattoos & body art. Bet on outcomes, see live odds, and win. Free to play with shared pools powered by Firebase.
+
+
+predict.tattoo is a prediction market platform focused on tattoos & body art. Users can bet YES or NO on curated markets with real-time shared pools. Features live odds, countdown timers, trending markets, and social sharing. Part of the Predict Network — 18 niche prediction market sites.
+
+
+## Pages
+
+- [Homepage — Tattoos & Body Art prediction markets with live odds](https://predict.tattoo)
+- [Markets — Active tattoos & body art prediction markets](https://predict.tattoo#markets)
+
+
+## Keywords
+
+prediction market, tattoos & body art, betting, odds, forecast, predict.tattoo
+
+
+## Related Sites
+
+- [Spunk.Bet — Free Crypto Casino](https://spunk.bet)
+- [Stimulant Wiki — Nootropic Encyclopedia](https://stimulant.wiki)
+- [Stimulant Doctor — ADHD & Focus Guide](https://stimulant.doctor)
+- [Stimulant Shop — Buy Nootropics](https://stimulant.shop)
+- [@SpunkArt13 on X](https://x.com/SpunkArt13)
+- [SpunkArt.com](https://spunkart.com)
